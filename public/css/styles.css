@@ -22,11 +22,13 @@ footer{
     left: 0;
     min-height: 30px;
 }
+
 img{
   max-width: 100%;
   max-height: 100%;
   display: block; /* remove extra space below image */
 }
+
 .header{
   font:100em;
 }
@@ -40,10 +42,12 @@ img{
   background-color: white;
   padding: 10% 12% 5% 10%;
 }
+
 .container{
   padding-top: 3%;
   padding-bottom: 3%;
 }
+
 /*Home*/
 .homeHeader{
   font-size: 3.3rem;
@@ -51,7 +55,12 @@ img{
   color: #190C3A;
   font-weight: bold;
 }
+
 .pargraphHeader{
   font-size: 0.8rem;
   color: lightslategray;
+}
+
+.card-text {
+  text-align: justify;
 }

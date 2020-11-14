@@ -1,3 +1,3 @@
-document.getElementById("hazem").onclick(()=>{
+document.getElementById("hazem").onclick(() => {
     console.log("hhh");
 })

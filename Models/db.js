@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const q=require("./queries");
+const q = require("./queries");
 
 // First you need to create a connection to the database
 // Be sure to replace 'user' and 'password' with the correct values
@@ -21,28 +21,27 @@ const q=require("./queries");
 // });
 
 
-var set={
-  name:"fname",
-  value:"ghareeb"
+var set = {
+  name: "fname",
+  value: "ghareeb"
 };
-var loc={
-  name:"ID",
-  value:"1"
+var loc = {
+  name: "ID",
+  value: "1"
 };
-var insertQuery=q.Update(set,"company",loc);
-con.query(insertQuery,(err,rows)=>{
-  if(err){throw err;}
+var insertQuery = q.Update(set, "company", loc);
+con.query(insertQuery, (err, rows) => {
+  if (err) { throw err; }
   console.log("violation is done")
 })
 
-con.query('SELECT * FROM emp', (err,rows) => {
-  if(err) throw err;
-
+con.query('SELECT * FROM emp', (err, rows) => {
+  if (err) throw err;
   console.log('Data received from Db:');
   console.log(rows.length);
 });
 
-con.end((err) => {
+con.end(err => {
   // The connection is terminated gracefully
   // Ensures all remaining queries are executed
   // Then sends a quit packet to the MySQL server.
