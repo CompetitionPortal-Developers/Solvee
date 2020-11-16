@@ -26,45 +26,48 @@
   <!--Awesome Font-->
   <script src="https://kit.fontawesome.com/47629bb4fb.js" crossorigin="anonymous"></script>
   <!--Css stylesheet-->
-  <link type="text/css" href="/css/styles.css" rel="stylesheet" />
   <link type="text/css" href="/css/bootstrap-social.css" rel="stylesheet" />
+  <link type="text/css" href="/css/styles.css" rel="stylesheet" />
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <span class="navbar-brand" href="/">
-      <i class="fab fa-studiovinari"></i> Competition Portal</span>
+    <a href="/">
+      <span class="navbar-brand">
+        <i class="fab fa-studiovinari"></i> Competition Portal
+      </span>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
       aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <form action="/" method="get">
+        <li class="nav-item">
+          <a href="/">
             <button class="btn btn-dark" style="color: lightgray">
               Home
             </button>
-          </form>
+          </a>
         </li>
         <li class="nav-item">
-          <form action="/contact" method="get">
+          <a href="/contact">
             <button class="btn btn-dark" style="color: lightgray">
               Contact Us
             </button>
-          </form>
+          </a>
         </li>
       </ul>
       <div class="row">
-        <form action="/users/login" method="get">
+        <a href="/users/login/">
           <button class="navbar-text btn btn-outline-success btn-light" style="margin-right: 20px">
             <span style="color: black">Login</span>
           </button>
-        </form>
+        </a>
 
-        <form action="/users/register" method="get">
+        <a href="/users/register/">
           <button class="navbar-text btn btn-outline-primary btn-light" style="margin-right: 10px">
             <span style="color: black">Register</span>
           </button>
-        </form>
+        </a>
       </div>
     </div>
   </nav>

@@ -1,14 +1,44 @@
-body{
+body {
   background-image: url(../images/background.jpg);
   background-size: cover;
   background-repeat: no-repeat;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 /*Footer Prop*/
-footer{
-    background-color:#F5F5F5;
-    padding: 0.5% 2%;
-    text-align: center;
+footer {
+  background-color: #F5F5F5;
+  padding: 2% 2%;
+  text-align: center;
+}
+
+.ic {
+  color: black;
+  transition: all 0.3s;
+}
+
+.ic:hover {
+  color: #5c5c5c;
+  transform: scale(1.1);
 }
 
 /*Carousel Prop*/
@@ -17,20 +47,31 @@ footer{
 }
 
 .item img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-height: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 30px;
 }
 
-img{
+img {
   max-width: 100%;
   max-height: 100%;
-  display: block; /* remove extra space below image */
+  display: block;
+  /* remove extra space below image */
 }
 
-.header{
-  font:100em;
+.header {
+  font: 100em;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.nav-item {
+  margin: 0 0.4rem;
 }
 
 /*Center div*/
@@ -43,20 +84,20 @@ img{
   padding: 10% 12% 5% 10%;
 }
 
-.container{
+.container {
   padding-top: 3%;
   padding-bottom: 3%;
 }
 
 /*Home*/
-.homeHeader{
+.homeHeader {
   font-size: 3.3rem;
   font-weight: bolder;
   color: #190C3A;
   font-weight: bold;
 }
 
-.pargraphHeader{
+.pargraphHeader {
   font-size: 0.8rem;
   color: lightslategray;
 }
@@ -65,49 +106,72 @@ img{
   text-align: justify;
 }
 
-/*Login Page*/
-.login {
-  background-color: #fff; 
+/*Login & Register Page*/
+.login,
+.register {
+  background-color: #fff;
   margin-top: 10%;
   margin-bottom: 10%;
   padding: 10% 2%;
   text-align: center;
 }
-.lblStyle{
+
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.lblStyle {
+  width: 100%;
   padding-left: 1%;
   padding-top: 2%;
   text-align: left;
+  font-weight: 500;
 }
+
 .myButton {
-	background-image:linear-gradient(to right,red,blue);
-	border-radius:28px;
-	border:1px solid #150999;
-	display:inline-block;
-  cursor:pointer;
+  background-image: linear-gradient(to right, red, blue);
+  border-radius: 28px;
+  border: 1px solid #150999;
+  display: inline-block;
+  cursor: pointer;
   text-align: center;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:16px;
-	padding:16px 90px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #ffffff;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 16px;
+  padding: 16px 90px;
+  text-decoration: none;
+  transition: all 0.3s;
 }
+
 .myButton:hover {
-	background-color:#1d00ad;
+  transform: scale(1.1);
+  filter: hue-rotate(-76deg);
 }
+
 .myButton:active {
-	position:relative;
-	top:1px;
+  position: relative;
+  top: 1px;
 }
-.btnSocial{
-  border-radius:28px;
-  color:#ffffff;
-	font-family:Arial;
-	font-size:16px;
-  text-decoration:none;
-  padding:16px 20px;
+
+.myButton:focus {
+  outline: none;
 }
-.inputStyle{
+
+.btnSocial {
+  border-radius: 28px;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 16px 20px;
+}
+
+.inputStyle {
   background-color: #E7E7E7;
   padding: 1.6rem .75rem;
+}
+
+.btn:hover {
+  color: white !important;
 }

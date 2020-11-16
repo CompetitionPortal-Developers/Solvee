@@ -1,0 +1,74 @@
+<%- include("partials/Header.ejs")%> <%-include("partials/Messages.ejs")%>
+<!--To publish the errors on screen for user if any were found-->
+<div class="row">
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+    <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="card register">
+            <h3 style="color: #190C3A; text-align: center;"><i class="fab fa-studiovinari"></i> Sign Up</h3>
+            <form action="/users/register" method="POST" autocomplete="off">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="lblStyle" for="firstname">First Name</label>
+                        <input name="firstname" type="text" class="inputStyle form-control" id="firstname"
+                            placeholder="First Name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="lastname">Last Name</label>
+                        <input name="lastname" type="text" class="inputStyle form-control" id="lastname"
+                            placeholder="Last Name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="username">Username</label>
+                        <input name="username" type="text" class="inputStyle form-control" id="username"
+                            placeholder="example.user123" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="email">Email</label>
+                        <input name="email" type="email" class="inputStyle form-control" id="email"
+                            placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="password">Password</label>
+                        <input name="password" type="password" class="inputStyle form-control" id="password"
+                            placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="myButton">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <label style="color: gray;" for="text">or create an account with</label>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a style=" color: black;" class=" btn-google btn btn-block" href="/auth/google"
+                                role="button">
+                                <i class="fab fa-google"></i>oogle
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a style=" color: black;" class=" btn-facebook btn btn-block" href="/auth/facebook"
+                                role="button">
+                                <i class="fab fa-facebook"></i>acebook
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <label for="text">Already have an account? <a href="/users/login">Login now</a></label>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+</div>
+<%-include("partials/Footer.ejs")%>
