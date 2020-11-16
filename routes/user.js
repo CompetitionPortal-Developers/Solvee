@@ -1,7 +1,8 @@
 const router = require("express").Router();
 
-router.get('/', (req, res) => {
-    res.send("Heyy");
+router.get('/login', (req, res) => {
+    const errors=[];
+    res.render("login",{errors});
 })
 
 module.exports = router;

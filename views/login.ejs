@@ -1,0 +1,56 @@
+<%- include("partials/Header.ejs")%> <%-include("partials/Messages.ejs")%>
+<!--To publish the errors on screen for user if any were found-->
+<div class="row">
+<div class="col-lg-4 col-md-3 col-sm-2"></div>
+<div class="col-lg-4 col-md-6 col-sm-8">
+<div class="card login" >
+    <h3 style="color: #190C3A; text-align: center;"><i class="fab fa-studiovinari"></i> Login Now</h3>
+        <form action="/users/login" method="POST">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="lblStyle" for="email"><i class="fas fa-envelope"></i> Email</h6>
+                          <input name="email" type="text" class="inputStyle form-control" id="username" placeholder="you@example.com" required>
+                      </div>
+              
+                      <div class="mb-3">
+                        <h6 class="lblStyle" for="password"><i class="fas fa-user-lock"></i> Password</h6>
+                        <input type="email" class="inputStyle form-control" id="email" placeholder="*******" required>
+                      </div>
+                </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="myButton">LOGIN</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <label style="color: gray;" for="text">Or login with</label>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-sm-6">
+                <a style=" color: black;" class=" btn-google btn btn-block" href="/auth/google" role="button">
+                  <i class="fab fa-google"></i>    Google
+                </a>
+              </div>
+              <div class="col-sm-6">
+                <a style=" color: black;" class=" btn-facebook btn btn-block" href="/auth/facebook" role="button">
+                  <i class="fab fa-facebook"></i>    Facebook
+                </a>
+              </div>
+            </div>
+          </div>
+      </div>
+      
+      <br>
+      <label for="text">Not a member?<a href="/users/register">Sign up now</a></label>
+            
+         
+              
+            
+</div>
+</div>
+<div class="col-lg-4 col-md-3 col-sm-2"></div>
+</div>
+<%-include("partials/Footer.ejs")%>

@@ -6,7 +6,7 @@ body{
 
 /*Footer Prop*/
 footer{
-    background-color:silver;
+    background-color:#F5F5F5;
     padding: 0.5% 2%;
     text-align: center;
 }
@@ -63,4 +63,51 @@ img{
 
 .card-text {
   text-align: justify;
+}
+
+/*Login Page*/
+.login {
+  background-color: #fff; 
+  margin-top: 10%;
+  margin-bottom: 10%;
+  padding: 10% 2%;
+  text-align: center;
+}
+.lblStyle{
+  padding-left: 1%;
+  padding-top: 2%;
+  text-align: left;
+}
+.myButton {
+	background-image:linear-gradient(to right,red,blue);
+	border-radius:28px;
+	border:1px solid #150999;
+	display:inline-block;
+  cursor:pointer;
+  text-align: center;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:16px;
+	padding:16px 90px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+	background-color:#1d00ad;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+.btnSocial{
+  border-radius:28px;
+  color:#ffffff;
+	font-family:Arial;
+	font-size:16px;
+  text-decoration:none;
+  padding:16px 20px;
+}
+.inputStyle{
+  background-color: #E7E7E7;
+  padding: 1.6rem .75rem;
 }
