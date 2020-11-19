@@ -2,6 +2,7 @@ body {
   background-image: url(../images/background.jpg);
   background-size: cover;
   background-repeat: no-repeat;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* width */
@@ -63,7 +64,7 @@ img {
 .header {
   font: 100em;
 }
-
+/*Navbar classes*/
 .navbar {
   position: sticky;
   top: 0;
@@ -73,6 +74,15 @@ img {
 .nav-item {
   margin: 0 0.4rem;
 }
+.btn-outline-Login {
+  color: #E51552;
+  background-color: white;
+  border-color: #E51552;
+}
+.btn-outline-Login:hover {
+  color: white;
+  background-color: #E51552;
+}
 
 /*Center div*/
 .center {
@@ -81,7 +91,7 @@ img {
   height: 70%;
   border-radius: 10px;
   background-color: white;
-  padding: 10% 12% 5% 10%;
+  padding: 6% 12% 5% 10%;
 }
 
 .container {
@@ -174,4 +184,28 @@ img {
 
 .btn:hover {
   color: white !important;
+}
+
+/*Competition & Exams Page*/
+.competitionExamCard{
+  border: 1px solid rgba(207, 203, 203, 0.225);
+  border-radius: 10px;
+  margin: 1% 0;
+}
+.competitionExamCard:hover{
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.125);
+  box-shadow: 0 .155rem .35rem rgba(0,0,0,.075);
+}
+.btn-outline-Custom {
+  color: #150999;
+  background-color: white;
+  border-color: #150999;
+}
+.btn-outline-Custom:hover {
+  color: white;
+  background-color: #150999;
+}
+.searchBar{
+  
 }

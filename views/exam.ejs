@@ -1,0 +1,52 @@
+<%- include("partials/LoggedInHeader.ejs")%> <%-include("partials/Messages.ejs")%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <div class="card center">
+        <form action="/exams/search" method="post">
+            <div class="mb-3">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="searchedExam" id="searchedExam" placeholder="Search By Exam Code...." >
+                  <div class="input-group-prepend">
+                      <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                </div>
+              </div>
+        </form>
+        <div class="card-body competitionExamCard">
+            <h2 class="card-title">OOP Lecture 4 Quiz</h2>
+            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 15Mins &nbsp;</span>
+            <span  class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 9/10/2020 18:00</span>
+            <hr>
+            <label style="margin-bottom: 0;" for="text">Description : </label>
+            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            </small>
+            <br><br>
+            <a href="#" class="btn btn-outline-Custom">Solve Now</a>
+        </div>
+        <div class="card-body competitionExamCard">
+            <h2 class="card-title">Electronics Exam</h2>
+            <span class="text-muted"><i style="color: #28A745;" class="far fa-clock"></i> 45Mins &nbsp;</span>
+            <span  class="text-muted"><i style="color: black;" class="far fa-calendar-alt"></i> End Date: 22/2/2020 9:00</span>
+            <hr>
+            <label style="margin-bottom: 0;" for="text">Description : </label>
+            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            </small>
+            <br><br>
+            <a href="#" class="btn btn-outline-success">Solve Now</a>
+        </div>
+    </div> 
+         
+</div>
+
+<%-include("partials/Footer.ejs")%>
