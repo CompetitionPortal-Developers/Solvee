@@ -1,0 +1,41 @@
+<%- include("partials/Header.ejs")%> <%-include("partials/Messages.ejs")%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <section class="profile-section1 mb-3">
+        <div class="card profile-details-card">
+            <img class="card-img-left" src="/images/male-avatar.png" alt="user image" />
+            <div class="card-body">
+                <div>
+                    <h2 class="card-title">Essam Wisam</h2>
+                    <div class="card-text">
+                        <p>Passionate Sophomore Computer Eningeering Student from Egypt.<br>Love Math😍🧮</p>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-outline-Custom">Edit Profile</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="profile-section2">
+        <div class="history-header">
+            <h1>History</h1>
+        </div>
+        <div class="d-flex flex-column">
+            <div class="card-body competitionExamCard">
+                <h3 class="card-title">C++ Algorithms Challenge</h3>
+                <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 2 Hours &nbsp;</span>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 9/10/2020
+                    18:00</span>
+            </div>
+            <div class="card-body competitionExamCard">
+                <h3 class="card-title">SQL Queries Challenge</h3>
+                <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 6 Hours &nbsp;</span>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 22/2/2020
+                    9:00</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include("partials/Footer.ejs")%>

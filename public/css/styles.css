@@ -191,6 +191,15 @@ img {
 }
 
 /*Competition & Exams Page*/
+.competitionExamHeader {
+  text-align: center;
+  padding: 0 0 3% 0;
+}
+
+.competitionExamHeader h1 {
+  font-size: 4rem;
+}
+
 .competitionExamCard{
   border: 1px solid rgba(207, 203, 203, 0.225);
   border-radius: 10px;
@@ -204,6 +213,7 @@ img {
 }
 
 .btn-outline-Custom {
+  width: fit-content;
   color: #150999;
   background-color: white;
   border-color: #150999;
@@ -212,4 +222,41 @@ img {
 .btn-outline-Custom:hover {
   color: white;
   background-color: #150999;
+}
+
+/*User Profile*/
+.profile-details-card {
+  flex-direction: row;
+}
+
+.profile-details-card img {
+  width: 25%;
+  padding: 1.25rem;
+  object-fit: cover;
+}
+
+.profile-details-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.profile-section2 {
+  margin: auto;
+  width: 100%;
+  height: 70%;
+  border-radius: 10px;
+  background-color: white;
+  padding: 3% 7%;
+}
+
+.profile-section2 .competitionExamCard {
+  background: #cecece;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.profile-section2 .competitionExamCard:hover {
+  background: #494949;
+  color: #cecece;
 }
