@@ -24,16 +24,18 @@ const q = require("./queries");
 var set = {
   name: "fname",
   value: "ghareeb"
-};
+}
+
 var loc = {
   name: "ID",
   value: "1"
-};
+}
+
 var insertQuery = q.Update(set, "company", loc);
 con.query(insertQuery, (err, rows) => {
   if (err) { throw err; }
   console.log("violation is done")
-})
+});
 
 con.query('SELECT * FROM emp', (err, rows) => {
   if (err) throw err;

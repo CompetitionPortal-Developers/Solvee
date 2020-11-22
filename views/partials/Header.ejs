@@ -57,9 +57,22 @@
         </li>
       </ul>
       <div class="row">
+        <% if (isLoggedIn) { %>
+        <a href="/competitions/">
+          <button class=" btn btn-outline-Login" style="margin-right: 20px">
+            <span>Competitions</span>
+          </button>
+        </a>
+
+        <a href="/exams/">
+          <button class=" btn btn-outline-Custom" style="margin-right: 10px">
+            <span>Exams</span>
+          </button>
+        </a>
+        <% } else { %>
         <a href="/users/login/">
           <button class=" btn btn-outline-Login" style="margin-right: 20px">
-            <span >Login</span>
+            <span>Login</span>
           </button>
         </a>
 
@@ -68,6 +81,7 @@
             <span>Register</span>
           </button>
         </a>
+        <% } %>
       </div>
     </div>
   </nav>

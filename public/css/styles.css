@@ -68,7 +68,7 @@ img {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 3;
 }
 
 .nav-item {
@@ -110,6 +110,10 @@ img {
 .pargraphHeader {
   font-size: 0.8rem;
   color: lightslategray;
+}
+
+.card-header h5 {
+  margin: 0;
 }
 
 .card-text {
@@ -192,20 +196,20 @@ img {
   border-radius: 10px;
   margin: 1% 0;
 }
+
 .competitionExamCard:hover{
   border-radius: 10px;
   border: 1px solid rgba(0,0,0,.125);
   box-shadow: 0 .155rem .35rem rgba(0,0,0,.075);
 }
+
 .btn-outline-Custom {
   color: #150999;
   background-color: white;
   border-color: #150999;
 }
+
 .btn-outline-Custom:hover {
   color: white;
   background-color: #150999;
-}
-.searchBar{
-  
 }
