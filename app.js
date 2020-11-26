@@ -8,7 +8,7 @@ const app = express();
 require("dotenv").config();
 
 // Connect to DB
-const db = require('./db');
+const db = require('./config/database');
 // Comment the below line if didn't install MySQL yet
 db.connectToDB();
 

@@ -2,13 +2,14 @@
   "name": "mysql-test",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "npx nodemon app.js",
+    "start": "node app.js",
+    "dev-start": "npx nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Abdullah Adel, Abeer Hussain, Essam Wisam, Hazim Kasim",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
