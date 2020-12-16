@@ -10,7 +10,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
-                        placeholder="Search By Competition Code....">
+                        placeholder="Search By Competition ID....">
                     <div class="input-group-prepend">
                         <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
                             Search</button>
@@ -20,40 +20,31 @@
         </form>
         <br><br>
         <hr style="background-color:#150999">
+        <% competitions.forEach(competition => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title">C++ Algorithms Challenge</h2>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 2 Hours &nbsp;</span>
-            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 9/10/2020
-                18:00</span>
+            <h2 class="card-title"><%= competition.title %></h2>
+            <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
+                <%= competition.category %>
+                &nbsp;</span>
+            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Start Date:
+                <%= competition.startDate %> - End Date: <%= competition.endDate %>
+            </span>
             <hr>
-            <label style="margin-bottom: 0;" for="text">Description : </label>
-            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            </small>
-            <br><br>
-            <a href="#" class="btn btn-outline-Custom">Participate Now</a>
+            <p style="margin-bottom: 10px;">Description :
+                <small class="card-text text-muted">"<%= competition.descp %>"</small>
+            </p>
+            <span class="text-muted">
+                <% if (!competition.rating) { %>
+                No Rating
+                <% } else { for(let i = 0; i < competition.rating; i++) { %>
+                ⭐
+                <% }} %>
+            </span>
+            <br>
+            <a href="/competitions/<%= competition.c_id %>" style="margin-top: 10px;"
+                class="btn btn-outline-Custom">Participate Now</a>
         </div>
-        <div class="card-body competitionExamCard">
-            <h2 class="card-title">SQL Queries Challenge</h2>
-            <span class="text-muted"><i style="color: #28A745;" class="far fa-clock"></i> 6 Hours &nbsp;</span>
-            <span class="text-muted"><i style="color: black;" class="far fa-calendar-alt"></i> End Date: 22/2/2020
-                9:00</span>
-            <hr>
-            <label style="margin-bottom: 0;" for="text">Description : </label>
-            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            </small>
-            <br><br>
-            <a href="#" class="btn btn-outline-success">Participate Now</a>
-        </div>
+        <% }) %>
     </div>
 
 </div>

@@ -10,7 +10,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <input type="search" class="form-control" name="searchedExam" id="searchedExam"
-                        placeholder="Search By Exam Code....">
+                        placeholder="Search By Exam ID....">
                     <div class="input-group-prepend">
                         <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
                             Search</button>
@@ -18,40 +18,23 @@
                 </div>
             </div>
         </form>
+        <% exams.forEach(exam => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title">OOP Lecture 4 Quiz</h2>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 15 Mins &nbsp;</span>
-            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 9/10/2020
-                18:00</span>
+            <h2 class="card-title"><%= exam.title %></h2>
+            <span class="text-muted"><i style="color:#28A745" class="fas fa-book"></i> <%= exam.e_subject %>
+                &nbsp;</span>
+            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> <%= exam.duration %> Mins
+                &nbsp;</span>
+            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Start Date:
+                <%= exam.startDate %> - End Date: <%= exam.endDate %></span>
             <hr>
-            <label style="margin-bottom: 0;" for="text">Description : </label>
-            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            </small>
-            <br><br>
-            <a href="#" class="btn btn-outline-Custom">Solve Now</a>
+            <p style="margin-bottom: 0;" for="text">Description :
+                <small class="card-text text-muted">"<%= exam.descp %>"
+                </small>
+            </p><br>
+            <a href="/exams/<%= exam.e_id %>" class="btn btn-outline-Custom">Solve Now</a>
         </div>
-        <div class="card-body competitionExamCard">
-            <h2 class="card-title">Electronics Exam</h2>
-            <span class="text-muted"><i style="color: #28A745;" class="far fa-clock"></i> 45 Mins &nbsp;</span>
-            <span class="text-muted"><i style="color: black;" class="far fa-calendar-alt"></i> End Date: 22/2/2020
-                9:00</span>
-            <hr>
-            <label style="margin-bottom: 0;" for="text">Description : </label>
-            <small class="card-text text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            </small>
-            <br><br>
-            <a href="#" class="btn btn-outline-success">Solve Now</a>
-        </div>
+        <% }) %>
     </div>
 
 </div>
