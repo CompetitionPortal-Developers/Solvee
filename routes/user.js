@@ -80,5 +80,9 @@ router.post("/register",(req,res)=>{
         })
     }
 })
+router.get('/:id', (req, res) => {
+    const errors = [];
+    res.render("user-profile", { errors });
+});
 
 module.exports = router;

@@ -12,7 +12,7 @@ module.exports = {
     connection: connection,
     connectToDB: () => {
         connection.connect(err => {
-            if (err) return console.error('Error connecting to DB', err);
+            if (err) return console.error('Error connecting to DB\n', err);
             console.log('***DB Connected***');
         });
     },
