@@ -7,9 +7,11 @@
             <img class="card-img-left" src="/images/male-avatar.png" alt="user image" />
             <div class="card-body">
                 <div>
-                    <h2 class="card-title">Essam Wisam</h2>
+                    <h2 class="card-title"><%=rows[0].firstName%> <%=rows[0].lastName%></h2>
                     <div class="card-text">
-                        <p>Passionate Sophomore Computer Eningeering Student from Egypt.<br>Love Math😍🧮</p>
+                        <p><%=rows[0].bio%></p>
+                        <p>Education: <%=rows[0].education%></p>
+                        <p>Job: <%=rows[0].education%></p>
                     </div>
                 </div>
                 <a href="#" class="btn btn-outline-Custom">Edit Profile</a>

@@ -26,48 +26,45 @@
   <!--Awesome Font-->
   <script src="https://kit.fontawesome.com/47629bb4fb.js" crossorigin="anonymous"></script>
   <!--Css stylesheet-->
-  <link type="text/css" href="/css/bootstrap-social.css" rel="stylesheet" />
   <link type="text/css" href="/css/styles.css" rel="stylesheet" />
+  <link type="text/css" href="/css/bootstrap-social.css" rel="stylesheet" />
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a href="/">
-      <span class="navbar-brand">
-        <i class="fab fa-studiovinari"></i> Competition Portal
-      </span>
-    </a>
+    <span class="navbar-brand" href="/">
+      <i class="fab fa-studiovinari"></i> Competition Portal</span>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
       aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="/">
+        <li class="nav-item active">
+          <form action="/" method="get">
             <button class="btn btn-dark" style="color: lightgray">
               Home
             </button>
-          </a>
+          </form>
         </li>
         <li class="nav-item">
-          <a href="/contact">
+          <form action="/contact" method="get">
             <button class="btn btn-dark" style="color: lightgray">
               Contact Us
             </button>
-          </a>
+          </form>
         </li>
       </ul>
       <div class="row">
-        <a href="/users/login/">
+        <form action="/competitions" method="get">
           <button class=" btn btn-outline-Login" style="margin-right: 20px">
-            <span>Login</span>
+            <span >Competitions</span>
           </button>
-        </a>
+        </form>
 
-        <a href="/users/register/">
+        <form action="/exams" method="get">
           <button class=" btn btn-outline-Custom" style="margin-right: 10px">
-            <span>Register</span>
+            <span>Exams</span>
           </button>
-        </a>]
+        </form>
       </div>
     </div>
   </nav>
