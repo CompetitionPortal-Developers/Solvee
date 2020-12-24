@@ -16,7 +16,7 @@ module.exports = {
             console.log('***DB Connected***');
         });
     },
-    query: (queryString) => {
+    queryDB: (queryString) => {
         connection.query(queryString, (err, rows) => {
             if (err) return console.error(err);
             return rows;

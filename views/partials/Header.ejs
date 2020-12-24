@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Competition Portal</title>
+  <title><%= title %></title>
   <!--Google fonts-->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet" />
@@ -25,7 +25,7 @@
   </script>
   <!--Awesome Font-->
   <script src="https://kit.fontawesome.com/47629bb4fb.js" crossorigin="anonymous"></script>
-  <!--Css stylesheet-->
+  <!--CSS stylesheet-->
   <link type="text/css" href="/css/bootstrap-social.css" rel="stylesheet" />
   <link type="text/css" href="/css/styles.css" rel="stylesheet" />
   <!--App icon-->
@@ -61,17 +61,29 @@
         </li>
       </ul>
       <div class="row">
+        <% if (user) { %>
+        <a href="/competitions/">
+          <button class=" btn btn-outline-Login" style="margin-right: 20px">
+            <span>Competitions</span>
+          </button>
+        </a>
+        <a href="/exams/">
+          <button class=" btn btn-outline-Custom" style="margin-right: 10px">
+            <span>Exams</span>
+          </button>
+        </a>
+        <% } else { %>
         <a href="/users/login/">
           <button class=" btn btn-outline-Login" style="margin-right: 20px">
             <span>Login</span>
           </button>
         </a>
-
         <a href="/users/register/">
           <button class=" btn btn-outline-Custom" style="margin-right: 10px">
             <span>Register</span>
           </button>
-        </a>]
+        </a>
+        <% } %>
       </div>
     </div>
   </nav>
