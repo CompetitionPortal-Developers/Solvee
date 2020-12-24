@@ -43,10 +43,10 @@ router.get('/register', (req, res) => {
 
 router.post("/register", (req, res) => {
     let errors = [];
-    let { firstname, lastname, username, email, password } = req.body;
+    let { firstname, lastname, username, email, password, password2 } = req.body;
 
     //Check required fields
-    if (!username || !email || !password || !lastname || !firstname) {
+    if (!username || !email || !password || !password2 || !lastname || !firstname) {
         errors.push({ msg: "Please Fill In All Fields" });
     }
     // //Check password match
@@ -65,7 +65,6 @@ router.post("/register", (req, res) => {
             title: "Register",
             errors,
             email,
-            password,
             username,
             firstname,
             lastname
