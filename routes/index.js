@@ -2,7 +2,10 @@ const router = require("express").Router();
 
 router.get('/', (req, res) => {
     const errors = [];
-    res.render('home', { errors });
+    res.render('home', {
+        title: "Competition Portal",
+        errors
+    });
 })
 
 router.get('/competitions', (req, res) => {
@@ -37,7 +40,11 @@ router.get('/competitions', (req, res) => {
             endDate: "22/2/2020 9:00"
         }
     ]
-    res.render('competition', { errors, competitions });
+    res.render('competition', {
+        title: "Competitions",
+        errors,
+        competitions
+    });
 })
 
 router.get('/exams', (req, res) => {
@@ -72,7 +79,11 @@ router.get('/exams', (req, res) => {
             endDate: "22/2/2020 9:00"
         }
     ]
-    res.render('exam', { errors, exams });
+    res.render('exam', {
+        title: "Exams",
+        errors,
+        exams
+    });
 })
 
 module.exports = router;
