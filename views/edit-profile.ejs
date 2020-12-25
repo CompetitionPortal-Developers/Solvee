@@ -1,0 +1,112 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+  <form action="/users/userProfile/edit" method="post">
+    <section class="profile-section2 ">
+      <div class="row ">
+        <div class="col-sm-6 ">
+          <label for="firstName" class="editProfileLabels form-label">First name</label>
+          <input type="text" class="form-control" name="firstName" value="<%=user.firstName%>">
+        </div>
+
+        <div class="col-sm-6">
+          <label for="lastName" class="editProfileLabels form-label">Last name</label>
+          <input type="text" class="form-control" name="lastName" id="lastName" value="<%=user.lastName%>">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="username" class="editProfileLabels form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text">@</span>
+            <input type="text" class="form-control" name="username" value="<%=user.Username%>">
+          </div>
+        </div>
+
+        <div class="col-6">
+          <label for="email" class="editProfileLabels form-label">Email</label>
+          <div class="input-group">
+            <span class="input-group-text">&#9993;</span>
+            <input type="email" class="form-control" name="email" value="<%=user.email%>">
+          </div>
+        </div>
+      </div>
+      <div class="row editProfileLabels">
+        <div class="col-sm-6">
+          <label for="firstName" class="editProfileLabels form-label">New Password</label>
+          <input type="password" class="form-control" placeholder="**********" name="pass">
+        </div>
+
+        <div class="col-sm-6">
+          <label for="lastName" class="editProfileLabels form-label">Re-enter New Password</label>
+          <input type="password" class="form-control" placeholder="**********" name="confirmPass">
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label for="education" class="editProfileLabels form-label">Education</label>
+        <input type="text" class="form-control" id="eduction" value="<%=user.education%>" name="education">
+      </div>
+
+      <div class="col-12">
+        <label for="job" class="editProfileLabels form-label">Job</label>
+        <input type="text" class="form-control" id="job" value="<%=user.job%>" name="job">
+      </div>
+
+      <div class="col-12">
+        <label for="birthdate" class="editProfileLabels form-label">BirthDate</label>
+        <input type="date" class="form-control" id="birthdate" name="date" value="<%= user.BirthDate %>">
+      </div>
+
+      <div class="row genderAvatar">
+        <div class="col-sm-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Avatar</label>
+            </div>
+            <select id="selectedFont" class="custom-select" name="avatar" id="inputGroupSelect01">
+              <option value="xl">👴</option>
+              <option value="l">👨</option>
+              <option value="xl">👩</option>
+              <option value="l">👵</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect10">Gender</label>
+            </div>
+            <select id="selectedFont" class="custom-select" name="gender" id="inputGroupSelect10">
+              <% if(typeof gender !== 'undefined' && gender === 'M') { %>
+              <option selected value="M">Male</option>
+              <option value="F">Female</option>
+              <% } else if(typeof gender !== 'undefined' && gender === 'F') { %>
+              <option value="M">Male</option>
+              <option selected value="F">Female</option>
+              <% } else { %>
+              <option selected disabled>Select Gender</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <% }  %>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label for="bio" class="editProfileLabels form-label">Bio</label>
+        <textarea type="text" class="form-control" id="bio" name="bio"><%=user.bio%></textarea>
+      </div>
+
+      <div class="saveDiscard">
+        <a href="/users/<%= user.Username %>" class="buttonProfile btn btn-danger">Discard</a>
+        <button type="submit" class="buttonProfile btn btn-info" style="margin-right: 20px">Save Changes</button>
+      </div>
+    </section>
+  </form>
+</div>
+
+<%- include("partials/Footer.ejs") %>

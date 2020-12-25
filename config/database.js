@@ -9,14 +9,14 @@ const connection = mysql.createConnection({
 });
 
 module.exports = {
-    connection: connection,
+    DBconnection: connection,
     connectToDB: () => {
         connection.connect(err => {
             if (err) return console.error('Error connecting to DB\n', err);
             console.log('***DB Connected***');
         });
     },
-    queryDB: (queryString) => {
+    query: (queryString) => {
         connection.query(queryString, (err, rows) => {
             if (err) return console.error(err);
             return rows;

@@ -1,4 +1,4 @@
-<%- include("partials/Header.ejs")%> <%-include("partials/Messages.ejs")%>
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
 <!--To publish the errors on screen for user if any were found-->
 <div class="row">
     <div class="col-lg-4 col-md-3 col-sm-2"></div>
@@ -6,35 +6,79 @@
         <div class="card register">
             <h3 style="color: #190C3A; text-align: center;"><i class="fab fa-studiovinari"></i> Sign Up</h3>
             <form action="/users/register" method="POST" autocomplete="off">
+                <% if (typeof errors !== 'undefined') { %>
+                <% errors.forEach(error => { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= error.msg %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <% }); %>
+                <% } %>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="lblStyle" for="firstname">First Name</label>
-                        <input name="firstame" type="text" class="inputStyle form-control" id="firstname"
-                            placeholder="First Name" required>
+                        <input name="firstname" type="text" class="inputStyle form-control" id="firstname"
+                            placeholder="First Name"
+                            value="<%= (typeof firstname !== 'undefined') ? firstname : null %>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="lblStyle" for="lastname">Last Name</label>
                         <input name="lastname" type="text" class="inputStyle form-control" id="lastname"
-                            placeholder="Last Name" required>
+                            placeholder="Last Name" value="<%= (typeof lastname !== 'undefined') ? lastname : null %>"
+                            required>
                     </div>
 
                     <div class="mb-3">
                         <label class="lblStyle" for="username">Username</label>
                         <input name="username" type="text" class="inputStyle form-control" id="username"
-                            placeholder="example.user123" required>
+                            placeholder="example.user123"
+                            value="<%= (typeof username !== 'undefined') ? username : null %>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="lblStyle" for="email">Email</label>
                         <input name="email" type="email" class="inputStyle form-control" id="email"
-                            placeholder="you@example.com" required>
+                            placeholder="you@example.com" value="<%= (typeof email !== 'undefined') ? email : null %>"
+                            required>
                     </div>
 
                     <div class="mb-3">
                         <label class="lblStyle" for="password">Password</label>
                         <input name="password" type="password" class="inputStyle form-control" id="password"
                             placeholder="Password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="password2">Confirm Password</label>
+                        <input name="password2" type="password" class="inputStyle form-control" id="password2"
+                            placeholder="Confirm Password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="birthdate">Birth Date</label>
+                        <input class="form-control" name="birthdate" type="date" id="birthdate"
+                            value="<%= (typeof birthdate !== 'undefined') ? birthdate : null %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="lblStyle" for="gender">Gender</label>
+                        <select class="form-control" name="gender" id="gender" required aria-placeholder="Gender">
+                            <option disabled>Select Gender</option>
+                            <% if(typeof gender !== 'undefined' && gender === 'M') { %>
+                            <option selected value="M">Male</option>
+                            <option value="F">Female</option>
+                            <% } else if(typeof gender !== 'undefined' && gender === 'F') { %>
+                            <option value="M">Male</option>
+                            <option selected value="F">Female</option>
+                            <% } else { %>
+                            <option selected disabled>Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <% }  %>
+                        </select>
                     </div>
                 </div>
                 <div class="card-body">

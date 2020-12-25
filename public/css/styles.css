@@ -269,3 +269,22 @@ img {
   background: #494949;
   color: #cecece;
 }
+
+.aboutProfile{
+  padding: 1%
+}
+.nameProfile{
+  padding: 5% 2% 0;
+}
+.buttonProfile{
+  float: right;
+}
+.editProfileLabels{
+  padding:1% 0;
+}
+.saveDiscard{
+  padding: 3% 1%;
+}
+.genderAvatar{
+  padding-top: 3%;
+}
