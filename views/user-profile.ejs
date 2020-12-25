@@ -1,4 +1,4 @@
-<%- include("partials/LoggedInHeader.ejs")%> <%-include("partials/Messages.ejs")%>
+<%- include("partials/Header.ejs")%> <%-include("partials/Messages.ejs")%>
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
@@ -7,84 +7,37 @@
             <img class="card-img-left" src="/images/male-avatar.png" alt="user image" />
             <div class="card-body">
                 <div>
-                    <h1 class="card-title nameProfile"><%=profileInfo[0].firstName%> <%=profileInfo[0].lastName%></h1>
-                    <div style="padding: 0 2%;" class="card-text">
-                        <small style="color: gray;"><%=profileInfo[0].bio%></small>
+                    <h2 class="card-title"><%=rows[0].firstName%> <%=rows[0].lastName%></h2>
+                    <div class="card-text">
+                        <p><%=rows[0].bio%></p>
+                        <p>Education: <%=rows[0].education%></p>
+                        <p>Job: <%=rows[0].education%></p>
                     </div>
                 </div>
-                <div class="aboutProfile">
-                    <a href="/users/userProfile/edit" class="buttonProfile btn btn-danger">Edit Profile</a>
-                    <a href="#" class="buttonProfile btn btn-info" style="margin-right: 20px">Todo List</a>
-                </div>
+                <a href="#" class="btn btn-outline-Custom">Edit Profile</a>
             </div>
         </div>
     </section>
 
     <section class="profile-section2">
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  More About <%=profileInfo[0].firstName%>
-                </button>
-              </h2>
-              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <ul>
-                      <li class="aboutProfile"><i class="fas fa-baby"></i> Born on <%=birthDate%> </li>
-                      <li class="aboutProfile"><i class="fas fa-university"></i> Studied At <%=profileInfo[0].education%> </li>
-                      <li class="aboutProfile"><i class="fas fa-suitcase"></i> Works As <%=profileInfo[0].job%> </li>
-                      <%if(profileInfo[0].gender=="M"){%>
-                      <li class="aboutProfile"><i class="fas fa-male"></i> Male</li>
-                      <%}else{%>
-                        <%if(profileInfo[0].gender=="F"){%>
-                            <li class="aboutProfile"><i class="fas fa-female"></i> Female</li>
-                        <%}%>
-                      <%}%>
-                  </ul>
-                </div>
-              </div>
+        <div class="history-header">
+            <h1>History</h1>
+        </div>
+        <div class="d-flex flex-column">
+            <div class="card-body competitionExamCard">
+                <h3 class="card-title">C++ Algorithms Challenge</h3>
+                <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 2 Hours &nbsp;</span>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 9/10/2020
+                    18:00</span>
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <%=profileInfo[0].firstName%>'s Achievements
-                </button>
-              </h2>
-              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <ul>
-                        <%for(var i=0;i<awards.length;i++){%>
-                            <%if(awards[i].type=="Gold"){%>
-                            <li><i style="color: gold;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
-                            <%}else if(awards[i].type=="Silver"){%>
-                                <li><i style="color: silver;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
-                            <%}else{%>
-                                <li><i style="color:#AA7655 ;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
-                            <%}%>
-                        <%}%>
-                    </ul>
-                </div>
-              </div>
+            <div class="card-body competitionExamCard">
+                <h3 class="card-title">SQL Queries Challenge</h3>
+                <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> 6 Hours &nbsp;</span>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> End Date: 22/2/2020
+                    9:00</span>
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    <%=profileInfo[0].firstName%>'s History  <!--Will be Handled with the leaderboard page and db-->
-                </button>
-              </h2>
-              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <ul>
-                        <li class="aboutProfile"><i class="fas fa-history"></i> </li>
-                    </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
     </section>
 </div>
-
-
 
 <%- include("partials/Footer.ejs")%>

@@ -6,7 +6,7 @@ module.exports = function (passport) {
     passport.use(
         new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
             //Match User
-            queryDB("select * from dbproject.user where email='" + email + "'", (err, user) => {
+            QueryDB("select * from dbproject.user where email='" + email + "'", (err, user) => {
                 console.log(user);
                 if (err) { console.log(err); }
                 else {
@@ -35,22 +35,22 @@ module.exports = function (passport) {
         })
     );
 
-    passport.serializeUser((user, done) =>{
-        //console.log("serialize is started");
+    passport.serializeUser((user, done) => {
+        console.log("serialize is started");
         done(null, user.ID);
-        //console.log("serialize is done");
+        console.log("serialize is done");
     });
-      
-    passport.deserializeUser((ID, done)=> {
-        //console.log(ID);
-        //console.log("deserialize is started");
-        QueryDB.query('select * from dbproject.user where ID='+ID,(err,results)=>{
-            if(err){console.log(err);}
-            if(results[0]){
-                done(null,results[0]);
-                //console.log("deserialize is done");
+
+    passport.deserializeUser((ID, done) => {
+        console.log(ID);
+        console.log("deserialize is started");
+        QueryDB('select * from dbproject.user where ID=' + ID, (err, results) => {
+            if (err) { console.log(err); }
+            if (results[0]) {
+                done(null, results[0]);
+                console.log("deserialize is done");
             }
         });
-        //console.log("deserialize is done");
+        console.log("deserialize is done");
     });
 }

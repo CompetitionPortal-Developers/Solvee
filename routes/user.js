@@ -1,9 +1,8 @@
 var express = require('express');
 const router = express.Router();
-const {queryDB}=require("../db");
-const bcrypt=require("bcryptjs");
-const passport=require("passport");
-const { render } = require('ejs');
+const { queryDB } = require("../db");
+const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
 router.get('/user', (req, res) => {
     const errors = [];
@@ -26,12 +25,12 @@ router.get('/login', (req, res) => {
     });
 });
 
-router.post('/login',(req,res,next)=>{
-    passport.authenticate('local',{
-        successRedirect:"/users/userProfile",
-        failureRedirect:"/users/login",
-        failureFlash:true 
-    })(req,res,next);
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: "/",
+        failureRedirect: "/users/login",
+        failureFlash: true
+    })(req, res, next);
 });
 
 router.get('/register', (req, res) => {
@@ -46,9 +45,8 @@ router.post("/register", (req, res) => {
     let errors = [];
     let { firstname, lastname, username, email, password, password2 } = req.body;
 
-
     //Check required fields
-    if (!username || !email || !password || !password2 || !lastname || !firstname) {
+    if (!username || !email || !password || !lastname || !firstname) {
         errors.push({ msg: "Please Fill In All Fields" });
     }
     // //Check password match
@@ -100,11 +98,5 @@ router.get('/:id', (req, res) => {
         });
     });
 });
-
-router.get("/logout",(req,res)=>{
-    req.logout();
-    req.flash("success_msg","You are logged out");
-    res.redirect("/users/login");
-})
 
 module.exports = router;
