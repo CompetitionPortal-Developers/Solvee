@@ -52,6 +52,8 @@ app.use((req, res, next) => {
 
 //Routes Linking
 app.use('/', require("./routes"));
+app.use('/competitions', require("./routes/competition"));
+app.use('/exams', require("./routes/exam"));
 app.use('/users', require('./routes/user'));
 
 app.listen(PORT, err => {

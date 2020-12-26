@@ -2,10 +2,10 @@
   <% Object.keys(messages).forEach((type) => { %>
   <% messages[type].forEach((message) => { %>
   <div
-    class="alert <% if (type === 'error') { %>alert-danger<% } else { %>alert-<%= type %><% } %> alert-dismissible fade show"
+    class="alert <% if (type === 'error') { %>alert-danger<% } else { %>alert-<%= type %><% } %> alert-dismissible fade in show"
     role="alert">
     <%= message %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>

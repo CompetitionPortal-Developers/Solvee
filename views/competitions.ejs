@@ -10,7 +10,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
-                        placeholder="Search By Competition ID....">
+                        placeholder="Search">
                     <div class="input-group-prepend">
                         <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
                             Search</button>
@@ -26,17 +26,15 @@
             <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
                 <%= competition.category %>
                 &nbsp;</span>
-            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Start Date:
-                <%= competition.startDate %> - End Date: <%= competition.endDate %>
+            <br>
+            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Start Date: </b>
+                <%= competition.startDate %> - <b>End Date:</b> <%= competition.endDate %>
             </span>
             <hr>
-            <p style="margin-bottom: 10px;">Description :
-                <small class="card-text text-muted">"<%= competition.descp %>"</small>
-            </p>
             <span class="text-muted">
                 <% if (!competition.rating) { %>
                 No Rating
-                <% } else { for(let i = 0; i < competition.rating; i++) { %>
+                <% } else { for(let i = 0; i < Math.ceil(competition.rating); i++) { %>
                 ⭐
                 <% }} %>
             </span>

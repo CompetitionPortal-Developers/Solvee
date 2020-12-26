@@ -33,6 +33,12 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
+router.get("/logout", (req, res) => {
+    req.logout();
+    req.flash("success", "You are logged out");
+    res.redirect("/users/login");
+});
+
 router.get('/register', (req, res) => {
     const errors = [];
     res.render("register", {
@@ -60,7 +66,7 @@ router.post("/register", [
 ], (req, res) => {
     console.log(req.body);
     let errors = validationResult(req).errors;
-    let { firstname, lastname, username, email, password, password2, gender, birthdate } = req.body;
+    let { firstname, lastname, username, email, password, gender, birthdate } = req.body;
 
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "")
         errors.unshift({ msg: "Please Fill In All Fields" });
@@ -136,54 +142,61 @@ router.get('/:username/edit-profile', (req, res) => {
                 req.flash('error', "You can't access this page.");
                 return res.redirect(`/users/${req.user.Username}`);
             }
+            const date = new Date(req.user.BirthDate.toString());
+            const birthDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             res.render("edit-profile", {
-                title: "Edit Profile"
+                title: "Edit Profile",
+                birthDate
             });
         });
     }
     else {
-        req.flash("error", "Please Login First");
-        res.redirect("/login");
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
     }
 });
 
-router.post('/userProfile/edit', (req, res) => {
+router.post('/:username/edit-profile', (req, res) => {
     const errors = []; //all errors push should be turned into req flash
-
+    const { firstName, lastName, username, pass, confirmPass, education, job, birthdate, gender, bio } = req.body;
     if (req.isAuthenticated()) {
         let query;
         console.log(req.body);
-        if (req.body.firstName !== "") {
-            if (req.body.firstName.length < 50) {
-                query = "update user set firstName='" + req.body.firstName + "' where ID=" + req.user.ID + " ;";
+        if (firstName !== "") {
+            if (firstName.length < 50) {
+                query = "update user set firstName='" + firstName + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
-                        req.flash("error_msg", "Error While Updating First Name");
-                    }
-                    console.log(results);
-                })
-            } else {
-                req.flash("error_msg", "Too long String for First Name , Please Try Again");
-            }
-        }
-        if (req.body.lastName !== "") {
-            if (req.body.lastName.length < 50) {
-                query = "update user set lastName='" + req.body.lastName + "' where ID=" + req.user.ID + " ;";
-                DBconnection.query(query, (err, results) => {
-                    if (err) {
-                        console.log(err);
-                        req.flash("error_msg", "Error While Updating Last Name");
+                        errors.push("Error while updating first name");
+                        // req.flash("error_msg", "Error While Updating First Name");
                     }
                     console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Too long String for Last Name , Please Try Again");
+                errors.push("First name is too long. It must be less than 50 charactera");
+                // req.flash("error_msg", "Too long String for First Name , Please Try Again");
             }
         }
-        if (req.body.username !== "") {
-            if (req.body.username.length < 50) {
-                query = "update user set Username='" + req.body.username + "' where ID=" + req.user.ID + " ;";
+        if (lastName !== "") {
+            if (lastName.length < 50) {
+                query = "update user set lastName='" + lastName + "' where ID=" + req.user.ID + " ;";
+                DBconnection.query(query, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        errors.push("Error While Updating Last Name");
+                        // req.flash("error_msg", "Error While Updating Last Name");
+                    }
+                    console.log(results);
+                });
+            } else {
+                errors.push("Last name is too long. It must be less than 50 charactera");
+                // req.flash("error_msg", "Too long String for Last Name , Please Try Again");
+            }
+        }
+        if (username !== "") {
+            if (username.length < 50) {
+                query = "update user set Username='" + username + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
@@ -228,7 +241,7 @@ router.post('/userProfile/edit', (req, res) => {
                 }
             }
         } else {
-            req.flash("success_msg", "Note Your Password Wasn't Changed");
+            req.flash("success", "Note Your Password Wasn't Changed");
         }
         if (req.body.education !== "") {
             if (req.body.username.length < 50) {
@@ -292,19 +305,13 @@ router.post('/userProfile/edit', (req, res) => {
                 console.log(results);
             });
         }
-        req.flash("success_msg", "Your Profile Is Updated");
-        res.redirect("/users/userProfile/edit");
+        req.flash("success", "Your Profile Is Updated");
+        res.redirect(`/users/${req.params.username}`);
     }
     else {
         req.flash("error", "Please Login First");
-        res.redirect("/login");
+        res.redirect("/users/login");
     }
 });
-
-router.get("/logout", (req, res) => {
-    req.logout();
-    req.flash("success_msg", "You are logged out");
-    res.redirect("/users/login");
-})
 
 module.exports = router;

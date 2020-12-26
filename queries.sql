@@ -72,3 +72,39 @@ create table award (
     primary key(userID,competitionID),
     a_type varchar(50) not null
 );
+
+INSERT INTO USER (
+	Username,
+    email,
+    pass,
+    gender,
+    firstName,
+    lastName,
+    BirthDate
+) VALUES (
+    'abdullahadel',
+    'test1@email.com',
+    '$2a$10$quE6k.oeFChLdYr6VvgK8.25K/Ke2gWVV92ZyW/7YJ4ggrwyw7s.i',
+    'M',
+    'Abdullah',
+    'Adel',
+    '2001-4-1'
+);
+
+INSERT INTO USER (
+	Username,
+    email,
+    pass,
+    gender,
+    firstName,
+    lastName,
+    BirthDate
+) VALUES (
+    'abeerhussain',
+    'test2@email.com',
+    '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
+    'F',
+    'Abeer',
+    'Hussain',
+    '2000-4-10'
+);

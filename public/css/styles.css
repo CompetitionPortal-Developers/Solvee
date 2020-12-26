@@ -25,14 +25,13 @@ body {
   background: #555;
 }
 
-/* a {
-  color: #fff;
+a {
+  text-decoration: none;
 }
 
 a:hover {
-  color: #fff;
   text-decoration: none;
-} */
+}
 
 /*Footer Prop*/
 footer {
@@ -241,6 +240,7 @@ img {
 .profile-details-card img {
   width: 25%;
   padding: 1.25rem;
+  border-radius: 50%;
   object-fit: cover;
 }
 
@@ -273,18 +273,23 @@ img {
 .aboutProfile{
   padding: 1%
 }
+
 .nameProfile{
   padding: 5% 2% 0;
 }
+
 .buttonProfile{
   float: right;
 }
+
 .editProfileLabels{
   padding:1% 0;
 }
+
 .saveDiscard{
   padding: 3% 1%;
 }
+
 .genderAvatar{
   padding-top: 3%;
 }

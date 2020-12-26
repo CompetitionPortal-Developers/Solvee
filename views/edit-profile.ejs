@@ -2,7 +2,7 @@
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
-  <form action="/users/userProfile/edit" method="post">
+  <form action="/users/<%= user.Username %>/edit-profile" method="post">
     <section class="profile-section2 ">
       <div class="row ">
         <div class="col-sm-6 ">
@@ -56,7 +56,7 @@
 
       <div class="col-12">
         <label for="birthdate" class="editProfileLabels form-label">BirthDate</label>
-        <input type="date" class="form-control" id="birthdate" name="date" value="<%= user.BirthDate %>">
+        <input type="date" class="form-control" id="birthdate" name="birthdate" value="<%= birthDate %>">
       </div>
 
       <div class="row genderAvatar">
@@ -80,17 +80,17 @@
               <label class="input-group-text" for="inputGroupSelect10">Gender</label>
             </div>
             <select id="selectedFont" class="custom-select" name="gender" id="inputGroupSelect10">
-              <% if(typeof gender !== 'undefined' && gender === 'M') { %>
+              <% if (user.gender === 'M') { %>
               <option selected value="M">Male</option>
               <option value="F">Female</option>
-              <% } else if(typeof gender !== 'undefined' && gender === 'F') { %>
+              <% } else if (user.gender === 'F') { %>
               <option value="M">Male</option>
               <option selected value="F">Female</option>
               <% } else { %>
               <option selected disabled>Select Gender</option>
               <option value="M">Male</option>
               <option value="F">Female</option>
-              <% }  %>
+              <% } %>
             </select>
           </div>
         </div>

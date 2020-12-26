@@ -1,10 +1,11 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<%- include("partials/Header.ejs")%>
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
+  <%-messages("partials/Messages.ejs", locals)%>
   <section class="profile-section1 mb-3">
     <div class="card profile-details-card">
-      <img class="card-img-left" src="/images/male-avatar.png" alt="user image" />
+      <img class="card-img-left" src="/images/<%= profileInfo[0].gender %>.png" alt="user image" />
       <div class="card-body">
         <div>
           <h1 class="card-title nameProfile"><%=profileInfo[0].firstName%> <%=profileInfo[0].lastName%></h1>
@@ -44,7 +45,7 @@
               <%if(profileInfo[0].gender=="F"){%>
               <li class="aboutProfile"><i class="fas fa-female"></i> Female</li>
               <%}%>
-                      <%}%>
+              <%}%>
             </ul>
           </div>
         </div>
@@ -60,18 +61,18 @@
           data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ul>
-              <%for(var i=0;i<awards.length;i++){%>
-              <%if(awards[i].type=="Gold"){%>
+              <% for(var i = 0; i < awards.length; i++) { %>
+              <%if(awards[i].type === "Gold"){%>
               <li><i style="color: gold;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won
                 <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
-              <%}else if(awards[i].type=="Silver"){%>
+              <%}else if(awards[i].type==="Silver"){%>
               <li><i style="color: silver;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won
                 <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
               <%}else{%>
               <li><i style="color:#AA7655 ;" class="fas fa-medal"></i> <%=profileInfo[0].firstName%> Won
                 <%=awards[i].type%> Medal In <%=awards[i].TITLE%> Competition</li>
               <%}%>
-                        <%}%>
+              <%}%>
             </ul>
           </div>
         </div>
@@ -96,7 +97,5 @@
     </div>
   </section>
 </div>
-
-
 
 <%- include("partials/Footer.ejs")%>
