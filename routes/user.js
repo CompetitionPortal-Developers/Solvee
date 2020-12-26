@@ -64,6 +64,7 @@ router.post("/register", [
 
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "")
         errors.unshift({ msg: "Please Fill In All Fields" });
+    
 
     if (errors.length)
         return res.render("register", {
@@ -76,19 +77,46 @@ router.post("/register", [
             gender,
             birthdate
         });
+    
 
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return console.error(err);
         bcrypt.hash(password, salt, (err, hash) => {
             if (err) return console.error(err);
             password = hash;
-            const query = 'Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
-                + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
-                + lastname + '","' + birthdate + '");'
-            DBconnection.query(query, (err, results, fields) => {
-                if (err) return console.error(err);
-                req.flash("success", "You registered successfully. Please Log In");
-                res.redirect("/users/login");
+            let query="";
+            //checking if username already exists
+            query="select * from dbproject.user where email='"+email+"' ;";
+            DBconnection.query(query,(err,rows)=>{
+                if(err){console.log(err);}
+                else{
+                    if(rows.length>0){
+                        req.flash("error", "The E-mail You Entered Is Already Taken , Please Try Again");
+                        res.redirect("/users/register");
+                    }else{
+                        //checking if username already exists
+                        query="select * from dbproject.user where username='"+username+"' ;";
+                        DBconnection.query(query,(err,rows)=>{
+                            if(err){console.log(err);}
+                            else{
+                                if(rows.length>0){
+                                    req.flash("error", "The Username You Entered Is Already Taken , Please Try Again");
+                                    res.redirect("/users/register");
+                                }else{
+                                    query='Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
+                                    + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
+                                    + lastname + '","' + birthdate + '");';
+                                    //Finally Inserting user
+                                    DBconnection.query(query, (err, results, fields) => {
+                                        if (err) return console.error(err);
+                                        req.flash("success", "You registered successfully. Please Log In");
+                                        res.redirect("/users/login");
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
             });
         });
     });
