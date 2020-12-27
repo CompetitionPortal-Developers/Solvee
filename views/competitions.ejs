@@ -20,29 +20,34 @@
         </form>
         <br><br>
         <hr style="background-color:#150999">
+        <% if(!competitions.length) { %>
+        <div>
+            <h1 class="card-title text-center text-muted">There are no competitions</h1>
+        </div>
+        <% } else { %>
         <% competitions.forEach(competition => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title"><%= competition.title %></h2>
+            <h2 class="card-title"><%= competition.TITLE %></h2>
             <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
-                <%= competition.category %>
+                <%= competition.CATEGORY %>
                 &nbsp;</span>
             <br>
             <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Start Date: </b>
-                <%= competition.startDate %> - <b>End Date:</b> <%= competition.endDate %>
+                <%= competition.STARTDATE %> - <b>End Date:</b> <%= competition.ENDDATE %>
             </span>
             <hr>
             <span class="text-muted">
-                <% if (!competition.rating) { %>
+                <% if (!competition.RATING) { %>
                 No Rating
-                <% } else { for(let i = 0; i < Math.ceil(competition.rating); i++) { %>
+                <% } else { for(let i = 0; i < Math.ceil(competition.RATING); i++) { %>
                 ⭐
                 <% }} %>
             </span>
             <br>
-            <a href="/competitions/<%= competition.c_id %>" style="margin-top: 10px;"
+            <a href="/competitions/details/<%= competition.C_ID %>" style="margin-top: 10px;"
                 class="btn btn-outline-Custom">Participate Now</a>
         </div>
-        <% }) %>
+        <% })} %>
     </div>
 
 </div>

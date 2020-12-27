@@ -1,0 +1,42 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1><%= competition.TITLE %></h1>
+        </div>
+
+        <ul class="competiton-breadcrumb">
+            <li><a href="/competitions/details/<%= competition.C_ID %>" class="active">Details</a></li>
+            <li><a href="/competitions/reviews/<%= competition.C_ID %>">Reviews</a></li>
+        </ul>
+
+        <hr style="margin: 0; background-color:#150999">
+        <div class="card-body competitionExamCard">
+            <p class="text-muted mb-0"><b>Host:</b> Abdullah Adel</p>
+            <p class="text-muted"><b>Description:</b><br><%= competition.DESCP %></p>
+            <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
+                <%= competition.CATEGORY %>
+                &nbsp;</span>
+            <br>
+            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Start Date: </b>
+                <%= competition.STARTDATE %> - <b>End Date:</b> <%= competition.ENDDATE %>
+            </span>
+            <hr>
+            <span class="text-muted">
+                <% if (!competition.RATING) { %>
+                No Rating
+                <% } else { for(let i = 0; i < Math.ceil(competition.RATING); i++) { %>
+                ⭐
+                <% }} %>
+            </span>
+            <br>
+            <a href="/competitions/questions/<%= competition.C_ID %>" style="margin-top: 10px;"
+                class="btn btn-outline-Custom">Start</a>
+        </div>
+    </div>
+
+</div>
+
+<%-include("partials/Footer.ejs")%>

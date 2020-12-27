@@ -36,7 +36,7 @@ CREATE TABLE COMPETITION (
 C_ID INT PRIMARY KEY auto_increment, 
 TITLE VARCHAR(50) NOT NULL,
 CATEGORY VARCHAR(50) NOT NULL, 
-DESCP VARCHAR(50),
+DESCP VARCHAR(500),
 RATING FLOAT DEFAULT 0, 
 STARTDATE DATETIME NOT NULL,
 ENDDATE DATETIME NOT NULL
@@ -47,7 +47,7 @@ E_ID INT PRIMARY KEY auto_increment,
 CODE VARCHAR(50) UNIQUE NOT NULL, 
 TITLE VARCHAR(50) NOT NULL,
 CATEGORY VARCHAR(50) NOT NULL, 
-DESCP VARCHAR(50),
+DESCP VARCHAR(500),
 DURATION INT NOT NULL,
 STARTDATE DATETIME NOT NULL,
 ENDDATE DATETIME NOT NULL
@@ -107,4 +107,46 @@ INSERT INTO USER (
     'Abeer',
     'Hussain',
     '2000-4-10'
+);
+
+INSERT INTO COMPETITION (
+    TITLE,
+    CATEGORY, 
+    DESCP,
+    RATING, 
+    STARTDATE,
+    ENDDATE
+) VALUES (
+    'C++ Algorithms Challenge',
+    'Computer Science', 
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    '3.4', 
+    '2020-10-7 18:00:00',
+    '2020-10-9 18:00:00'
+);
+
+INSERT INTO COMPETITION (
+    TITLE,
+    CATEGORY, 
+    DESCP,
+    RATING, 
+    STARTDATE,
+    ENDDATE
+) VALUES (
+    'SQL Queries Challenge',
+    'Computer Science', 
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    '0', 
+    '2020-2-20 09:00:00',
+    '2020-2-22 09:00:00'
 );

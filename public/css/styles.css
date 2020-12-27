@@ -120,6 +120,18 @@ img {
   color: lightslategray;
 }
 
+.bg-info {
+  background-color: #47a1b3 !important;
+}
+
+.home-cards {
+  transition: all 0.3s;
+}
+
+.home-cards:hover {
+  background-color: #0b6d80 !important;
+}
+
 .card-header h5 {
   margin: 0;
 }
@@ -218,6 +230,40 @@ img {
   border-radius: 10px;
   border: 1px solid rgba(0,0,0,.125);
   box-shadow: 0 .155rem .35rem rgba(0,0,0,.075);
+}
+
+ul.competiton-breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  width: fit-content;
+  border-radius: 3px;
+  background-color:#e0e0e0;
+}
+
+ul.competiton-breadcrumb li {
+  display: inline;
+  font-size: 18px;
+}
+
+ul.competiton-breadcrumb li+li:before {
+  padding: 8px;
+  color: #8d8b8b;
+  content: "|\00a0";
+}
+
+ul.competiton-breadcrumb li a {
+  color: #150999;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+ul.competiton-breadcrumb li a.active {
+  color: #E51552;
+}
+
+ul.competiton-breadcrumb li a:hover {
+  color: #E51552;
+  text-decoration: none;
 }
 
 .btn-outline-Custom {

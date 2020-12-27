@@ -1,41 +1,39 @@
 const router = require("express").Router();
+const { DBconnection } = require("../config/database");
+const dateFormat = require("../config/date-formatting");
 
 router.get('/', (req, res) => {
     const errors = [];
-    const competitions = [
-        {
-            c_id: 1,
-            title: "C++ Algorithms Challenge",
-            category: "Computer Science",
-            descp: `Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
-            rating: 3.4,
-            startDate: "7/10/2020 18:00",
-            endDate: "9/10/2020 18:00"
-        },
-        {
-            c_id: 2,
-            title: "SQL Queries Challenge",
-            category: "Computer Science",
-            descp: `Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
-            rating: 0,
-            startDate: "20/2/2020 9:00",
-            endDate: "22/2/2020 9:00"
-        }
-    ]
-    res.render('competitions', {
-        title: "Competitions",
-        errors,
-        competitions
+
+    DBconnection.query('SELECT * FROM dbproject.competition;', (err, rows) => {
+        if (err) return console.error(err);
+        const competitions = rows;
+        if (competitions.length)
+            competitions.forEach(competition => {
+                competition.STARTDATE = dateFormat(competition.STARTDATE);
+                competition.ENDDATE = dateFormat(competition.ENDDATE);
+            });
+        res.render('competitions', {
+            title: "Competitions",
+            competitions,
+            errors
+        });
+    });
+});
+
+router.get('/details/:c_id', (req, res) => {
+    const errors = [];
+    DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
+        if (err) return console.error(err);
+        if (!rows.length) return res.sendStatus(404);
+        const competition = rows[0];
+        competition.STARTDATE = dateFormat(competition.STARTDATE);
+        competition.ENDDATE = dateFormat(competition.ENDDATE);
+        res.render("competition-details", {
+            title: competition.TITLE,
+            competition,
+            errors
+        });
     });
 });
 

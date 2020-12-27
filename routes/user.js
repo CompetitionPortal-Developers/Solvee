@@ -70,7 +70,7 @@ router.post("/register", [
 
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "")
         errors.unshift({ msg: "Please Fill In All Fields" });
-    
+
 
     if (errors.length)
         return res.render("register", {
@@ -83,35 +83,53 @@ router.post("/register", [
             gender,
             birthdate
         });
-    
+
 
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return console.error(err);
         bcrypt.hash(password, salt, (err, hash) => {
             if (err) return console.error(err);
             password = hash;
-            let query="";
+            let query = "";
             //checking if username already exists
-            query="select * from dbproject.user where email='"+email+"' ;";
-            DBconnection.query(query,(err,rows)=>{
-                if(err){console.log(err);}
-                else{
-                    if(rows.length>0){
+            query = "select * from dbproject.user where email='" + email + "' ;";
+            DBconnection.query(query, (err, rows) => {
+                if (err) { console.log(err); }
+                else {
+                    if (rows.length > 0) {
                         req.flash("error", "The E-mail You Entered Is Already Taken , Please Try Again");
-                        res.redirect("/users/register");
-                    }else{
+                        return res.render("register", {
+                            title: "Register",
+                            errors,
+                            email,
+                            username,
+                            firstname,
+                            lastname,
+                            gender,
+                            birthdate
+                        });
+                    } else {
                         //checking if username already exists
-                        query="select * from dbproject.user where username='"+username+"' ;";
-                        DBconnection.query(query,(err,rows)=>{
-                            if(err){console.log(err);}
-                            else{
-                                if(rows.length>0){
+                        query = "select * from dbproject.user where username='" + username + "' ;";
+                        DBconnection.query(query, (err, rows) => {
+                            if (err) { console.log(err); }
+                            else {
+                                if (rows.length > 0) {
                                     req.flash("error", "The Username You Entered Is Already Taken , Please Try Again");
-                                    res.redirect("/users/register");
-                                }else{
-                                    query='Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
-                                    + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
-                                    + lastname + '","' + birthdate + '");';
+                                    return res.render("register", {
+                                        title: "Register",
+                                        errors,
+                                        email,
+                                        username,
+                                        firstname,
+                                        lastname,
+                                        gender,
+                                        birthdate
+                                    });
+                                } else {
+                                    query = 'Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
+                                        + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
+                                        + lastname + '","' + birthdate + '");';
                                     //Finally Inserting user
                                     DBconnection.query(query, (err, results, fields) => {
                                         if (err) return console.error(err);
@@ -236,11 +254,11 @@ router.post('/:username/edit-profile', (req, res) => {
                 req.flash("error_msg", "Too long String for Username , Please Try Again");
             }
         }
-        if (req.body.pass !== "") {
-            if (req.body.confirmPass !== "") {
-                if (req.body.pass === req.body.confirmPass) {
-                    if (req.body.pass.length < 500) {
-                        let password = req.body.pass
+        if (pass !== "") {
+            if (confirmPass !== "") {
+                if (pass === confirmPass) {
+                    if (pass.length < 500) {
+                        let password = pass
                         if (password.length < 7) {
                             req.flash("error_msg", "Password Must Contains At Least 7 Characters");
                         }
@@ -271,9 +289,9 @@ router.post('/:username/edit-profile', (req, res) => {
         } else {
             req.flash("success", "Note Your Password Wasn't Changed");
         }
-        if (req.body.education !== "") {
-            if (req.body.username.length < 50) {
-                query = "update user set education='" + req.body.education + "' where ID=" + req.user.ID + " ;";
+        if (education !== "") {
+            if (username.length < 50) {
+                query = "update user set education='" + education + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
@@ -285,9 +303,9 @@ router.post('/:username/edit-profile', (req, res) => {
                 req.flash("error_msg", "Too long String for Education , Please Try Again");
             }
         }
-        if (req.body.job !== "") {
-            if (req.body.username.length < 50) {
-                query = "update user set job='" + req.body.job + "' where ID=" + req.user.ID + " ;";
+        if (job !== "") {
+            if (username.length < 50) {
+                query = "update user set job='" + job + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
@@ -299,9 +317,9 @@ router.post('/:username/edit-profile', (req, res) => {
                 req.flash("error_msg", "Too long String for Job , Please Try Again");
             }
         }
-        if (req.body.bio !== "") {
-            if (req.body.username.length < 300) {
-                query = "update user set bio='" + req.body.bio + "' where ID=" + req.user.ID + " ;";
+        if (bio !== "") {
+            if (username.length < 300) {
+                query = "update user set bio='" + bio + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
@@ -313,8 +331,8 @@ router.post('/:username/edit-profile', (req, res) => {
                 req.flash("error_msg", "Too long String for Bio , Please Try Again");
             }
         }
-        if (req.body.gender !== "") {
-            query = "update user set gender='" + req.body.gender + "' where ID=" + req.user.ID + " ;";
+        if (gender !== "") {
+            query = "update user set gender='" + gender + "' where ID=" + req.user.ID + " ;";
             DBconnection.query(query, (err, results) => {
                 if (err) {
                     console.log(err);
@@ -323,8 +341,8 @@ router.post('/:username/edit-profile', (req, res) => {
                 console.log(results);
             });
         }
-        if (req.body.date != "") {
-            query = "update user set BirthDate='" + req.body.date + "' where ID=" + req.user.ID + " ;";
+        if (birthdate != "") {
+            query = "update user set BirthDate='" + birthdate + "' where ID=" + req.user.ID + " ;";
             DBconnection.query(query, (err, results) => {
                 if (err) {
                     console.log(err);
