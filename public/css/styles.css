@@ -339,3 +339,14 @@ ul.competiton-breadcrumb li a:hover {
 .genderAvatar{
   padding-top: 3%;
 }
+
+.Success{
+  text-align: center;
+}
+.Success h1{
+  color: green;
+  padding: 3%;
+}
+.Success h3{
+  padding: 2%;
+}

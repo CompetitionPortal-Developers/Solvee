@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const { body, validationResult } = require('express-validator');
+const { render } = require("ejs");
 const { DBconnection } = require("../config/database");
 const dateFormat = require("../config/date-formatting");
 
@@ -36,5 +38,154 @@ router.get('/details/:c_id', (req, res) => {
         });
     });
 });
+
+
+//If the user pressed discard the competition creation
+router.get('/CreateCompetition',(req,res)=>{
+    const errors=[];
+    if(req.isAuthenticated()){
+        res.render("create-competition",{
+            title:"Competition Creation",
+            errors
+        });
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+})
+
+router.post('/:username/CreateCompetition',[
+    body('competitionTitle', 'Competition Title must be between 2 and 50 characters long').isLength({ min: 2, max: 50 }),
+    body('description', 'Description must be between 0 and 500 characters long').isLength({ min: 0, max: 500 }),
+    body('questionNumber', 'Question Number must be selected').notEmpty(),
+    body('startDate', 'Start Date must be selected').notEmpty(),
+    body('endDate', 'End Date must be selected').notEmpty(),
+],(req,res)=>{
+
+    if(req.isAuthenticated()){
+        let errors = validationResult(req).errors;
+        let {competitionTitle,category,questionNumber,startDate,endDate,description}=req.body;
+
+        if(competitionTitle=="" || category=="" || startDate=="" || endDate=="" || description==""){
+            errors.unshift({ msg: "Please Fill In All Fields" });
+        }
+
+        if (errors.length){
+            return res.render("create-competition", {
+                title: "Competition Creation",
+                errors,
+                competitionTitle,
+                category,
+                questionNumber,
+                startDate,
+                endDate,
+                description
+            });
+        }
+
+        const query="INSERT INTO dbproject.competition (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,Qnum,U_ID) "
+        +"VALUES('"+competitionTitle+"','"+category+"','"+description+"','"+startDate+"','"+endDate+"',"+questionNumber+","+req.user.ID+");";
+        DBconnection.query(query,(err,rows)=>{
+            if(err){
+                console.log(err);
+                req.flash("error", "Something Went Wrong Creating The Competition , Please Try Again Later");
+                return res.render("register", {
+                    title: "Register",
+                    errors,
+                    competitionTitle,
+                    category,
+                    questionNumber,
+                    startDate,
+                    endDate,
+                    description
+                });
+            }else{
+                res.render("Cquestions-entry",{
+                    title:"Questions Entry",
+                    errors,
+                    questionNumber,
+                    competitionTitle
+                })
+            }
+        })
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+})
+
+router.post('/:username/CreateCompetition/:Qnum/:Ctitle',(req,res)=>{
+    let errors=[];
+
+    const redirectLink="/"+req.user.Username+"/CreateCompetition/"+req.params.Qnum+"/"+req.params.Ctitle;
+    const obj=req.body;
+    let items=[];
+    for(const name in obj){
+        console.log(obj[name]);
+        items.push(obj[name]);
+    }
+    //Checking for empty questions
+    for(var i=0;i<items.length;i++){
+        // console.log("items: "+items[i]);
+        if(items[i]==""){
+            req.flash("error", "Please Fill In All Fields & Try Again");
+            return res.redirect(redirectLink);
+        }
+    }
+    const counter=4;
+    let j=0;
+
+    function InsertQ(num,Title) {
+        if(num*5<items.length){
+            console.log(items[0]);
+            console.log(num);
+            console.log(Title);
+            let queryInsert="insert into dbproject.questions (c_id,QUESTION,CHOICE_1,CHOICE_2,CHOICE_3,CHOICE_4) "
+                            +"values("+Title+",'"+items[num+counter*num]+"','"+items[num+1+counter*num]+"','"+items[num+2+counter*num]+"','"+items[num+3+counter*num]+"','"+items[num+4+counter*num]+"');";
+            console.log(queryInsert);
+            DBconnection.query(queryInsert,(err,rows)=>{
+                if(err){console.log(err);}
+                else{
+                    j++;
+                    InsertQ(j,Title);
+                }
+            })
+        }else{
+            return;
+        }
+    }
+
+    //inserting questions
+    let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
+    console.log(queryGetComptetion);
+    DBconnection.query(queryGetComptetion,(err,rows)=>{
+        if(err){console.log(err);}
+        else{
+                InsertQ(j,rows[0].C_ID);
+        }
+    })
+
+    //rendering congrats page
+    res.redirect("/competitions/CompetitionCreated/"+req.params.Ctitle);
+})
+
+router.get("/CompetitionCreated/:Ctitle",(req,res)=>{
+    let errors=[];
+    let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
+
+    DBconnection.query(queryGetComptetion,(err,rows)=>{
+        if(err){console.log(err);}
+        else{
+            let code=rows[0].C_ID;
+            res.render("Ccompetition-success",{
+                title:"Competition Created",
+                errors,
+                code
+            })
+        }
+    })
+})
+
+
 
 module.exports = router;

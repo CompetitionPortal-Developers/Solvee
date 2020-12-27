@@ -220,7 +220,7 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                errors.push("First name is too long. It must be less than 50 charactera");
+                errors.push("First name is too long. It must be less than 50 characters");
                 // req.flash("error_msg", "Too long String for First Name , Please Try Again");
             }
         }
@@ -236,7 +236,7 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                errors.push("Last name is too long. It must be less than 50 charactera");
+                errors.push("Last name is too long. It must be less than 50 characters");
                 // req.flash("error_msg", "Too long String for Last Name , Please Try Again");
             }
         }
