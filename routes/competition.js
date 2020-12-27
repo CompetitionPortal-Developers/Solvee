@@ -114,76 +114,103 @@ router.post('/:username/CreateCompetition',[
     }
 })
 
+router.get("/:username/CreateCompetition/:Qnum/:Ctitle",(req,res)=>{
+    if(req.isAuthenticated()){
+        let errors=[];
+        const questionNumber=req.params.Qnum;
+        const competitionTitle=req.params.Ctitle;
+        res.render("Cquestions-entry",{
+            title:"Questions Entry",
+            errors,
+            questionNumber,
+            competitionTitle
+        })
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+})
+
 router.post('/:username/CreateCompetition/:Qnum/:Ctitle',(req,res)=>{
-    let errors=[];
+    if(req.isAuthenticated()){
+        let errors=[];
 
-    const redirectLink="/"+req.user.Username+"/CreateCompetition/"+req.params.Qnum+"/"+req.params.Ctitle;
-    const obj=req.body;
-    let items=[];
-    for(const name in obj){
-        console.log(obj[name]);
-        items.push(obj[name]);
-    }
-    //Checking for empty questions
-    for(var i=0;i<items.length;i++){
-        // console.log("items: "+items[i]);
-        if(items[i]==""){
-            req.flash("error", "Please Fill In All Fields & Try Again");
-            return res.redirect(redirectLink);
+        const redirectLink="/competitions/"+req.user.Username+"/CreateCompetition/"+req.params.Qnum+"/"+req.params.Ctitle;
+        const obj=req.body;
+        let items=[];
+        for(const name in obj){
+            console.log(obj[name]);
+            items.push(obj[name]);
         }
-    }
-    const counter=4;
-    let j=0;
-
-    function InsertQ(num,Title) {
-        if(num*5<items.length){
-            console.log(items[0]);
-            console.log(num);
-            console.log(Title);
-            let queryInsert="insert into dbproject.questions (c_id,QUESTION,CHOICE_1,CHOICE_2,CHOICE_3,CHOICE_4) "
-                            +"values("+Title+",'"+items[num+counter*num]+"','"+items[num+1+counter*num]+"','"+items[num+2+counter*num]+"','"+items[num+3+counter*num]+"','"+items[num+4+counter*num]+"');";
-            console.log(queryInsert);
-            DBconnection.query(queryInsert,(err,rows)=>{
-                if(err){console.log(err);}
-                else{
-                    j++;
-                    InsertQ(j,Title);
-                }
-            })
-        }else{
-            return;
+        //Checking for empty questions
+        for(var i=0;i<items.length;i++){
+            // console.log("items: "+items[i]);
+            if(items[i]==""){
+                req.flash("error", "Please Fill In All Fields & Try Again");
+                return res.redirect(redirectLink);
+            }
         }
-    }
+        const counter=4;
+        let j=0;
 
-    //inserting questions
-    let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
-    console.log(queryGetComptetion);
-    DBconnection.query(queryGetComptetion,(err,rows)=>{
-        if(err){console.log(err);}
-        else{
-                InsertQ(j,rows[0].C_ID);
+        function InsertQ(num,Title) {
+            if(num*5<items.length){
+                console.log(items[0]);
+                console.log(num);
+                console.log(Title);
+                let queryInsert="insert into dbproject.questions (c_id,QUESTION,CHOICE_1,CHOICE_2,CHOICE_3,CHOICE_4) "
+                                +"values("+Title+",'"+items[num+counter*num]+"','"+items[num+1+counter*num]+"','"+items[num+2+counter*num]+"','"+items[num+3+counter*num]+"','"+items[num+4+counter*num]+"');";
+                console.log(queryInsert);
+                DBconnection.query(queryInsert,(err,rows)=>{
+                    if(err){console.log(err);}
+                    else{
+                        j++;
+                        InsertQ(j,Title);
+                    }
+                })
+            }else{
+                return;
+            }
         }
-    })
 
-    //rendering congrats page
-    res.redirect("/competitions/CompetitionCreated/"+req.params.Ctitle);
+        //inserting questions
+        let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
+        console.log(queryGetComptetion);
+        DBconnection.query(queryGetComptetion,(err,rows)=>{
+            if(err){console.log(err);}
+            else{
+                    InsertQ(j,rows[0].C_ID);
+            }
+        })
+
+        //rendering congrats page
+        res.redirect("/competitions/CompetitionCreated/"+req.params.Ctitle);
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
 })
 
 router.get("/CompetitionCreated/:Ctitle",(req,res)=>{
-    let errors=[];
-    let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
+    if(req.isAuthenticated()){
+        let errors=[];
+        let queryGetComptetion="select C_ID from dbproject.competition where TITLE='"+req.params.Ctitle+"';";
 
-    DBconnection.query(queryGetComptetion,(err,rows)=>{
-        if(err){console.log(err);}
-        else{
-            let code=rows[0].C_ID;
-            res.render("Ccompetition-success",{
-                title:"Competition Created",
-                errors,
-                code
-            })
-        }
-    })
+        DBconnection.query(queryGetComptetion,(err,rows)=>{
+            if(err){console.log(err);}
+            else{
+                let code=rows[0].C_ID;
+                res.render("Ccompetition-success",{
+                    title:"Competition Created",
+                    errors,
+                    code
+                })
+            }
+        })
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
 })
 
 
