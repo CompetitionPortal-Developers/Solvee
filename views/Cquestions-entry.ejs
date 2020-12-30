@@ -1,0 +1,45 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <form action="/competitions/<%=user.Username%>/CreateCompetition/<%=questionNumber%>/<%=competitionTitle%>" method="post">
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1>Please Fill In The <%=questionNumber%> Questions</h1>
+        </div>
+        <hr style="background-color:#150999">
+
+        <%for(var i=0;i< questionNumber ;i++){%>
+        <div class="card-body competitionExamCard">
+            <div class="col-12 genderAvatar">
+                <label for="description" class="editProfileLabels form-label">Enter Question <%=i%> Content :</label>
+                <textarea type="text" class="form-control" name="Question<%=i%>"></textarea>
+              </div>
+              <div class="genderAvatar col-12">
+                <input placeholder="Enter Here The Question's Correct Choice" type="text" class="form-control" name="choice<%=i%>">
+            </div>
+    
+            <div class="genderAvatar col-12">
+                <input placeholder="Enter 1st Choice" type="text" class="form-control" name="Wrong1<%=i%>">
+            </div>
+    
+            <div class="genderAvatar col-12">
+                <input placeholder="Enter 2nd Choice" type="text" class="form-control" name="Wrong2<%=i%>">
+            </div>
+    
+            <div class="genderAvatar col-12">
+                <input placeholder="Enter 3rd Choice" type="text" class="form-control" name="Wrong3<%=i%>">
+            </div>    
+        </div>
+        <hr>
+        
+        <%}%>
+        <div class="saveDiscard">
+            <a href="/competitions" class="buttonProfile btn btn-danger">Discard</a>
+            <button type="submit" class="buttonProfile btn btn-info" style="margin-right: 20px">Finish</button>
+        </div>
+    </div>
+</form>
+</div>
+
+<%-include("partials/Footer.ejs")%>
