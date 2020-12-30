@@ -1,0 +1,67 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1><%= title %></h1>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25"
+                aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <hr style="background-color:#150999">
+
+        <div class="container">
+            <form action="/competitions/questions/<%= competition.C_ID %>" method="POST">
+                <% questions.forEach((question, index) => { %>
+                <fieldset class="form-group">
+                    <legend class="col-form-label pt-0"><b>Question <%= index + 1 %>:</b><br><%= question.QUESTION %>
+                    </legend>
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q<%= index + 1 %>"
+                                id="q<%= index + 1 %>_choice1" value="<%= question.CHOICE_1 %>">
+                            <label class="form-check-label" for="q<%= index + 1 %>_choice1">
+                                <%= question.CHOICE_1 %>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q<%= index + 1 %>"
+                                id="q<%= index + 1 %>_choice2" value="<%= question.CHOICE_2 %>">
+                            <label class="form-check-label" for="q<%= index + 1 %>_choice2">
+                                <%= question.CHOICE_2 %>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q<%= index + 1 %>"
+                                id="q<%= index + 1 %>_choice3" value="<%= question.CHOICE_3 %>">
+                            <label class="form-check-label" for="q<%= index + 1 %>_choice3">
+                                <%= question.CHOICE_3 %>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q<%= index + 1 %>"
+                                id="q<%= index + 1 %>_choice4" value="<%= question.CHOICE_4 %>">
+                            <label class="form-check-label" for="q<%= index + 1 %>_choice4">
+                                <%= question.CHOICE_4 %>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <hr style="background-color:#000000">
+                <% }); %>
+                <div class="form-group d-flex">
+                    <div style="margin: auto;">
+                        <button type="submit" class="btn btn-outline-Custom">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<%-include("partials/Footer.ejs")%>

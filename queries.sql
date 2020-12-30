@@ -73,6 +73,19 @@ create table award (
     a_type varchar(50) not null
 );
 
+create table participate (
+    userID int references user(ID) on delete cascade,
+    competitionID int references competition(C_ID) on delete cascade,
+    primary key(userID, competitionID)
+);
+
+create table UserAnswers(
+    U_ID int not null references user(ID) on delete cascade,
+    Q_ID int not null references questions(Q_ID) on delete cascade,
+    primary key(U_ID,Q_ID),
+    Choice varchar(100) DEFAULT 'No Answer'
+);
+
 INSERT INTO USER (
 	Username,
     email,
@@ -126,8 +139,8 @@ INSERT INTO COMPETITION (
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     '3.4', 
-    '2020-10-7 18:00:00',
-    '2020-10-9 18:00:00'
+    '2020-12-25 18:00:00',
+    '2020-12-29 18:00:00'
 );
 
 INSERT INTO COMPETITION (
@@ -147,6 +160,70 @@ INSERT INTO COMPETITION (
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     '0', 
-    '2020-2-20 09:00:00',
-    '2020-2-22 09:00:00'
+    '2020-12-25 09:00:00',
+    '2020-12-29 09:00:00'
+);
+
+INSERT INTO QUESTIONS (
+    c_id,
+    QUESTION,
+    CHOICE_1,
+    CHOICE_2,
+    CHOICE_3,
+    CHOICE_4
+) VALUES (
+    1,
+    'How to increment a variable named x in C++ by one?',
+    'x++',
+    'x -= 1',
+    'x--',
+    'x = 1'
+);
+
+INSERT INTO QUESTIONS (
+    c_id,
+    QUESTION,
+    CHOICE_1,
+    CHOICE_2,
+    CHOICE_3,
+    CHOICE_4
+) VALUES (
+    1,
+    'How to increment a variable named x in C++ by one?',
+    'x++',
+    'x -= 1',
+    'x--',
+    'x = 1'
+);
+
+INSERT INTO QUESTIONS (
+    c_id,
+    QUESTION,
+    CHOICE_1,
+    CHOICE_2,
+    CHOICE_3,
+    CHOICE_4
+) VALUES (
+    1,
+    'How to increment a variable named x in C++ by one?',
+    'x++',
+    'x -= 1',
+    'x--',
+    'x = 1'
+);
+
+INSERT INTO QUESTIONS (
+    c_id,
+    QUESTION,
+    CHOICE_1,
+    CHOICE_2,
+    CHOICE_3,
+    CHOICE_4
+) VALUES (
+    1,
+    'How to increment a variable named x in C++ by one?',
+    'x++',
+    'x -= 1',
+    'x--',
+    'x = 1'
 );
