@@ -154,3 +154,30 @@ INSERT INTO COMPETITION (
     '2020-2-20 09:00:00',
     '2020-2-22 09:00:00'
 );
+
+INSERT INTO EXAM (
+    TITLE,
+    CODE,
+    CATEGORY, 
+    DESCP,
+    STARTDATE,
+    ENDDATE,
+    DURATION,
+    U_ID,
+    Qnum
+) VALUES (
+    'ELC Exam',
+    '123',
+    'Physics',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    '2020-2-20 09:00:00',
+    '2020-2-22 09:00:00',
+    '10',
+    '1',
+    '4'
+);

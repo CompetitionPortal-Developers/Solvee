@@ -6,7 +6,7 @@
         <div class="competitionExamHeader">
             <h1>Exams</h1>
         </div>
-        <form action="/exams/search" method="post">
+        <!-- <form action="/exams/search" method="post"> -->
             <div class="mb-3">
                 <div class="input-group">
                     <input type="search" class="form-control" name="searchedExam" id="searchedExam"
@@ -18,22 +18,29 @@
                     </div>
                 </div>
             </div>
-        </form>
+        <!-- </form> -->
         <% exams.forEach(exam => { %>
         <div class="card-body competitionExamCard">
             <h2 class="card-title"><%= exam.title %></h2>
-            <span class="text-muted"><i style="color:#28A745" class="fas fa-book"></i> <%= exam.e_subject %>
+            <span class="text-muted"><i style="color:#28A745" class="fas fa-book"></i> <%= exam.TITLE %>
                 &nbsp;</span>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> <%= exam.duration %> Mins
+            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> <%= exam.DURATION %> Mins
                 &nbsp;</span>
             <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Start Date:
-                <%= exam.startDate %> - End Date: <%= exam.endDate %></span>
+                <%= exam.STARTDATE %> - End Date: <%= exam.ENDDATE %></span>
             <hr>
             <p style="margin-bottom: 0;" for="text">Description :
-                <small class="card-text text-muted">"<%= exam.descp %>"
+                <small class="card-text text-muted">"<%= exam.DESCP %>"
                 </small>
             </p><br>
-            <a href="/exams/<%= exam.e_id %>" class="btn btn-outline-Custom">Solve Now</a>
+
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Enter Exam's Code" aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <a href="/exams/<%= exam.e_id %>" class="btn btn-outline-Custom">Solve Now</a>
+                </div>
+              </div>
+
         </div>
         <% }) %>
     </div>
