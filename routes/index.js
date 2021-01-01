@@ -8,4 +8,13 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/donate', (req, res) => {
+    const errors = [];
+    res.render('donations', {
+        title: "Donate",
+        style: "donations",
+        errors
+    });
+});
+
 module.exports = router;
