@@ -29,7 +29,10 @@ create table donation (
 
 create table todolist (
 	tasks varchar(100) not null,
-    deadline datetime
+    deadline datetime,
+    U_ID int references user(ID),
+    todoID int auto_increment,
+    primary key(todoID,U_ID)
 );
 
 CREATE TABLE COMPETITION (

@@ -1,0 +1,39 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="box" id="heading">
+    <h2><%=rows[0].tasks%></h2>
+</div>
+<div class="box">
+    <%for(var i=1;i<rows.length;i++){%>
+        <div class="item">
+            <form action="/users/<%=username%>/todolist/delete/<%=rows[i].todoID%>" method="post">
+                    <button  type="submit" class="btn delTodo" ><i class="fas fa-trash-alt todoRemove" ></i></button>
+                    <input type="hidden" name="types">
+            </form>
+            <%if(rows[i].deadline==null){%>
+                <p><%=rows[i].tasks%></p>
+            <%}else{%>
+                <p><%=rows[i].tasks%> 
+                     <small class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Due Date : <%=rows[i].deadline.toString().slice(0,15)%></small>
+                </p>
+            <%}%>
+        </div>
+    <%}%> 
+
+    <form class="item" action="/users/<%=username%>/todolist/add" method="post">
+        <div class="card-body row">
+            <div class="mb-3 col-12">
+              <textarea name="todoContent" type="text" class=" form-control"  placeholder="Enter Task Content" maxlength="100" minlength="1" required></textarea>
+            </div>
+            <div class="col-10">
+                <input name="todoDate" type="date" class=" form-control"  placeholder="Enter Due Date">
+            </div>
+            <div class="col-2">
+                <button class="todoButton" type="submit">+</button>
+            </div>
+            </div>
+    </form>
+</div>
+
+<%-include("partials/Footer.ejs")%>

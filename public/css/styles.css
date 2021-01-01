@@ -350,3 +350,65 @@ ul.competiton-breadcrumb li a:hover {
 .Success h3{
   padding: 2%;
 }
+
+/*----TodoList prop-----*/
+.box {
+  max-width: 400px;
+  padding: 2%;
+  margin: 50px auto;
+  background: white;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
+}
+.box p{
+  margin: 0;
+  padding: 5%;
+  font-weight: 200;
+  color: black;
+  
+}
+.item {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #bdbbbb;
+}
+.item:last-child {
+  border-bottom: 0;
+}
+.todoButton {
+  min-height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border-color: transparent;
+  background-color: #2472CE;
+  color: #fff;
+  font-size: 30px;
+  padding-bottom: 6px;
+  border-width: 0;
+}
+.todoButton:hover{
+  background-color: #1E3384;
+}
+.todoInput[type="text"] {
+  text-align: left;
+  height: 60px;
+  top: 10px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  font-weight: 200;
+  width: 313px;
+}
+
+.todoInput[type="text"]:focus {
+  outline: none;
+  box-shadow: inset 0 -3px 0 0 #1E3384;
+}
+.delTodo:hover i{
+  color: red;
+}
+.todoRemove{
+  color: rgb(212, 38, 38);
+}
