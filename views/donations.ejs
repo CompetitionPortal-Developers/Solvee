@@ -275,21 +275,13 @@ locals)%>
         <input type="text" name="address" id="address" />
       </div>
       <div class="contact-group">
-        <label for="zipCode"
-          >ZIP Code
-          <span style="font-weight: normal; display: inline"
-            >(Optional)</span
-          ></label
-        >
+        <label for="zipCode">ZIP Code
+          <span style="font-weight: normal; display: inline">(Optional)</span></label>
         <input type="text" name="zipCode" id="zipCode" />
       </div>
-      <div class="contact-group">
-        <label for="email"
-          >Email
-          <span style="font-weight: normal; display: inline"
-            >(Optional)</span
-          ></label
-        >
+      <div class="contact-group mb-0">
+        <label for="email">Email
+          <span style="font-weight: normal; display: inline">(Optional)</span></label>
         <input type="text" name="email" id="email" />
       </div>
     </div>
@@ -329,19 +321,9 @@ locals)%>
           <div class="essam p-2" style="border: 1px solid #b9b9b9">
             <div class="credit-container">
               <div class="form-check">
-                <input
-                  type="radio"
-                  class="form-check-input"
-                  name="payment-method"
-                  id="credit"
-                  style="display: inline-block"
-                />
-                <label
-                  for="credit"
-                  class="form-check-label p-0"
-                  style="display: inline-block"
-                  >Credit Card</label
-                >
+                <input type="radio" class="form-check-input" name="payment-method" id="credit"
+                  style="display: inline-block" />
+                <label for="credit" class="form-check-label p-0" style="display: inline-block">Credit Card</label>
               </div>
               <div>
                 <img src="images/credits.png" alt="credits" width="76px" />
@@ -349,74 +331,37 @@ locals)%>
             </div>
             <div class="credit-details-container">
               <div class="credit-inputs input-1">
-                <input
-                  type="text"
-                  name="credit_number"
-                  id="credit_number"
-                  placeholder="Card Number"
-                />
+                <input type="text" name="credit_number" id="credit_number" placeholder="Card Number" />
               </div>
               <div class="credit-inputs input-2">
-                <input
-                  type="text"
-                  name="credit_expiration"
-                  id="credit_expiration"
-                  placeholder="MM/YY"
-                />
+                <input type="text" name="credit_expiration" id="credit_expiration" placeholder="MM/YY" />
               </div>
               <div class="credit-inputs input-3">
-                <input
-                  type="text"
-                  name="credit_cvv"
-                  id="credit_cvv"
-                  placeholder="CVV"
-                />
+                <input type="text" name="credit_cvv" id="credit_cvv" placeholder="CVV" />
               </div>
             </div>
           </div>
           <div class="essam p-2" style="border: 1px solid #b9b9b9">
             <div class="paypal-container">
               <div class="form-check">
-                <input
-                  type="radio"
-                  class="form-check-input"
-                  name="payment-method"
-                  id="paypal"
-                  style="display: inline-block"
-                />
-                <label
-                  for="paypal"
-                  class="form-check-label p-0"
-                  style="display: inline-block"
-                  >PayPal</label
-                >
+                <input type="radio" class="form-check-input" name="payment-method" id="paypal"
+                  style="display: inline-block" />
+                <label for="paypal" class="form-check-label p-0" style="display: inline-block">PayPal</label>
               </div>
               <div class="text">
-                <small
-                  >You can pay with your credit card if you don’t have a PayPal
-                  account.</small
-                >
+                <small>You can pay with your credit card if you don’t have a PayPal
+                  account.</small>
               </div>
             </div>
           </div>
           <div class="notes-container">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="checkTerms"
-              name="checkTerms"
-              style="display: inline-block"
-            />
-            <label
-              for="checkTerms"
-              class="form-check-label"
-              style="display: inline-block"
-              >I have read and agree to the website terms and conditions.</label
-            >
+            <input class="form-check-input" type="checkbox" id="checkTerms" name="checkTerms"
+              style="display: inline-block" />
+            <label for="checkTerms" class="form-check-label" style="display: inline-block">I have read and agree to the
+              website terms and conditions.</label>
             <small class="mb-2">
               Be careful, if you choose the credit card option we may store such
-              information for future use.</small
-            >
+              information for future use.</small>
           </div>
           <div class="donate-button">
             <button type="button">Donate</button>
