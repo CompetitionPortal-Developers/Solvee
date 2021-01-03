@@ -16,7 +16,7 @@
         <div class="aboutProfile">
           <% if (user.ID === profileInfo[0].ID) { %>
           <a href="/users/<%= user.Username %>/edit-profile" class="buttonProfile btn btn-danger">Edit Profile</a>
-          <a href="#" class="buttonProfile btn btn-info" style="margin-right: 20px">Todo List</a>
+          <a href="/users/<%= user.Username %>/todolist" class="buttonProfile btn btn-info" style="margin-right: 20px">Todo List</a>
           <% } %>
         </div>
       </div>

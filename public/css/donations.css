@@ -1,0 +1,178 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  background-color: #f8f8ff;
+  color: #3a69bb;
+}
+
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.contacts-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.contacts-form .contact-group {
+  margin: 18px 0;
+}
+
+.contacts-form .contact-group input,
+.contacts-form .contact-group select {
+  width: 330px;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #3a69bb;
+}
+
+.contacts-form label,
+.contacts-form label span,
+.contacts-form option,
+.contacts-form select,
+.contacts-form input {
+  color: #414141;
+  font-size: 15px;
+  font-family: "Montserrat";
+  padding: 0.35rem;
+  display: block;
+}
+
+.contacts-form label,
+.contacts-form label span {
+  font-weight: bold;
+  padding-left: 0;
+}
+
+.contacts-form input {
+  color: #010203;
+}
+
+.contacts-form option,
+.contacts-form select,
+.contacts-form input {
+  border: 1px solid #b9b9b9;
+}
+
+.contacts-form h3 {
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+
+.payment-container {
+  width: 400px;
+  height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.payment-container h3 {
+  margin-bottom: 20px;
+}
+
+.amounts {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amount-group label {
+  display: inline-block;
+  width: 62px;
+  text-align: center;
+  padding: 4px 12px;
+  border: 1px solid #b9b9b9;
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+.amount-group label:hover {
+  cursor: pointer;
+  border: 2px solid #3a69bb;
+}
+
+.amount-group input {
+  display: none;
+}
+
+.essam {
+  margin: 8.5px 0;
+}
+
+.credit-container,
+.paypal-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  padding-left: 0;
+}
+
+.credit-details-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.credit-inputs {
+  width: fit-content;
+}
+
+.credit-inputs.input-1 input {
+  width: 230px;
+}
+
+.credit-inputs.input-2 input {
+  width: 80px;
+  text-align: center;
+}
+
+.credit-inputs.input-3 input {
+  width: 60px;
+  text-align: center;
+}
+
+.paypal-container {
+  flex-direction: column;
+}
+
+.paypal-container .text {
+  text-align: left;
+}
+
+.paypal-container .text small,
+.notes-container label,
+.notes-container small {
+  display: block;
+  color: black;
+  font-family: 'Montserrat';
+  font-size: 12px;
+}
+
+.notes-container label::after {
+  content: "*";
+  color: #9b0303;
+}
+
+.notes-container small {
+  font-family: 'Montserrat';
+  font-size: 12px;
+  display: inline-block;
+}
+
+.donate-button button {
+  font-style: bold;
+  color: white;
+  background-color:#3a69bb;
+  border: none;
+  width: 100%;
+  padding: 10px 32px;
+  text-align: center;
+  font-size: 16px;
+}
