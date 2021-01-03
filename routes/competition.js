@@ -79,7 +79,6 @@ router.post('/questions/:c_id', (req, res) => {
             req.flash("error", "This competition has already finished");
             res.redirect(`/competitions/details/${competition.C_ID}`);
         } else {
-            if (err) return console.error(err);
             res.send(req.body);
         }
     });

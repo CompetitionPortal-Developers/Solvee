@@ -132,7 +132,9 @@ INSERT INTO COMPETITION (
     DESCP,
     RATING, 
     STARTDATE,
-    ENDDATE
+    ENDDATE,
+    U_ID,
+	Qnum
 ) VALUES (
     'C++ Algorithms Challenge',
     'Computer Science', 
@@ -143,8 +145,10 @@ INSERT INTO COMPETITION (
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     '3.4', 
-    '2020-12-25 18:00:00',
-    '2020-12-29 18:00:00'
+    '2020-12-12 18:00:00',
+    '2021-2-12 18:00:00',
+    1,
+    2
 );
 
 INSERT INTO COMPETITION (
@@ -153,7 +157,9 @@ INSERT INTO COMPETITION (
     DESCP,
     RATING, 
     STARTDATE,
-    ENDDATE
+    ENDDATE,
+    U_ID,
+	Qnum
 ) VALUES (
     'SQL Queries Challenge',
     'Computer Science', 
@@ -165,7 +171,9 @@ INSERT INTO COMPETITION (
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     '0', 
     '2020-12-25 09:00:00',
-    '2020-12-29 09:00:00'
+    '2020-2-29 09:00:00',
+    2,
+    2
 );
 
 INSERT INTO QUESTIONS (
@@ -208,7 +216,7 @@ INSERT INTO QUESTIONS (
     CHOICE_3,
     CHOICE_4
 ) VALUES (
-    1,
+    2,
     'How to increment a variable named x in C++ by one?',
     'x++',
     'x -= 1',
@@ -224,14 +232,12 @@ INSERT INTO QUESTIONS (
     CHOICE_3,
     CHOICE_4
 ) VALUES (
-    1,
+    2,
     'How to increment a variable named x in C++ by one?',
     'x++',
     'x -= 1',
     'x--',
     'x = 1'
-    '2020-2-20 09:00:00',
-    '2020-2-22 09:00:00'
 );
 
 INSERT INTO EXAM (
