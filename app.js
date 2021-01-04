@@ -16,7 +16,6 @@ app.use(bodyParser.json());
 
 // Connect to DB
 const db = require('./config/database');
-// Comment the below line if didn't install MySQL yet
 db.connectToDB();
 
 const PORT = process.env.PORT || 3000;
@@ -55,6 +54,8 @@ app.use('/', require("./routes"));
 app.use('/competitions', require("./routes/competition"));
 app.use('/exams', require("./routes/exam"));
 app.use('/users', require('./routes/user'));
+
+db.endDBConnection();
 
 app.listen(PORT, err => {
   if (err) return console.error(err);

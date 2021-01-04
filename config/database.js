@@ -23,11 +23,8 @@ module.exports = {
         });
     },
     endDBConnection: () => {
-        // connection.end(err => {
-        //   // if (err) return console.error(err);
-        //   // The connection is terminated gracefully
-        //   // Ensures all remaining queries are executed
-        //   // Then sends a quit packet to the MySQL server.
-        // });
+        connection.end(err => {
+            if (err) return console.error(err);
+        });
     }
 }

@@ -16,7 +16,33 @@
 
         <div class="container">
             <form action="/competitions/questions/<%= competition.C_ID %>" method="POST">
-                <% questions.forEach((question, index) => { %>
+                <% 
+                function shuffle(array) {
+                    let currentIndex = array.length, temporaryValue, randomIndex;
+                    while (currentIndex) {
+                        randomIndex = Math.floor(Math.random() * currentIndex);
+                        currentIndex -= 1;
+                        temporaryValue = array[currentIndex];
+                        array[currentIndex] = array[randomIndex];
+                        array[randomIndex] = temporaryValue;
+                    }
+                    return array;
+                }
+                questions.forEach(question => {
+                                    let questionChoices = [
+                                        question.CHOICE_1,
+                                        question.CHOICE_2,
+                                        question.CHOICE_3,
+                                        question.CHOICE_4
+                                    ];
+                                    questionChoices = shuffle(questionChoices);
+                                    question.CHOICE_1 = questionChoices[0];
+                                    question.CHOICE_2 = questionChoices[1];
+                                    question.CHOICE_3 = questionChoices[2];
+                                    question.CHOICE_4 = questionChoices[3];
+                                });
+                questions.forEach((question, index) => { 
+                %>
                 <fieldset class="form-group">
                     <legend class="col-form-label pt-0"><b>Question <%= index + 1 %>:</b><br><%= question.QUESTION %>
                     </legend>

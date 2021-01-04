@@ -10,7 +10,6 @@ module.exports = function (passport) {
             if (!user[0]) return done(null, false, { message: "That E-mail Isn't Found" });
             const userPass = user[0].pass;
             bcrypt.compare(password, userPass, (err, isMatch) => {
-                console.log(password);
                 if (err) return console.log(err);
                 if (isMatch) return done(null, user[0]);
                 return done(null, false, { message: "wrong password" });

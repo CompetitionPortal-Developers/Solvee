@@ -1,7 +1,8 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
-<!--To publish the errors on screen for user if any were found-->
+<%- include("partials/Header.ejs")%>
 
 <div class="container">
+    <%-messages("partials/Messages.ejs", locals)%>
+    <!--To publish the errors on screen for user if any were found-->
     <div class="card center">
         <div class="competitionExamHeader">
             <h1><%= competition.TITLE %></h1>
@@ -14,7 +15,7 @@
 
         <hr style="margin: 0; background-color:#150999">
         <div class="card-body competitionExamCard">
-            <p class="text-muted mb-0"><b>Host:</b> Abdullah Adel</p>
+            <p class="text-muted mb-0"><b>Host:</b> <%= host.firstName %> <%= host.lastName %></p>
             <p class="text-muted"><b>Description:</b><br><%= competition.DESCP %></p>
             <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
                 <%= competition.CATEGORY %>
