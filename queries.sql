@@ -136,6 +136,14 @@ INSERT INTO USER (
     'Abeer',
     'Hussain',
     '2000-4-10'
+),(
+    'essamwessam',
+    'test3@email.com',
+    '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
+    'M',
+    'Essam',
+    'Wessam',
+    '2000-11-11'
 );
 
 INSERT INTO COMPETITION (
@@ -239,4 +247,30 @@ INSERT INTO EXAM (
     '10',
     '1',
     '4'
+);
+
+INSERT INTO LEADERBOARD (
+    U_ID,
+    C_ID,
+    GRADE,
+    DURATION,
+    SCORE
+) VALUES (
+    1,
+    1,
+    10,
+    44.54,
+    9.69
+),(
+    2,
+    1,
+    9,
+    4.54,
+    9.9
+),(
+    3,
+    1,
+    3,
+    120.54,
+    2.055
 );

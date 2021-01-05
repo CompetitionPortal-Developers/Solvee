@@ -413,3 +413,8 @@ ul.competiton-breadcrumb li a:hover {
 .todoRemove{
   color: rgb(212, 38, 38);
 }
+.LeaderboardTitle{
+  text-align: center;
+  padding: 3%;
+  color: #1E3384;
+}

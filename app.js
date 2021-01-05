@@ -55,7 +55,7 @@ app.use('/competitions', require("./routes/competition"));
 app.use('/exams', require("./routes/exam"));
 app.use('/users', require('./routes/user'));
 
-db.endDBConnection();
+//db.endDBConnection();
 
 app.listen(PORT, err => {
   if (err) return console.error(err);
