@@ -1,12 +1,20 @@
 <%- include("partials/Header.ejs")%>
 <!--To publish the errors on screen for user if any were found-->
 
-<div class="container">
+<div class="container" style="min-height:100vh;">
   <%-messages("partials/Messages.ejs", locals)%>
 
   <section class="profile-section2">
+
     <div class="accordion" id="accordionExample">
-        <h2 class="LeaderboardTitle"><%=comp_name%>'s Leaderboard</h2>
+        <div class="competitionExamHeader">
+            <h1><%= comp_TITLE %></h1>
+        </div>
+        <ul class="competiton-breadcrumb">
+            <li><a href="/competitions/details/<%= comp_ID %>" >Details</a></li>
+            <li><a href="/competitions/reviews/<%= comp_ID %>">Reviews</a></li>
+            <li><a href="/competitions/leaderboard/<%= comp_ID %>/<%= comp_TITLE %>" class="active">Leaderboard</a></li>
+        </ul>
         <div class="table-responsive">
             <table class="table table-striped table-sm">
               <thead>
