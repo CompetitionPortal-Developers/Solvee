@@ -59,7 +59,7 @@ router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
                 return b.score - a.score;
             });
             res.render("leaderboard", {
-                title: comp_name,
+                title: comp_TITLE,
                 errors,
                 comp_ID,
                 comp_TITLE,
