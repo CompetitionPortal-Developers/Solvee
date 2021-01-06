@@ -344,7 +344,7 @@ ul.competiton-breadcrumb li a:hover {
 .Success{
   text-align: center;
 }
-.Success h1{
+.Success h2{
   color: green;
   padding: 3%;
 }

@@ -36,17 +36,12 @@
       
                 <div class="genderAvatar col-12">
                     <label for="startDate" class=" form-label">Enter Exam's Start Date</label>
-                    <input type="date" class="form-control" name="startDate">
-                </div>
-      
-                <div class="genderAvatar col-12">
-                    <label for="endDate" class="editProfileLabels form-label">Enter Exams's End Date</label>
-                    <input type="date" class="form-control" name="endDate">
+                    <input type="datetime-local" class="form-control" name="startDate">
                 </div>
 
                 <div class="genderAvatar col-12">
-                    <label for="duration" class="editProfileLabels form-label">Enter Exams's Duration</label>
-                    <input type='number' min='1' max='24' class="form-control" name="duration">
+                    <label for="duration" class="editProfileLabels form-label">Enter Exams's Duration In Minutes</label>
+                    <input value="10" type='number' min='1' max='180' class="form-control" name="duration">
                 </div>
       
             <div class="col-12 genderAvatar">

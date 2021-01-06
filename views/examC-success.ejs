@@ -1,13 +1,14 @@
 <%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
 <!--To publish the errors on screen for user if any were found-->
 
-<div class="container">
+<div class="container" style="min-height: 100vh;">
     <div class="card center">
         <div class="Success competitionExamHeader">
-            <h1 class="">Congratulations Your Exam Is Created</h1>
-            <h4 class="">Exam Code : <%=code%></h4>
+            <h2>Congratulations Your Exam Is Created</h2>
+            <h4>Exam Search Code : <%=examID%></h4>
+            <h4 >Exam Entry Code : <%=code%></h4>
         </div>
-        <hr style="background-color:#150999">
+        <hr style="background-color:#28A745">
     </div>
 </div>
 

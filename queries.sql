@@ -28,7 +28,10 @@ create table donation (
 
 create table todolist (
 	tasks varchar(100) not null,
-    deadline datetime
+    deadline datetime,
+    U_ID int not null references user(ID),
+    todoID int not null auto_increment,
+    primary key(U_ID,todo_ID)
 );
 
 CREATE TABLE COMPETITION (
@@ -45,7 +48,7 @@ CREATE TABLE COMPETITION (
 
 CREATE TABLE EXAM (
     E_ID INT PRIMARY KEY auto_increment, 
-    CODE VARCHAR(50) UNIQUE NOT NULL, 
+    CODE VARCHAR(50) UNIQUE, 
     TITLE VARCHAR(50) NOT NULL UNIQUE,
     CATEGORY VARCHAR(50) NOT NULL, 
     DESCP VARCHAR(500),
@@ -89,7 +92,15 @@ create table participate (
     userID int references user(ID) on delete cascade,
     competitionID int references competition(C_ID) on delete cascade,
     primary key(userID, competitionID),
-    s_time datetime default current_timestamp
+    s_time datetime default current_timestamp,
+);
+
+create table solve (
+    userID int references user(ID) on delete cascade,
+    examID int references exam(E_ID) on delete cascade,
+    primary key(userID, examID),
+    s_time datetime default current_timestamp,
+    grades int
 );
 
 create table UserAnswers (

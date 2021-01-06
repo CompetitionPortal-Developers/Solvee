@@ -14,7 +14,14 @@ router.get('/', (req, res) => {
             competitions.forEach(competition => {
                 competition.STARTDATE = dateFormat.format(competition.STARTDATE);
                 competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+                if(competition.DESCP){
+                    if(competition.DESCP.length>151){
+                        competition.DESCP=competition.DESCP.toString().slice(0,150);
+                        competition.DESCP+="...";
+                    }
+                }
             });
+
         res.render('competitions', {
             title: "Competitions",
             competitions,
@@ -43,7 +50,6 @@ router.get('/details/:c_id', (req, res) => {
     });
 });
 
-// /details/:c_id/leaderboard
 router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
     const errors = [];
     const query="select u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
@@ -215,6 +221,7 @@ router.post('/:username/CreateCompetition', [
     body('endDate', 'End Date must be selected').notEmpty(),
 ], (req, res) => {
     if (req.isAuthenticated()) {
+        let redirectLink="/competitions/"+req.params.username+"/CreateCompetition";
         let errors = validationResult(req).errors;
         let {
             competitionTitle,
@@ -225,10 +232,9 @@ router.post('/:username/CreateCompetition', [
             description
         } = req.body;
 
+
         if (competitionTitle == "" || category == "" || startDate == "" || endDate == "" || description == "") {
-            errors.unshift({
-                msg: "Please Fill In All Fields"
-            });
+            errors.unshift({ msg: "Please Fill In All Fields" });
         }
 
         if (errors.length) {
@@ -244,6 +250,37 @@ router.post('/:username/CreateCompetition', [
             });
         }
 
+        competitionTitle=competitionTitle.toString().replace(/'/g,"");
+        description=description.toString().replace(/'/g,"");
+        category=category.toString().replace(/'/g,"");
+
+        //Date Validation
+        function Compare(startDate,endDate){
+            sDate=new Date(startDate.toString());
+            eDate=new Date(endDate.toString());
+            var Result=false;
+            if(sDate.getTime()<eDate.getTime()){
+                if(sDate.getDate()<=eDate.getDate()){
+                    Result=true;
+                }
+            }
+            var today=new Date();
+            if(sDate.getDate()<today.getDate()){
+                Result=false;
+            }else{
+                if(sDate.getDate()==today.getDate()){
+                    if(sDate.getTime()<today.getTime()){
+                        Result=false;
+                    }
+                }
+            }
+            return Result;
+        }
+        if(!Compare(startDate,endDate)){
+            req.flash("error", "Make Sure That Start Date Is Earlier Than End Date & Not Older Than Current Date");
+            return res.redirect(redirectLink);
+        }
+
         const query = "INSERT INTO dbproject.competition (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,Qnum,U_ID) " +
             "VALUES('" + competitionTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + questionNumber + "," + req.user.ID + ");";
         DBconnection.query(query, (err, rows) => {
@@ -251,7 +288,7 @@ router.post('/:username/CreateCompetition', [
                 console.log(err);
                 req.flash("error", "Something Went Wrong Creating The Competition , Please Try Again Later");
                 return res.render("create-competition", {
-                    title: "Cometition Creation",
+                    title: "Competition Creation",
                     errors,
                     competitionTitle,
                     category,
@@ -305,11 +342,11 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
         }
         //Checking for empty questions
         for (let i = 0; i < items.length; i++) {
-            // console.log("items: "+items[i]);
             if (items[i] == "") {
                 req.flash("error", "Please Fill In All Fields & Try Again");
                 return res.redirect(redirectLink);
             }
+            items[i]=items[i].toString().replace(/'/g,"");      //to not make query error
         }
         const counter = 4;
         let j = 0;

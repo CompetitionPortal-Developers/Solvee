@@ -21,25 +21,23 @@
         <!-- </form> -->
         <% exams.forEach(exam => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title"><%= exam.title %></h2>
-            <span class="text-muted"><i style="color:#28A745" class="fas fa-book"></i> <%= exam.TITLE %>
+            <h2 class="card-title"><%= exam.TITLE %></h2>
+            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> Duration: <%= exam.DURATION %> Mins
                 &nbsp;</span>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> <%= exam.DURATION %> Mins
-                &nbsp;</span>
-            <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Start Date:
+            <br>
+            <span class="text-muted"><i style="color:#28A745" class="far fa-calendar-alt"></i> Start Date:
                 <%= exam.STARTDATE %> - End Date: <%= exam.ENDDATE %></span>
             <hr>
-            <p style="margin-bottom: 0;" for="text">Description :
-                <small class="card-text text-muted">"<%= exam.DESCP %>"
-                </small>
-            </p><br>
-
+            <form action="/exams/details/<%=exam.E_ID%>" method="post">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter Exam's Code" aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
+                <input type="text" class="form-control" name="code" placeholder="Enter Exam's Code" aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
                 <div class="input-group-append">
-                    <a href="/exams/<%= exam.e_id %>" class="btn btn-outline-Custom">Solve Now</a>
+                    
+                    <button class="btn btn-outline-success">Solve Now</button>
+
                 </div>
-              </div>
+            </div>
+        </form>
 
         </div>
         <% }) %>
