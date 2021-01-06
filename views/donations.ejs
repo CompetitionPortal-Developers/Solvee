@@ -1,14 +1,27 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs",
-locals)%>
+<%- include("partials/Header.ejs")%>
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="page-container">
-  <form class="contacts-form">
+  <%-messages("partials/Messages.ejs", locals)%>
+  <% if (typeof errors !== 'undefined') { %>
+  <div class="d-flex flex-column align-items-center pt-3">
+    <% errors.forEach(error => { %>
+    <div class="alert alert-danger alert-dismissible fade show w-75 p-3" role="alert">
+      <%= error.msg %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+  <form class="contacts-form" action="/donate" method="POST">
     <div>
-      <h3>Contact Details</h3>
+      <h3><strong>Contact Details</strong></h3>
       <div class="contact-group">
         <label for="fullname">Full Name</label>
-        <input type="text" name="fullname" id="fullname" />
+        <input type="text" name="fullname" id="fullname"
+          value="<%= (typeof fullname !== 'undefined') ? fullname : null %>" />
       </div>
       <div class="contact-group">
         <label for="countr">Country</label>
@@ -123,7 +136,6 @@ locals)%>
           <option value="Iraq">Iraq</option>
           <option value="Ireland">Ireland</option>
           <option value="Isle of Man">Isle of Man</option>
-          <option value="Israel">Israel</option>
           <option value="Italy">Italy</option>
           <option value="Jamaica">Jamaica</option>
           <option value="Japan">Japan</option>
@@ -272,80 +284,89 @@ locals)%>
       </div>
       <div class="contact-group">
         <label for="address">Address</label>
-        <input type="text" name="address" id="address" />
+        <input type="text" name="address" id="address"
+          value="<%= (typeof address !== 'undefined') ? address : null %>" />
       </div>
       <div class="contact-group">
         <label for="zipCode">ZIP Code
           <span style="font-weight: normal; display: inline">(Optional)</span></label>
-        <input type="text" name="zipCode" id="zipCode" />
+        <input type="text" name="zipCode" id="zipCode"
+          value="<%= (typeof zipCode !== 'undefined') ? zipCode : null %>" />
       </div>
       <div class="contact-group mb-0">
         <label for="email">Email
           <span style="font-weight: normal; display: inline">(Optional)</span></label>
-        <input type="text" name="email" id="email" />
+        <input type="text" name="email" id="email" value="<%= (typeof email !== 'undefined') ? email : null %>" />
       </div>
     </div>
     <div class="payment-container">
       <div>
-        <h3>Donation Amount</h3>
+        <h3><strong>Donation Amount</strong></h3>
         <div class="amounts">
           <div class="amount-group">
-            <input type="radio" name="1" id="$1" />
+            <input type="radio" name="donation_amount" value="1" id="$1" />
             <label for="$1">$1</label>
           </div>
           <div class="amount-group">
-            <input type="radio" name="5" id="$5" />
+            <input type="radio" name="donation_amount" value="5" id="$5" />
             <label for="$5">$5</label>
           </div>
           <div class="amount-group">
-            <input type="radio" name="10" id="$10" />
+            <input type="radio" name="donation_amount" value="10" id="$10" />
             <label for="$10">$10</label>
           </div>
           <div class="amount-group">
-            <input type="radio" name="20" id="$20" />
+            <input type="radio" name="donation_amount" value="20" id="$20" />
             <label for="$20">$20</label>
           </div>
           <div class="amount-group">
-            <input type="radio" name="50" id="$50" />
+            <input type="radio" name="donation_amount" value="50" id="$50" />
             <label for="$50">$50</label>
           </div>
           <div class="amount-group">
-            <input type="radio" name="100" id="$100" />
+            <input type="radio" name="donation_amount" value="100" id="$100" />
             <label for="$100">$100</label>
           </div>
         </div>
       </div>
       <div>
-        <h3>Payment Method</h3>
+        <h3><strong>Payment Method</strong></h3>
         <div>
           <div class="essam p-2" style="border: 1px solid #b9b9b9">
             <div class="credit-container">
               <div class="form-check">
-                <input type="radio" class="form-check-input" name="payment-method" id="credit"
-                  style="display: inline-block" />
+                <input type="radio" class="form-check-input" name="payment_method"
+                  <%= (typeof payment_method !== 'undefined' && payment_method === 'credit') ? 'checked' : '' %>
+                  value="credit" id="credit" style="display: inline-block" />
                 <label for="credit" class="form-check-label p-0" style="display: inline-block">Credit Card</label>
               </div>
               <div>
-                <img src="images/credits.png" alt="credits" width="76px" />
+                <img src="/images/credits.png" alt="credits" width="76px" />
               </div>
             </div>
             <div class="credit-details-container">
               <div class="credit-inputs input-1">
-                <input type="text" name="credit_number" id="credit_number" placeholder="Card Number" />
+                <input type="text" name="credit_number" id="credit_number"
+                  value="<%= (typeof credit_number !== 'undefined') ? credit_number : null %>"
+                  placeholder="Card Number" />
               </div>
               <div class="credit-inputs input-2">
-                <input type="text" name="credit_expiration" id="credit_expiration" placeholder="MM/YY" />
+                <input type="text" name="credit_expiration" id="credit_expiration"
+                  value="<%= (typeof credit_expiration !== 'undefined') ? credit_expiration : null %>"
+                  placeholder="MM/YY" />
               </div>
               <div class="credit-inputs input-3">
-                <input type="text" name="credit_cvv" id="credit_cvv" placeholder="CVV" />
+                <input type="text" name="credit_cvv" id="credit_cvv"
+                  value="<%= (typeof credit_cvv !== 'undefined') ? credit_cvv : null %>" placeholder="CVV" />
               </div>
             </div>
           </div>
           <div class="essam p-2" style="border: 1px solid #b9b9b9">
             <div class="paypal-container">
               <div class="form-check">
-                <input type="radio" class="form-check-input" name="payment-method" id="paypal"
-                  style="display: inline-block" />
+                <input type="radio" class="form-check-input" name="payment_method"
+                  <%= (typeof payment_method !== 'undefined' && payment_method === 'paypal') ? 'checked' : '' %>
+                  value="paypal" id="paypal" style="display: inline-block" />
                 <label for="paypal" class="form-check-label p-0" style="display: inline-block">PayPal</label>
               </div>
               <div class="text">
@@ -355,7 +376,7 @@ locals)%>
             </div>
           </div>
           <div class="notes-container">
-            <input class="form-check-input" type="checkbox" id="checkTerms" name="checkTerms"
+            <input class="form-check-input" type="checkbox" id="checkTerms" name="checkTerms" value="terms&conditions"
               style="display: inline-block" />
             <label for="checkTerms" class="form-check-label" style="display: inline-block">I have read and agree to the
               website terms and conditions.</label>
@@ -364,12 +385,24 @@ locals)%>
               information for future use.</small>
           </div>
           <div class="donate-button">
-            <button type="button">Donate</button>
+            <button type="submit">Donate</button>
           </div>
         </div>
       </div>
     </div>
   </form>
 </div>
+
+<script>
+  const donation_amount_buttons = document.querySelectorAll('.amount-group > label');
+  donation_amount_buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      donation_amount_buttons.forEach(button => {
+        button.classList.remove('selected-amount');
+      });
+      button.classList.toggle('selected-amount');
+    });
+  });
+</script>
 
 <%- include("partials/Footer.ejs")%>

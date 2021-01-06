@@ -52,20 +52,20 @@ router.get('/details/:c_id', (req, res) => {
 
 router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
     const errors = [];
-    const query="select u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-                +" where C_ID="+req.params.c_id+" and "+"u.ID=l.U_ID ";
-    const comp_ID=req.params.c_id;
-    const comp_TITLE=req.params.comp_name;
-    DBconnection.query(query,(err,List)=>{
-        if(err){
+    const query = "select u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
+        + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID ";
+    const comp_ID = req.params.c_id;
+    const comp_TITLE = req.params.comp_name;
+    DBconnection.query(query, (err, List) => {
+        if (err) {
             return console.log(err);
-        }else{
+        } else {
             console.log(List);
             List.sort((a, b) => {
                 return b.score - a.score;
             });
-            res.render("leaderboard",{
-                title:"leaderboard",
+            res.render("leaderboard", {
+                title: comp_TITLE,
                 errors,
                 comp_ID,
                 comp_TITLE,

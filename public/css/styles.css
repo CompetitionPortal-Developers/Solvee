@@ -1,5 +1,5 @@
 body {
-  background-image: url(../images/background.jpg);
+  background-image: url(../images/workInProgress/green-chameleon\ \(1\).jpg);
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -70,10 +70,17 @@ img {
   /* remove extra space below image */
 }
 
-.header {
-  font: 100em;
+.navbar-links {
+  font-family: "Poppins", sans-serif;
+  font-weight: light;
+  transition: all 0.3s;
 }
+
 /*Navbar classes*/
+nav {
+  font-family: "poppins";
+}
+
 .navbar {
   position: sticky;
   top: 0;
@@ -83,11 +90,13 @@ img {
 .nav-item {
   margin: 0 0.4rem;
 }
+
 .btn-outline-Login {
   color: #E51552;
   background-color: white;
   border-color: #E51552;
 }
+
 .btn-outline-Login:hover {
   color: white;
   background-color: #E51552;
@@ -211,6 +220,11 @@ img {
   color: white !important;
 }
 
+.navbar-links:hover {
+  color: #3a69bb !important;
+  font-weight: bold;
+}
+
 /*Competition & Exams Page*/
 .competitionExamHeader {
   text-align: center;
@@ -221,16 +235,16 @@ img {
   font-size: 4rem;
 }
 
-.competitionExamCard{
+.competitionExamCard {
   border: 1px solid rgba(207, 203, 203, 0.225);
   border-radius: 10px;
   margin: 1% 0;
 }
 
-.competitionExamCard:hover{
+.competitionExamCard:hover {
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,.125);
-  box-shadow: 0 .155rem .35rem rgba(0,0,0,.075);
+  border: 1px solid rgba(0, 0, 0, .125);
+  box-shadow: 0 .155rem .35rem rgba(0, 0, 0, .075);
 }
 
 ul.competiton-breadcrumb {
@@ -238,7 +252,7 @@ ul.competiton-breadcrumb {
   list-style: none;
   width: fit-content;
   border-radius: 3px;
-  background-color:#e0e0e0;
+  background-color: #e0e0e0;
 }
 
 ul.competiton-breadcrumb li {
@@ -317,38 +331,44 @@ ul.competiton-breadcrumb li a:hover {
   color: #cecece;
 }
 
-.aboutProfile{
+.aboutProfile {
   padding: 1%
 }
 
-.nameProfile{
+.nameProfile {
   padding: 5% 2% 0;
 }
 
-.buttonProfile{
+.buttonProfile {
   float: right;
 }
 
-.editProfileLabels{
-  padding:1% 0;
+.editProfileLabels {
+  padding: 1% 0;
 }
 
-.saveDiscard{
+.saveDiscard {
   padding: 3% 1%;
 }
 
-.genderAvatar{
+.genderAvatar {
   padding-top: 3%;
 }
 
-.Success{
+.Success {
   text-align: center;
 }
+<<<<<<< HEAD
 .Success h2{
+=======
+
+.Success h1 {
+>>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
   color: green;
   padding: 3%;
 }
-.Success h3{
+
+.Success h3 {
   padding: 2%;
 }
 
@@ -362,22 +382,26 @@ ul.competiton-breadcrumb li a:hover {
   border-radius: 5px;
   box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
 }
-.box p{
+
+.box p {
   margin: 0;
   padding: 5%;
   font-weight: 200;
   color: black;
-  
+
 }
+
 .item {
   min-height: 70px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #bdbbbb;
 }
+
 .item:last-child {
   border-bottom: 0;
 }
+
 .todoButton {
   min-height: 50px;
   width: 50px;
@@ -389,9 +413,11 @@ ul.competiton-breadcrumb li a:hover {
   padding-bottom: 6px;
   border-width: 0;
 }
-.todoButton:hover{
+
+.todoButton:hover {
   background-color: #1E3384;
 }
+
 .todoInput[type="text"] {
   text-align: left;
   height: 60px;
@@ -407,13 +433,16 @@ ul.competiton-breadcrumb li a:hover {
   outline: none;
   box-shadow: inset 0 -3px 0 0 #1E3384;
 }
-.delTodo:hover i{
+
+.delTodo:hover i {
   color: red;
 }
-.todoRemove{
+
+.todoRemove {
   color: rgb(212, 38, 38);
 }
-.LeaderboardTitle{
+
+.LeaderboardTitle {
   text-align: center;
   padding: 3%;
   color: #1E3384;
