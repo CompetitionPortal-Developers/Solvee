@@ -143,7 +143,7 @@ INSERT INTO USER (
     'M',
     'Essam',
     'Wessam',
-    '2000-11-11'
+    '1999-11-11'
 );
 
 INSERT INTO COMPETITION (
@@ -272,5 +272,5 @@ INSERT INTO LEADERBOARD (
     1,
     3,
     120.54,
-    2.055
+    2.05
 );
