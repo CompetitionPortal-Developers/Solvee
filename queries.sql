@@ -21,10 +21,17 @@ create table user (
 
 create table donation (
 	donation_ID int not null auto_increment,
-    primary key(donation_ID),
     amount int not null,
-    paymentMethod int not null
+    paymentMethod int not null,
+    fullName varchar(50) not null,
+    country varchar(50) not null,
+    d_address varchar(100) not null,
+    zipcode int,
+    email varchar(50),
+    primary key(donation_ID)
 );
+
+alter table donation auto_increment=1234;
 
 create table todolist (
 	tasks varchar(100) not null,
