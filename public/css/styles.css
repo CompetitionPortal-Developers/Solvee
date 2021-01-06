@@ -1,5 +1,5 @@
 body {
-  background-image: url(../images/background.jpg);
+  background-image: url(../images/workInProgress/green-chameleon\ \(1\).jpg);
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -80,6 +80,7 @@ img {
 nav {
   font-family: "poppins";
 }
+
 .navbar {
   position: sticky;
   top: 0;
@@ -221,6 +222,7 @@ nav {
 
 .navbar-links:hover {
   color: #3a69bb !important;
+  font-weight: bold;
 }
 
 /*Competition & Exams Page*/

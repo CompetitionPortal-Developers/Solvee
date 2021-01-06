@@ -45,7 +45,6 @@ select:focus {
 
 .contacts-form label,
 .contacts-form label span {
-  font-weight: bold;
   padding-left: 0;
 }
 
@@ -93,6 +92,10 @@ select:focus {
 .amount-group label:hover {
   cursor: pointer;
   border: 2px solid #3a69bb;
+}
+
+.selected-amount {
+  border: 2px solid #3a69bb !important;
 }
 
 .amount-group input {

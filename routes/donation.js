@@ -37,7 +37,6 @@ router.post('/', [
     ], "Please fill out all fields of your card details"),
     body('checkTerms', 'You must agree to the terms and conditions').isIn(['terms&conditions'])
 ], (req, res) => {
-    console.log(req.body);
     let errors = validationResult(req).errors;
     const {
         fullname,
@@ -58,7 +57,6 @@ router.post('/', [
     if (zipCode == '')
         errors = errors.filter(err => err.param !== 'zipCode');
 
-    console.log(errors);
     if (errors.length)
         return res.render('donations', {
             title: 'Donate',
@@ -76,13 +74,30 @@ router.post('/', [
             errors
         });
 
-    const query = `INSERT INTO dbproject.donation VALUES (${donation_amount}, '${payment_method}', '${fullname}', '${country}', '${address}', ${zipCode !== '' ? zipCode : null}, '${email !== '' ? email : null}' );`;
+    const query = `INSERT INTO dbproject.donation (amount, paymentMethod, fullName, country, d_address, zipcode, email) 
+    VALUES (${donation_amount}, '${payment_method}', '${fullname}', '${country}', '${address}', ${zipCode !== '' ? zipCode : null}, '${email !== '' ? email : null}' );`;
     DBconnection.query(query, err => {
         if (err) return console.error(err);
-        if (email !== '')
-            DBconnection.query(`SELECT `)
-        req.flash('success', `Thank you for your kind donation and support ${fullname}`);
-        res.redirect('back');
+        if (email !== '') {
+            DBconnection.query(`SELECT spirits FROM dbproject.user WHERE email='${email}';`, (err, rows) => {
+                if (err) return console.error(err);
+                if (!rows.length) {
+                    req.flash('success', `Thank you for your kind donation and support ${fullname} ❤`);
+                    req.flash('error', 'The entered email is not in our database. No sprirts are added :(');
+                    return res.redirect('back');
+                }
+                const spirits = rows[0].spirits + 1000 * donation_amount;
+                DBconnection.query(`UPDATE dbproject.user SET spirits=${spirits} WHERE email='${email}';`, err => {
+                    if (err) return console.error(err);
+                    req.flash('success', `Thank you for your kind donation and support ${fullname} ❤`);
+                    req.flash('success', `Your sprirts have been updated! You now have ${spirits} spirits`);
+                    res.redirect('back');
+                });
+            });
+        } else {
+            req.flash('success', `Thank you for your kind donation and support ${fullname} ❤`);
+            res.redirect('back');
+        }
     });
 });
 
