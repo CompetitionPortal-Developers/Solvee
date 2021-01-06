@@ -1,0 +1,748 @@
+.mediaViewInfo {
+	--web-view-name: Web 1920 – 1;
+	--web-view-id: Web_1920__1;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+:root {
+	--web-view-ids: Web_1920__1;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: none;
+}
+#Web_1920__1 {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	background-color: rgba(255,255,255,1);
+	overflow: hidden;
+	--web-view-name: Web 1920 – 1;
+	--web-view-id: Web_1920__1;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+#Solvee {
+	left: 130px;
+	top: 66px;
+	position: absolute;
+	overflow: visible;
+	width: 135px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 40px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#Path_1 {
+	fill: rgba(58,105,187,1);
+	stroke: rgba(255,255,255,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Path_1 {
+	overflow: visible;
+	position: absolute;
+	width: 38px;
+	height: 30px;
+	left: 89px;
+	top: 77px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#donationsLabel {
+	left: 432px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 60px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#donationsLabel_j {
+	left: 613px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 71px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#donationsLabel_k {
+	left: 810px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 154px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#donationsLabel_l {
+	left: 1087px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 155px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#donationsLabel_m {
+	left: 1391px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 133px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#donationsLabel_n {
+	left: 1614px;
+	top: 80px;
+	position: absolute;
+	overflow: visible;
+	width: 123px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 19px;
+	color: rgba(58,105,187,1);
+	letter-spacing: 0.46px;
+}
+#Competition_Hosting_Was_Never_ {
+	left: 409px;
+	top: 213px;
+	position: absolute;
+	overflow: visible;
+	width: 1103px;
+	white-space: nowrap;
+	line-height: 60px;
+	margin-top: -2.5px;
+	text-align: center;
+	font-family: Muli;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 55px;
+	color: rgba(255,255,255,1);
+}
+#Join_Solvee_now_to_be_able_to_ {
+	left: 279px;
+	top: 290.5px;
+	position: absolute;
+	overflow: hidden;
+	width: 1458px;
+	height: 38px;
+	line-height: 30px;
+	margin-top: -5px;
+	text-align: left;
+	font-family: Muli;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	color: rgba(102,102,126,1);
+}
+#Group_35613 {
+	position: absolute;
+	width: 519px;
+	height: 527px;
+	left: 108px;
+	top: 393px;
+	overflow: visible;
+}
+#Rectangle_746 {
+	fill: rgba(255,255,255,1);
+}
+.Rectangle_746 {
+	filter: drop-shadow(0px 0px 40px rgba(14, 119, 255, 0.349));
+	position: absolute;
+	overflow: visible;
+	width: 639px;
+	height: 470px;
+	left: 0px;
+	top: 177px;
+}
+#Opt_for_the_maximum_reward_of_ {
+	left: 40.237px;
+	top: 369.41px;
+	position: absolute;
+	overflow: visible;
+	width: 456.31px;
+	height: 67.87509155273438px;
+	line-height: 30px;
+	margin-top: -7px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: lighter;
+	font-size: 16px;
+	color: rgba(0,0,0,1);
+}
+#Tournaments {
+	left: 155px;
+	top: 312px;
+	position: absolute;
+	overflow: visible;
+	width: 211px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 30px;
+	color: rgba(0,0,0,1);
+}
+#asdasd {
+	position: absolute;
+	width: 519px;
+	height: 298px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Group_35611 {
+	position: absolute;
+	width: 122.162px;
+	height: 28px;
+	left: 39.838px;
+	top: 429px;
+	overflow: visible;
+}
+#Learn_More {
+	left: 12.162px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 111px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35152 {
+	position: absolute;
+	width: 12.171px;
+	height: 12.237px;
+	left: 0px;
+	top: 8px;
+	overflow: visible;
+}
+#arrow-down-sign-to-navigate {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,285.1171,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455 {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455 {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#arrow-down-sign-to-navigate_ {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,279.9217,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_ {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455_ {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#Group_35614 {
+	position: absolute;
+	width: 243px;
+	height: 28px;
+	left: 138px;
+	top: 471px;
+	overflow: visible;
+}
+#Join_Tournaments_Now {
+	left: 0px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 244px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35615 {
+	position: absolute;
+	width: 519px;
+	height: 527px;
+	left: 701px;
+	top: 393px;
+	overflow: visible;
+}
+#Rectangle_746_ {
+	fill: rgba(255,255,255,1);
+}
+.Rectangle_746_ {
+	filter: drop-shadow(0px 0px 40px rgba(14, 119, 255, 0.349));
+	position: absolute;
+	overflow: visible;
+	width: 639px;
+	height: 470px;
+	left: 0px;
+	top: 177px;
+}
+#Boost_your_spirit_flow_by_join {
+	left: 40.237px;
+	top: 369.41px;
+	position: absolute;
+	overflow: visible;
+	width: 446.31px;
+	height: 67.87509155273438px;
+	line-height: 30px;
+	margin-top: -7px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: lighter;
+	font-size: 16px;
+	color: rgba(0,0,0,1);
+}
+#Competitions {
+	left: 155px;
+	top: 312px;
+	position: absolute;
+	overflow: visible;
+	width: 211px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 30px;
+	color: rgba(0,0,0,1);
+}
+#asdasd_ {
+	position: absolute;
+	width: 519px;
+	height: 298px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Group_35611_ {
+	position: absolute;
+	width: 122.162px;
+	height: 28px;
+	left: 39.838px;
+	top: 429px;
+	overflow: visible;
+}
+#Learn_More_ba {
+	left: 12.162px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 111px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35152_bb {
+	position: absolute;
+	width: 12.171px;
+	height: 12.237px;
+	left: 0px;
+	top: 8px;
+	overflow: visible;
+}
+#arrow-down-sign-to-navigate_bc {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,285.1171,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_bd {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455_bd {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#arrow-down-sign-to-navigate_be {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,279.9217,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_bf {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455_bf {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#Group_35614_bg {
+	position: absolute;
+	width: 243px;
+	height: 28px;
+	left: 138px;
+	top: 471px;
+	overflow: visible;
+}
+#Join_Competitions_Now {
+	left: 0px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 244px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35616 {
+	position: absolute;
+	width: 519px;
+	height: 527px;
+	left: 1294px;
+	top: 393px;
+	overflow: visible;
+}
+#Rectangle_746_bj {
+	fill: rgba(255,255,255,1);
+}
+.Rectangle_746_bj {
+	filter: drop-shadow(0px 0px 40px rgba(14, 119, 255, 0.349));
+	position: absolute;
+	overflow: visible;
+	width: 639px;
+	height: 470px;
+	left: 0px;
+	top: 177px;
+}
+#Exams_are_always_free_to_join_ {
+	left: 40.237px;
+	top: 369.41px;
+	position: absolute;
+	overflow: visible;
+	width: 458.31px;
+	height: 67.87509155273438px;
+	line-height: 30px;
+	margin-top: -7px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: lighter;
+	font-size: 16px;
+	color: rgba(0,0,0,1);
+}
+#Exams {
+	left: 209px;
+	top: 312px;
+	position: absolute;
+	overflow: visible;
+	width: 103px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 30px;
+	color: rgba(0,0,0,1);
+}
+#asdasd_bm {
+	position: absolute;
+	width: 519px;
+	height: 298px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Group_35611_bn {
+	position: absolute;
+	width: 122.162px;
+	height: 28px;
+	left: 39.838px;
+	top: 429px;
+	overflow: visible;
+}
+#Learn_More_bo {
+	left: 12.162px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 111px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35152_bp {
+	position: absolute;
+	width: 12.171px;
+	height: 12.237px;
+	left: 0px;
+	top: 8px;
+	overflow: visible;
+}
+#arrow-down-sign-to-navigate_bq {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,285.1171,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_br {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455_br {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#arrow-down-sign-to-navigate_bs {
+	transform: translate(-282.552px, -791.361px) matrix(1,0,0,1,279.9217,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_bt {
+	fill: rgba(14,119,255,1);
+}
+.Path_36455_bt {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#Group_35614_bu {
+	position: absolute;
+	width: 184px;
+	height: 28px;
+	left: 168px;
+	top: 471px;
+	overflow: visible;
+}
+#Solve_Exams_Now {
+	left: 0px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 185px;
+	white-space: nowrap;
+	line-height: 47px;
+	margin-top: -13.5px;
+	text-align: left;
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	color: rgba(14,119,255,1);
+}
+#Group_35617 {
+	position: absolute;
+	width: 239px;
+	height: 72px;
+	left: 841px;
+	top: 959px;
+	overflow: visible;
+}
+#Rectangle_1263 {
+	fill: rgba(14,119,255,1);
+}
+.Rectangle_1263 {
+	position: absolute;
+	overflow: visible;
+	width: 239px;
+	height: 72px;
+	left: 0px;
+	top: 0px;
+}
+#Group_35619 {
+	position: absolute;
+	width: 155.008px;
+	height: 31px;
+	left: 42px;
+	top: 19px;
+	overflow: visible;
+}
+#Get_Started {
+	left: 0px;
+	top: 0px;
+	position: absolute;
+	overflow: visible;
+	width: 135px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: Muli;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 25px;
+	color: rgba(255,255,255,1);
+}
+#Group_35131 {
+	position: absolute;
+	width: 12.171px;
+	height: 12.237px;
+	left: 142.838px;
+	top: 10.918px;
+	overflow: visible;
+}
+#arrow-down-sign-to-navigate_b {
+	transform: translate(-282.553px, -791.361px) matrix(1,0,0,1,285.1171,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_b {
+	fill: rgba(255,255,255,1);
+}
+.Path_36455_b {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}
+#arrow-down-sign-to-navigate_ca {
+	transform: translate(-282.553px, -791.361px) matrix(1,0,0,1,279.9217,793.992) rotate(-90deg);
+	transform-origin: center;
+	position: absolute;
+	width: 12.237px;
+	height: 6.976px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#Path_36455_ca {
+	fill: rgba(255,255,255,1);
+}
+.Path_36455_ca {
+	overflow: visible;
+	position: absolute;
+	width: 6.976px;
+	height: 12.237px;
+	left: 0px;
+	top: 0px;
+	transform: matrix(1,0,0,1,0,0);
+}

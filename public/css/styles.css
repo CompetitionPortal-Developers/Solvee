@@ -74,6 +74,9 @@ img {
   font: 100em;
 }
 /*Navbar classes*/
+nav {
+  font-family: "poppins";
+}
 .navbar {
   position: sticky;
   top: 0;
