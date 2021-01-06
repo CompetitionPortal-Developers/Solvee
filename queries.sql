@@ -27,7 +27,7 @@ create table donation (
     country varchar(50) not null,
     d_address varchar(100) not null,
     zipcode int,
-    email varchar(50),
+    email varchar(50) references user(email),
     primary key(donation_ID)
 );
 

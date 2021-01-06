@@ -48,9 +48,9 @@ router.get('/register', (req, res) => {
 });
 
 router.post("/register", [
-    body('firstname', 'First Name must be between 5 and 50 characters long').isLength({ min: 5, max: 50 }),
-    body('lastname', 'Last Name must be between 5 and 50 characters long').isLength({ min: 5, max: 50 }),
-    body('username', 'Userame must be between 5 and 50 characters long').isLength({ min: 5, max: 50 }),
+    body('firstname', 'First Name must be between 5 and 50 characters long').isLength({ min: 2, max: 50 }),
+    body('lastname', 'Last Name must be between 5 and 50 characters long').isLength({ min: 2, max: 50 }),
+    body('username', 'Userame must be between 5 and 50 characters long').isLength({ min: 2, max: 50 }),
     body('email', 'Email must be between 5 and 50 characters long').isLength({ min: 5, max: 50 }),
     body('email', 'Email not valid').isEmail(),
     body('password', 'Password must be at least 7 characters long').isLength({ min: 7 }),
@@ -133,14 +133,14 @@ router.post("/register", [
                                     //Finally Inserting user
                                     DBconnection.query(query, (err, results, fields) => {
                                         if (err) return console.error(err);
-                                        const getID="select ID from dbproject.user where username='"+username+"';";
-                                        DBconnection.query(getID,(err,result)=>{
-                                            if(err){console.log(err);}
-                                            else{
-                                                const insertTodoList="insert into dbproject.todolist (U_ID,tasks) "
-                                                +"values("+result[0].ID+",'"+firstname+"`s To Do List');";
-                                                DBconnection.query(insertTodoList,(err)=>{
-                                                    if(err){
+                                        const getID = "select ID from dbproject.user where username='" + username + "';";
+                                        DBconnection.query(getID, (err, result) => {
+                                            if (err) { console.log(err); }
+                                            else {
+                                                const insertTodoList = "insert into dbproject.todolist (U_ID,tasks) "
+                                                    + "values(" + result[0].ID + ",'" + firstname + "`s To Do List');";
+                                                DBconnection.query(insertTodoList, (err) => {
+                                                    if (err) {
                                                         console.log(err);
                                                     }
                                                 })
@@ -148,7 +148,7 @@ router.post("/register", [
                                                 res.redirect("/users/login");
                                             }
                                         })
-                                        
+
                                     });
                                 }
                             }
@@ -374,93 +374,93 @@ router.post('/:username/edit-profile', (req, res) => {
     }
 });
 
-router.get("/:username/todolist",(req,res)=>{
-    let errors=[];
-    if(req.isAuthenticated()){
-        const privacyquery="select ID from dbproject.user where username='"+req.params.username+"';";
-        const query="select * from dbproject.todolist where U_ID="+req.user.ID+";";
-        DBconnection.query(privacyquery,(err,results)=>{
-            if(err){console.log(err);}
-            else{
-                if(results[0].ID==req.user.ID){
-                    DBconnection.query(query,(err,rows)=>{
-                        if(err){ return console.log(err);}
-                        else{
-                            res.render("todo-list",{
-                                title:"To Do List",
-                                username:req.params.username,
+router.get("/:username/todolist", (req, res) => {
+    let errors = [];
+    if (req.isAuthenticated()) {
+        const privacyquery = "select ID from dbproject.user where username='" + req.params.username + "';";
+        const query = "select * from dbproject.todolist where U_ID=" + req.user.ID + ";";
+        DBconnection.query(privacyquery, (err, results) => {
+            if (err) { console.log(err); }
+            else {
+                if (results[0].ID == req.user.ID) {
+                    DBconnection.query(query, (err, rows) => {
+                        if (err) { return console.log(err); }
+                        else {
+                            res.render("todo-list", {
+                                title: "To Do List",
+                                username: req.params.username,
                                 errors,
                                 rows
                             });
                         }
                     })
-                }else{
+                } else {
                     req.flash("error", "You Aren't Allowed To Access Other's To Do List");
                     res.redirect("/");
                 }
             }
         })
-    }else{
+    } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
     }
 })
 
-router.post("/:username/todolist/add",(req,res)=>{
-    let errors=[];
-    const redirectUrl="/users/"+req.params.username+"/todolist";
-    let {todoContent,todoDate}=req.body;
-    if(req.isAuthenticated()){
-        var Task=todoContent.toString().replace(/'/g,"");
+router.post("/:username/todolist/add", (req, res) => {
+    let errors = [];
+    const redirectUrl = "/users/" + req.params.username + "/todolist";
+    let { todoContent, todoDate } = req.body;
+    if (req.isAuthenticated()) {
+        var Task = todoContent.toString().replace(/'/g, "");
         console.log(Task);
-        let query="";
-        if(todoContent==""){
+        let query = "";
+        if (todoContent == "") {
             req.flash("error", "Please Fill In Task Content & Try Again");
             return res.redirect(redirectUrl);
         }
-        if(todoDate==""){
-            query="insert into dbproject.todolist (U_ID,tasks) "
-                        +"values("+req.user.ID+",'"+Task+"')";
-        }else{
-            query="insert into dbproject.todolist (U_ID,tasks,deadline) "
-                    +"values("+req.user.ID+",'"+Task+"','"+todoDate+"');";
+        if (todoDate == "") {
+            query = "insert into dbproject.todolist (U_ID,tasks) "
+                + "values(" + req.user.ID + ",'" + Task + "')";
+        } else {
+            query = "insert into dbproject.todolist (U_ID,tasks,deadline) "
+                + "values(" + req.user.ID + ",'" + Task + "','" + todoDate + "');";
         }
-        DBconnection.query(query,(err)=>{
-            if(err){console.log(err);}
-            else{
+        DBconnection.query(query, (err) => {
+            if (err) { console.log(err); }
+            else {
                 req.flash("success", "The Task Is Added Successfully");
                 res.redirect(redirectUrl);
             }
         })
-    }else{
+    } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
     }
 })
 
-router.post("/:username/todolist/delete/:taskid",(req,res)=>{
-    const redirectUrl="/users/"+req.params.username+"/todolist";
-    if(req.isAuthenticated()){
-        const query="delete from dbproject.todolist where todoID="+req.params.taskid+";";
-        const privacyquery="select ID from dbproject.user where username='"+req.params.username+"';";
-        DBconnection.query(privacyquery,(err,results)=>{
-            if(err){console.log(err);}
-            else{
-                if(results[0].ID==req.user.ID){
-                    DBconnection.query(query,(err,rows)=>{
-                        if(err){ console.log(err);}
-                        else{
+router.post("/:username/todolist/delete/:taskid", (req, res) => {
+    const redirectUrl = "/users/" + req.params.username + "/todolist";
+    if (req.isAuthenticated()) {
+        const query = "delete from dbproject.todolist where todoID=" + req.params.taskid + ";";
+        const privacyquery = "select ID from dbproject.user where username='" + req.params.username + "';";
+        DBconnection.query(privacyquery, (err, results) => {
+            if (err) { console.log(err); }
+            else {
+                if (results[0].ID == req.user.ID) {
+                    DBconnection.query(query, (err, rows) => {
+                        if (err) { console.log(err); }
+                        else {
                             req.flash("success", "The Task Is Deleted Successfully");
                             res.redirect(redirectUrl);
                         }
                     })
-                }else{
+                } else {
                     req.flash("error", "You Aren't Allowed To Access Other's To Do List");
                     res.redirect("/");
                 }
             }
         })
-    }else{
+    } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
     }
