@@ -32,13 +32,37 @@
         primary key(donation_ID)
     );
 
+<<<<<<< HEAD
+create table todolist (
+	tasks varchar(100) not null,
+    deadline datetime,
+    U_ID int not null references user(ID),
+    todoID int not null auto_increment,
+    primary key(U_ID,todo_ID)
+);
+=======
     alter table donation auto_increment=1234;
+>>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 
     create table todolist (
         tasks varchar(100) not null,
         deadline datetime
     );
 
+<<<<<<< HEAD
+CREATE TABLE EXAM (
+    E_ID INT PRIMARY KEY auto_increment, 
+    CODE VARCHAR(50) UNIQUE, 
+    TITLE VARCHAR(50) NOT NULL UNIQUE,
+    CATEGORY VARCHAR(50) NOT NULL, 
+    DESCP VARCHAR(500),
+    DURATION INT NOT NULL,
+    STARTDATE DATETIME NOT NULL,
+    ENDDATE DATETIME NOT NULL,
+    U_ID int not null references user(ID),
+    Qnum int not null
+);
+=======
     CREATE TABLE COMPETITION (
         C_ID INT PRIMARY KEY auto_increment, 
         TITLE VARCHAR(50) NOT NULL UNIQUE,
@@ -50,6 +74,7 @@
         U_ID int not null references user(ID),
         Qnum int not null
     );
+>>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 
     CREATE TABLE EXAM (
         E_ID INT PRIMARY KEY auto_increment, 
@@ -78,12 +103,26 @@
     );
 
     create table award (
-        userID int references user(ID) on delete cascade,
+        userID int references user(ID) on delete set null ,
         competitionID int references competition(C_ID) on delete cascade,
-        primary key(userID,competitionID),
-        a_type varchar(50) not null
+        a_type varchar(50) not null,
+        primary key(a_type,competitionID)
     );
 
+create table participate (
+    userID int references user(ID) on delete cascade,
+    competitionID int references competition(C_ID) on delete cascade,
+    primary key(userID, competitionID),
+    s_time datetime default current_timestamp,
+);
+
+create table solve (
+    userID int references user(ID) on delete cascade,
+    examID int references exam(E_ID) on delete cascade,
+    primary key(userID, examID),
+    s_time datetime default current_timestamp,
+    grades int
+);
     create table leaderboard (
         U_ID int not null references user(ID) on delete cascade,
         C_ID int references competition(C_ID) on delete cascade,
