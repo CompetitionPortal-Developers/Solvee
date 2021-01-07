@@ -143,7 +143,8 @@ router.post('/questions/:c_id', (req, res) => {
                     DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, [{ s_time }]) => {
                         if (err) return console.error(err);
                         const duration = Math.abs(Date.now() - s_time) / (1000 * 60);
-                        const score = Math.round(((grade / duration) + Number.EPSILON) * 100) / 100;
+                        let score = Math.round(((grade / duration) + Number.EPSILON) * 100) / 100;
+                        score = 2 * questions.length * ((1 / (1 + Math.exp(-1 * score))) - 0.5);
                         const insertToLB = `INSERT INTO dbproject.leaderboard VALUES (${req.user.ID}, ${competition.C_ID}, ${grade}, ${duration}, ${score});`;
                         DBconnection.query(insertToLB, err => {
                             if (err) return console.error(err);
@@ -161,31 +162,43 @@ router.post('/questions/:c_id', (req, res) => {
 });
 
 router.get('/reviews/:c_id', (req, res) => {
-    const errors = [];
 
-    DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, competition) => {
-        if (err) return console.error(err);
-        if (!competition.length) return res.sendStatus(404);
-        competition = competition[0];
-        if (Date.now() < competition.STARTDATE) {
-            req.flash("error", "This competition hasn't started yet.");
-            res.redirect(`/competitions/details/${competition.C_ID}`);
-        } else if (Date.now() > competition.ENDDATE) {
-            req.flash("error", "This competition has already finished");
-            res.redirect(`/competitions/details/${competition.C_ID}`);
-        } else {
-            res.redirect(`/competitions/details/${competition.C_ID}`);
-            // DBconnection.query(`SELECT * FROM dbproject.REVIEWS WHERE c_id=${req.params.c_id}`, (err, reviews) => {
-            //     if (err) return console.error(err);
-            //     res.render("competition-reviews", {
-            //         title: competition.TITLE,
-            //         competition,
-            //         reviews,
-            //         errors
-            //     });
-            // });
-        }
-    });
+    if (req.isAuthenticated()) {
+        const errors = [];
+
+        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, competition) => {
+            if (err) return console.error(err);
+            if (!competition.length) return res.sendStatus(404);
+            competition = competition[0];
+            if (Date.now() < competition.STARTDATE) {
+                req.flash("error", "This competition hasn't started yet.");
+                res.redirect(`/competitions/details/${competition.C_ID}`);
+            } else if (Date.now() > competition.ENDDATE) {
+                req.flash("error", "This competition has already finished");
+                res.redirect(`/competitions/details/${competition.C_ID}`);
+            } else {
+                DBconnection.query(`SELECT * FROM dbproject.review, dbproject.user WHERE U_ID=ID AND C_ID=${req.params.c_id}`, (err, reviews) => {
+                    if (err) return console.error(err);
+                    const reactions = {
+                        Like: ['thumbs-up', '#1649b8'],
+                        Love: ['heart', '#E51552'],
+                        Angry: ['angry', '#ffa500'],
+                        Sad: ['frown', '#eeff00']
+                    }
+                    reviews.forEach(review => review.react = reactions[review.react]);
+                    res.render("competition-reviews", {
+                        title: competition.TITLE,
+                        competition,
+                        reviews,
+                        errors
+                    });
+                });
+            }
+        });
+    } else {
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
 });
 
 router.get('/CreateCompetition', (req, res) => {

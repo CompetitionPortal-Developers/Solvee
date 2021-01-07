@@ -1,0 +1,44 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1>Competitions</h1>
+        </div>
+        <ul class="competiton-breadcrumb">
+            <li><a href="/competitions/details/<%= competition.C_ID %>">Details</a></li>
+            <li><a href="/competitions/reviews/<%= competition.C_ID %>" class="active">Reviews</a></li>
+            <li><a href="/competitions/leaderboard/<%= competition.C_ID %>/<%= competition.TITLE %>">Leaderboard</a>
+            </li>
+        </ul>
+        <hr style="margin: 0; background-color:#150999">
+        <% if(!reviews.length) { %>
+        <div>
+            <h1 class="card-title text-center text-muted mt-3">There are no reviews for this competition ☹</h1>
+        </div>
+        <% } else { %>
+        <% reviews.forEach(review => { %>
+        <div class="card-body competitionExamCard"
+            style="border-radius: 10px; border: 1px solid rgba(0, 0, 0, .125); box-shadow: 0 0.155rem 0.35rem rgba(0, 0, 0, .075);">
+            <h2 class="card-title"><%= review.firstName %> <%= review.lastName %></h2>
+            <% if (review.comment) { %>
+            <p class="text-muted"><%= review.comment %></p>
+            <% } %>
+            <span class="text-muted"><b>Reacted: </b><i style="color: <%= review.react[1] %>"
+                    class="fas fa-<%= review.react[0] %>"></i></span>
+            <br>
+            <span class="text-muted"><b>Rated: </b>
+                <% if (!review.rating) { %>
+                No Rating
+                <% } else { for(let i = 0; i < Math.ceil(review.rating); i++) { %>
+                ⭐
+                <% }} %>
+            </span>
+        </div>
+        <% })} %>
+    </div>
+
+</div>
+
+<%-include("partials/Footer.ejs")%>

@@ -4,43 +4,43 @@
 <div class="container" style="min-height:100vh;">
   <%-messages("partials/Messages.ejs", locals)%>
 
-  <section class="profile-section2">
-
-    <div class="accordion" id="accordionExample">
-        <div class="competitionExamHeader">
-            <h1><%= comp_TITLE %></h1>
-        </div>
-        <ul class="competiton-breadcrumb">
-            <li><a href="/competitions/details/<%= comp_ID %>" >Details</a></li>
-            <li><a href="/competitions/reviews/<%= comp_ID %>">Reviews</a></li>
-            <li><a href="/competitions/leaderboard/<%= comp_ID %>/<%= comp_TITLE %>" class="active">Leaderboard</a></li>
-        </ul>
-        <div class="table-responsive">
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Username</th>
-                  <th>Grade</th>
-                  <th>Duration</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                  <%for(var i=0;i<List.length;i++){%>
-                <tr>
-                  <td><%=i+1%></td>
-                  <td><%=List[i].Username%></td>
-                  <td><%=List[i].grade%></td>
-                  <td><%=List[i].duration%></td>
-                  <td><%=List[i].score%></td>
-                </tr>
-                <%}%>
-              </tbody>
-            </table>
-          </div>
+  <div class="card center">
+    <div class="competitionExamHeader">
+      <h1><%= comp_TITLE %></h1>
     </div>
-  </section>
+
+    <ul class="competiton-breadcrumb">
+      <li><a href="/competitions/details/<%= comp_ID %>">Details</a></li>
+      <li><a href="/competitions/reviews/<%= comp_ID %>">Reviews</a></li>
+      <li><a href="/competitions/leaderboard/<%= comp_ID %>/<%= comp_TITLE %>" class="active">Leaderboard</a></li>
+    </ul>
+
+    <hr style="margin: 0; background-color:#150999">
+    <div class="table-responsive">
+      <table class="table table-striped table-sm text-center">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Grade</th>
+            <th>Duration</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%for(var i=0;i<List.length;i++){%>
+          <tr>
+            <td><%=i+1%></td>
+            <td><a href="/users/<%= List[i].Username %>" style="color: #212529;"><%=List[i].Username%></a></td>
+            <td><%=List[i].grade%></td>
+            <td><%=List[i].duration%></td>
+            <td><%=List[i].score%></td>
+          </tr>
+          <%}%>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <%- include("partials/Footer.ejs")%>
