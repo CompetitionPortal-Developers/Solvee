@@ -12,13 +12,8 @@ router.get('/', (req, res) => {
         const exams = rows;
         if (exams.length)
             exams.forEach(exam => {
-<<<<<<< HEAD
                 exam.STARTDATE = dateFormat.format(exam.STARTDATE);
                 exam.ENDDATE = dateFormat.format(exam.ENDDATE);
-=======
-                exams.STARTDATE = dateFormat.format(exam.STARTDATE);
-                exams.ENDDATE = dateFormat.format(exam.ENDDATE);
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
             });
         res.render('exams', {
             title: "Exams",
@@ -49,7 +44,6 @@ router.post('/:username/CreateExam', [
     body('questionNumber', 'Question Number must be selected').notEmpty(),
     body('startDate', 'Start Date must be selected').notEmpty(),
     body('duration', 'duration must be entered').notEmpty(),
-<<<<<<< HEAD
 ],(req,res)=>{
     
     if(req.isAuthenticated()){
@@ -57,15 +51,6 @@ router.post('/:username/CreateExam', [
         let {examTitle,category,questionNumber,startDate,duration,description}=req.body;
 
         if(examTitle=="" || category=="" || startDate=="" || description=="" || duration==""){
-=======
-], (req, res) => {
-
-    if (req.isAuthenticated()) {
-        let errors = validationResult(req).errors;
-        let { examTitle, category, questionNumber, startDate, endDate, duration, description } = req.body;
-
-        if (examTitle == "" || category == "" || startDate == "" || endDate == "" || description == "" || duration == "") {
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
             errors.unshift({ msg: "Please Fill In All Fields" });
         }
 
@@ -82,7 +67,6 @@ router.post('/:username/CreateExam', [
             });
         }
 
-<<<<<<< HEAD
         var add_minutes =  function (dt, minutes) {
             return new Date(dt.getTime() + minutes*60000);
         }
@@ -126,28 +110,6 @@ router.post('/:username/CreateExam', [
             }else{
                 res.render("Equestions-entry",{
                     title:"Questions Entry",
-=======
-        const query = "INSERT INTO dbproject.exam (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,DURATION,Qnum,U_ID) "
-            + "VALUES('" + examTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + duration + "," + questionNumber + "," + req.user.ID + ");";
-        DBconnection.query(query, (err, rows) => {
-            if (err) {
-                console.log(err);
-                req.flash("error", "Something Went Wrong Creating The Exam , Please Try Again Later");
-                return res.render("register", {
-                    title: "Register",
-                    errors,
-                    examTitle,
-                    category,
-                    questionNumber,
-                    startDate,
-                    endDate,
-                    duration,
-                    description
-                });
-            } else {
-                res.render("Equestions-entry", {
-                    title: "Questions Entry",
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
                     errors,
                     questionNumber,
                     examTitle
@@ -271,7 +233,6 @@ router.get("/ExamCreated/:Etitle",(req,res)=>{
     }
 })
 
-<<<<<<< HEAD
 router.post("/details/:E_ID",(req,res)=>{
     let errors=[];
     if(req.isAuthenticated()){
@@ -422,6 +383,4 @@ router.post('/questions/:e_id', (req, res) => {
 
 
 
-=======
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 module.exports = router;

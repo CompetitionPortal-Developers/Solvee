@@ -103,13 +103,12 @@ CREATE TABLE EXAM (
     );
 
     create table award (
-        userID int references user(ID) on delete cascade,
+        userID int references user(ID) on delete set null ,
         competitionID int references competition(C_ID) on delete cascade,
-        primary key(userID,competitionID),
-        a_type varchar(50) not null
+        a_type varchar(50) not null,
+        primary key(a_type,competitionID)
     );
 
-<<<<<<< HEAD
 create table participate (
     userID int references user(ID) on delete cascade,
     competitionID int references competition(C_ID) on delete cascade,
@@ -124,7 +123,6 @@ create table solve (
     s_time datetime default current_timestamp,
     grades int
 );
-=======
     create table leaderboard (
         U_ID int not null references user(ID) on delete cascade,
         C_ID int references competition(C_ID) on delete cascade,
@@ -133,7 +131,6 @@ create table solve (
         duration decimal(9, 2) not null,
         score decimal(9, 2) not null
     );
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 
     create table participate (
         userID int references user(ID) on delete cascade,

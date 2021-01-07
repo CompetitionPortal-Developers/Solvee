@@ -33,46 +33,73 @@ router.get('/', (req, res) => {
 router.get('/details/:c_id', (req, res) => {
     const errors = [];
 
-    DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
-        if (err) return console.error(err);
-        if (!rows.length) return res.sendStatus(404);
-        const competition = rows[0];
-        competition.STARTDATE = dateFormat.format(competition.STARTDATE);
-        competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-        DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
-            res.render("competition-details", {
-                title: competition.TITLE,
-                competition,
-                host: user,
-                errors
+    if(req.isAuthenticated()){
+        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
+            if (err) return console.error(err);
+            if (!rows.length) return res.sendStatus(404);
+            const competition = rows[0];
+            competition.STARTDATE = dateFormat.format(competition.STARTDATE);
+            competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+            DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
+                res.render("competition-details", {
+                    title: competition.TITLE,
+                    competition,
+                    host: user,
+                    errors
+                });
             });
         });
-    });
+    }else{
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
 });
 
 router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
     const errors = [];
-    const query = "select u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-        + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID ";
-    const comp_ID = req.params.c_id;
-    const comp_TITLE = req.params.comp_name;
-    DBconnection.query(query, (err, List) => {
-        if (err) {
-            return console.log(err);
-        } else {
-            console.log(List);
-            List.sort((a, b) => {
-                return b.score - a.score;
-            });
-            res.render("leaderboard", {
-                title: comp_TITLE,
-                errors,
-                comp_ID,
-                comp_TITLE,
-                List
-            });
+    if(req.isAuthenticated()){
+        const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
+            + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID ";
+        const comp_ID = req.params.c_id;
+        const comp_TITLE = req.params.comp_name;
+
+
+        function GiveRewards(List,index,Award){
+            if(index>=List.length || index==3){
+                return
+            }else{
+                const giveAward="update dbproject.award set userID="+List[index].ID+" where a_type='"+Award+"' and competitionID="+comp_ID+" ;";
+                DBconnection.query(giveAward,(err)=>{
+                    if(err){return console.log(err);}
+                    if(index==0){Award='Silver';}
+                    if(index==1){Award='Bronze';}
+                    GiveRewards(List,index+1,Award);
+                })
+            }
         }
-    })
+
+        DBconnection.query(query, (err, List) => {
+            if (err) {
+                return console.log(err);
+            } else {
+                console.log(List);
+                List.sort((a, b) => {
+                    return b.score - a.score;
+                });
+                GiveRewards(List,0,'Gold');
+                res.render("leaderboard", {
+                    title: comp_TITLE,
+                    errors,
+                    comp_ID,
+                    comp_TITLE,
+                    List
+                });
+            }
+        })
+    }else {
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
 });
 
 router.get('/questions/:c_id', (req, res) => {
@@ -154,7 +181,7 @@ router.post('/questions/:c_id', (req, res) => {
                         DBconnection.query(insertToLB, err => {
                             if (err) return console.error(err);
                             req.flash('success', 'Your answers are submitted!');
-                            res.redirect(`/competitions/reviews/${competition.C_ID}`);
+                            res.redirect(`/competitions/leaderboard/${competition.C_ID}/${competition.TITLE}`);
                         });
                     });
                 });
@@ -401,11 +428,15 @@ router.get("/CompetitionCreated/:Ctitle", (req, res) => {
                 console.log(err);
             } else {
                 let code = rows[0].C_ID;
-                res.render("Ccompetition-success", {
-                    title: "Competition Created",
-                    errors,
-                    code
-                });
+                const awardQuery="insert into dbproject.award (competitionID,a_type) values("+code+",'Gold'),("+code+",'Silver'),("+code+",'Bronze');";
+                DBconnection.query(awardQuery,(err)=>{
+                    if(err){return console.log(err);}
+                    res.render("Ccompetition-success", {
+                        title: "Competition Created",
+                        errors,
+                        code
+                    });
+                })
             }
         });
     } else {
