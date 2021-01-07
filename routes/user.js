@@ -3,6 +3,9 @@ const { body, validationResult } = require('express-validator');
 const { DBconnection } = require("../config/database");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { route } = require('./competition');
+const { format } = require('../config/date-formatting');
+const dateFormatting = require('../config/date-formatting');
 
 router.get('/user', (req, res) => {
     const errors = [];
@@ -471,6 +474,72 @@ router.post("/:username/todolist/delete/:taskid", (req, res) => {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
     }
+})
+
+router.get("/:username/history",(req,res)=>{
+    let errors=[];
+    if(req.isAuthenticated()){
+        const username=req.params.username;
+        const examQuery="select * from dbproject.exam where U_ID="+req.user.ID+" ;";
+        const CompetitionQuery="select * from dbproject.competition where U_ID="+req.user.ID+" ;";
+        const solveQuery="select s.s_time,s.grades,e.TITLE from dbproject.solve as s,dbproject.exam as e "
+                        +"where s.userID="+req.user.ID+" and e.E_ID=s.examID;";
+        const participateQuery="select l.score,c.TITLE from dbproject.leaderboard as l,dbproject.competition as c "
+                                +"where l.U_ID="+req.user.ID+" and l.C_ID=c.C_ID ;";
+        const queries=[examQuery,CompetitionQuery,solveQuery,participateQuery];
+        function ExecuteQuery(index,queries,queryResults){
+            if(index>=4){
+                res.render("user-history",{
+                    title:"Account History",
+                    errors,
+                    queryResults,
+                    username
+                });
+            }
+            else{
+                DBconnection.query(queries[index],(err,Results)=>{
+                    if(err){return console.log(err);}
+                    else{
+                        if(index==2){
+                            for(var j=0;j<Results.length;j++){
+                                Results[j].s_time=dateFormatting.format(Results[j].s_time);
+                            }
+                        }
+                        queryResults.push(Results);
+                        ExecuteQuery(index+1,queries,queryResults);
+                    }
+                })
+            }
+        }
+        let queryResults=[];
+        ExecuteQuery(0,queries,queryResults);
+    }else{
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+})
+
+router.get("/:username/history/:type/:ID",(req,res)=>{
+    const redirectLink="/users/"+req.params.username+"/history";
+    const userquery="select * from dbproject.user where ID="+req.user.ID+" and Username='"+req.params.username+"' ;";
+    let type=req.params.type;
+    type=type.toString();
+    const deleteID=req.params.ID;
+    const query="delete from dbproject."+type+" where "+type[0]+"_ID="+deleteID+" ;";
+    DBconnection.query(userquery,(err,results)=>{
+        if(err){return console.log(err);}
+        if(results){
+            DBconnection.query(query,(err)=>{
+                if(err){return console.log(err);}
+                req.flash("success", type+" Is Deleted Successfully");
+                res.redirect(redirectLink);
+            })
+        }else{
+            req.flash("error", "You aren't allowed to delete items");
+            res.redirect(redirectLink);
+        }
+    })
+    
 })
 
 module.exports = router;

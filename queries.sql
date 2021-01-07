@@ -32,7 +32,6 @@
         primary key(donation_ID)
     );
 
-<<<<<<< HEAD
 create table todolist (
 	tasks varchar(100) not null,
     deadline datetime,
@@ -40,16 +39,13 @@ create table todolist (
     todoID int not null auto_increment,
     primary key(U_ID,todo_ID)
 );
-=======
     alter table donation auto_increment=1234;
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 
     create table todolist (
         tasks varchar(100) not null,
         deadline datetime
     );
 
-<<<<<<< HEAD
 CREATE TABLE EXAM (
     E_ID INT PRIMARY KEY auto_increment, 
     CODE VARCHAR(50) UNIQUE, 
@@ -62,7 +58,6 @@ CREATE TABLE EXAM (
     U_ID int not null references user(ID),
     Qnum int not null
 );
-=======
     CREATE TABLE COMPETITION (
         C_ID INT PRIMARY KEY auto_increment, 
         TITLE VARCHAR(50) NOT NULL UNIQUE,
@@ -74,7 +69,6 @@ CREATE TABLE EXAM (
         U_ID int not null references user(ID),
         Qnum int not null
     );
->>>>>>> d9d80736b6aee635df0d65eb3cc022bed9397f72
 
     CREATE TABLE EXAM (
         E_ID INT PRIMARY KEY auto_increment, 
@@ -121,7 +115,7 @@ create table solve (
     examID int references exam(E_ID) on delete cascade,
     primary key(userID, examID),
     s_time datetime default current_timestamp,
-    grades int
+    grades int default 0
 );
     create table leaderboard (
         U_ID int not null references user(ID) on delete cascade,

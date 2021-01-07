@@ -442,3 +442,9 @@ ul.competiton-breadcrumb li a:hover {
   padding: 3%;
   color: #1E3384;
 }
+.history{
+  background-color: white;
+}
+.history:hover{
+  background-color: white;
+}

@@ -15,8 +15,9 @@
         </div>
         <div class="aboutProfile">
           <% if (user.ID === profileInfo[0].ID) { %>
-          <a href="/users/<%= user.Username %>/edit-profile" class="buttonProfile btn btn-danger">Edit Profile</a>
-          <a href="/users/<%= user.Username %>/todolist" class="buttonProfile btn btn-info" style="margin-right: 20px">Todo List</a>
+            <a href="/users/<%= user.Username %>/history" class="buttonProfile btn btn-outline-dark">History</a>
+          <a href="/users/<%= user.Username %>/edit-profile" class="buttonProfile btn btn-danger" style="margin-right: 2%">Edit Profile</a>
+          <a href="/users/<%= user.Username %>/todolist" class="buttonProfile btn btn-info" style="margin-right: 2%">Todo List</a>
           <% } %>
         </div>
       </div>
