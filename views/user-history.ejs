@@ -1,0 +1,54 @@
+<%- include("partials/Header.ejs")%>
+<!--To publish the errors on screen for user if any were found-->
+  <%-messages("partials/Messages.ejs", locals)%>
+  <div class="container" style="min-height: 200vh;">
+    <div class="card center">
+        <h2 style="font-weight: bold;">Exams By <%=username%></h2>
+        <hr style="background-color:#E51552">
+        <%for(var i=0;i<queryResults[0].length;i++){%>
+            <div class="card-body competitionExamCard">
+                <h5 class="card-title"><%=queryResults[0][i].TITLE%><a href="/users/<%=username%>/history/Exam/<%=queryResults[0][i].E_ID%>" style="margin-top: 10px; float:right"
+                    class="btn btn-danger"><i class="fas fa-trash-alt " style="color: rgb(226,222, 222);"  ></i> Delete</a></h5>
+            </div>
+        <%}%>
+        <%if(queryResults[0].length==0){%>
+            <small style="text-align: center; color: gray;">No Exams Created Yet</small>
+        <%}%>
+        <br><br>
+        <h2 style="font-weight: bold;">Competitions By <%=username%></h2>
+        <hr style="background-color:#E51552">
+        <%for(var i=0;i<queryResults[1].length;i++){%>
+            <div class="card-body competitionExamCard">
+                <h5 class="card-title"><%=queryResults[1][i].TITLE%><a href="/users/<%=username%>/history/Competition/<%=queryResults[1][i].C_ID%>"  style="margin-top: 10px; float:right"
+                    class="btn btn-danger"><i class="fas fa-trash-alt" style="color: rgb(226, 222, 222);" ></i> Delete</a></h5>
+            </div>
+        <%}%>
+        <%if(queryResults[1].length==0){%>
+            <small style="text-align: center; color: gray;">No Competitions Created Yet</small>
+        <%}%>
+        <br><br>
+        <h2 style="font-weight: bold;"><%=username%>'s Activity</h2>
+        <hr style="background-color:#E51552">
+            <div class="card-body competitionExamCard">
+                <%for(var i=0;i<queryResults[2].length;i++){%>
+                <p class="card-title">Solved <%=queryResults[2][i].TITLE%> 
+                    <small style="color: gray; float: right;"><i style="color:gray" class="far fa-calendar-alt"></i> <%=queryResults[2][i].s_time%></small> 
+                </p>
+                <%}%>
+            </div>
+            <div class="card-body competitionExamCard">
+                <%for(var i=0;i<queryResults[3].length;i++){%>
+                <p class="card-title">Participated In <%=queryResults[3][i].TITLE%> 
+                    <small style="color: gray; float: right;">Score: <%=queryResults[3][i].score%></small> 
+                </p>
+                <%}%>
+            </div>
+            <%if(queryResults[3].length==0 && queryResults[2].length==0){%>
+                <small style="text-align: center; color: gray;">No Activity Yet</small>
+            <%}%>
+        
+    </div>
+
+</div>
+
+<%- include("partials/Footer.ejs")%>
