@@ -1,5 +1,5 @@
 body {
-  background-image: url(../images/workInProgress/green-chameleon\ \(1\).jpg);
+  background-image: url(../images/background\ 2.jpg);
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -47,8 +47,23 @@ footer {
 }
 
 .ic:hover {
-  color: #5c5c5c;
-  transform: scale(1.1);
+  transform: scale(1.2);
+}
+
+.fa-twitter:hover {
+  color: #00acee;
+}
+
+.fa-facebook-f:hover {
+  color: #3b5998;
+}
+
+.fa-instagram:hover {
+  color: #cd486b;
+}
+
+.fa-envelope:hover {
+  color: #BB001B;
 }
 
 /*Carousel Prop*/
@@ -73,7 +88,7 @@ img {
 .navbar-links {
   font-family: "Poppins", sans-serif;
   font-weight: light;
-  transition: all 0.3s;
+  transition: all 0.5s;
 }
 
 /*Navbar classes*/
@@ -358,7 +373,8 @@ ul.competiton-breadcrumb li a:hover {
 .Success {
   text-align: center;
 }
-.Success h2{
+
+.Success h2 {
   color: green;
   padding: 3%;
 }

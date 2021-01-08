@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', [
-    body('fullname', 'Fullname must only contain letters and spaces').custom((value => value.match(/^[A-Za-z ]+$/))),
+    body('fullname', 'Full Name must only contain letters and spaces').custom((value => value.match(/^[A-Za-z ]+$/))),
     body('fullname', 'Full Name must be between 5 and 50 characters long').isLength({ min: 2, max: 50 }),
     body('fullname', 'Full Name must be entered').notEmpty(),
     body('country', 'You must choose a country').notEmpty(),

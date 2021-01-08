@@ -7,17 +7,18 @@
             <h1>Competitions</h1>
         </div>
         <!-- <form action="/competitions/search" method="post"> -->
-            <div class="mb-3">
-                <div class="input-group">
-                    <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
-                        placeholder="Search">
-                    <div class="input-group-prepend">
-                        <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>Search</button>
-                        
-                        <a role="button" href="/competitions/CreateCompetition" class="btn btn-success">Create Competition</a>
-                    </div>
+        <div class="mb-3">
+            <div class="input-group">
+                <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
+                    placeholder="Search">
+                <div class="input-group-prepend">
+                    <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>Search</button>
+
+                    <a role="button" href="/competitions/CreateCompetition" class="btn btn-success">Create
+                        Competition</a>
                 </div>
             </div>
+        </div>
         <!-- </form> -->
         <br><br>
         <hr style="background-color:#150999">
@@ -44,10 +45,6 @@
                 ⭐
                 <% }} %>
             </span>
-            <br>
-            <span class="text-muted"> <b>Description: </b>
-                <%= competition.DESCP %>
-                &nbsp;</span>
             <br>
             <a href="/competitions/details/<%= competition.C_ID %>" style="margin-top: 10px;"
                 class="btn btn-outline-Custom">Participate Now</a>
