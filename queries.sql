@@ -67,7 +67,8 @@ CREATE TABLE EXAM (
         STARTDATE DATETIME NOT NULL,
         ENDDATE DATETIME NOT NULL,
         U_ID int not null references user(ID),
-        Qnum int not null
+        Qnum int not null,
+        T_Flag bit DEFAULT 0
     );
 
     CREATE TABLE EXAM (
@@ -159,6 +160,36 @@ create table solve (
         comment varchar(200),
         rating int,
         react varchar(5)
+    );
+
+    create table Tournament(
+        T_ID INT PRIMARY KEY auto_increment,
+        TITLE VARCHAR(50) NOT NULL UNIQUE,
+        STARTDATE DATETIME NOT NULL,
+        ENDDATE DATETIME NOT NULL,
+        FEES int,
+        DESCP VARCHAR(500)
+    );
+
+    create table CR_TOURNMT(
+        U_ID int NOT null references user(ID) on delete cascade,
+        T_ID int not null references Tournament(T_ID) on delete cascade,
+        primary key(U_ID, T_ID),
+    );
+
+    create table T_contains_Cs(
+        T_ID int NOT NULL references Tournament(T_ID) on delete cascade,
+        C_1_ID int NOT NULL references competition(ID) on delete cascade,
+        C_2_ID int NOT NULL references competition(ID) on delete cascade,
+        C_3_ID int NOT NULL references competition(ID) on delete cascade,
+        C_4_ID int NOT NULL references competition(ID) on delete cascade,
+    );
+
+    create table participates_in_T (
+        userID int references user(ID) on delete cascade,
+        tournamentID int references Tournament(T_ID) on delete cascade,
+        primary key(userID, tournamentID),
+        s_time datetime default current_timestamp
     );
 
     INSERT INTO USER (
