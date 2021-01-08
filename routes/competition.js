@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
 const { DBconnection } = require("../config/database");
+const { format } = require("../config/date-formatting");
 const dateFormat = require("../config/date-formatting");
 
 router.get('/', (req, res) => {
@@ -204,7 +205,11 @@ router.get('/reviews/:c_id', (req, res) => {
                         Angry: ['angry', '#ffa500'],
                         Sad: ['frown', '#eeff00']
                     }
+                    for (var i = 0; i < reviews.length; i++) {
+                        reviews[i].dateSubmit = format(reviews[i].dateSubmit);
+                    }
                     reviews.forEach(review => review.react = reactions[review.react]);
+                    //console.log(reviews);
                     res.render("competition-reviews", {
                         title: competition.TITLE,
                         competition,
@@ -214,6 +219,30 @@ router.get('/reviews/:c_id', (req, res) => {
                 });
             }
         });
+    } else {
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+});
+
+router.post('/reviews/:c_id', (req, res) => {
+    if (req.isAuthenticated()) {
+        const { rate, reaction, description } = req.body;
+        const validateQuery = "select * from dbproject.participate where userID=" + req.user.ID + " and competitionID=" + req.params.c_id + " ;";
+        const query = "insert into dbproject.review (U_ID,C_ID,comment,rating,react) "
+            + "values(" + req.user.ID + "," + req.params.c_id + ",'" + description + "'," + rate + ",'" + reaction + "');";
+        DBconnection.query(validateQuery, (err, result) => {
+            if (result.length > 0) {
+                DBconnection.query(query, (err, results) => {
+                    if (err) { return console.log(err); }
+                    req.flash("success", "Your Review Is Submited Successfully");
+                    res.redirect("/competitions/reviews/" + req.params.c_id + "");
+                })
+            } else {
+                req.flash("error", "You Aren't A Participant To Leave A Review");
+                res.redirect("/competitions/reviews/" + req.params.c_id + "");
+            }
+        })
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");

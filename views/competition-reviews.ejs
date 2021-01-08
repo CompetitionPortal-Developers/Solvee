@@ -1,17 +1,20 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
-<!--To publish the errors on screen for user if any were found-->
+<%- include("partials/Header.ejs")%>
 
 <div class="container">
+    <%-messages("partials/Messages.ejs", locals)%>
     <div class="card center">
         <div class="competitionExamHeader">
             <h1>Competitions</h1>
         </div>
-        <ul class="competiton-breadcrumb">
-            <li><a href="/competitions/details/<%= competition.C_ID %>">Details</a></li>
-            <li><a href="/competitions/reviews/<%= competition.C_ID %>" class="active">Reviews</a></li>
-            <li><a href="/competitions/leaderboard/<%= competition.C_ID %>/<%= competition.TITLE %>">Leaderboard</a>
-            </li>
-        </ul>
+        <div class="d-flex justify-content-between" style="margin-bottom: 1rem;">
+            <ul class="competiton-breadcrumb" style="margin-bottom: 0;">
+                <li><a href="/competitions/details/<%= competition.C_ID %>">Details</a></li>
+                <li><a href="/competitions/reviews/<%= competition.C_ID %>" class="active">Reviews</a></li>
+                <li><a href="/competitions/leaderboard/<%= competition.C_ID %>/<%= competition.TITLE %>">Leaderboard</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-Login" data-toggle="modal" data-target="#reviewModal">Review</button>
+        </div>
         <hr style="margin: 0; background-color:#150999">
         <% if(!reviews.length) { %>
         <div>
@@ -35,10 +38,62 @@
                 ⭐
                 <% }} %>
             </span>
+            <br>
+            <small class="text-muted" style="float: right;"><%=review.dateSubmit%></small>
         </div>
         <% })} %>
     </div>
 
+</div>
+
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="/competitions/reviews/<%= competition.C_ID %>" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Review this competition</h5>
+                    <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex row">
+                    <div class="col-12">
+                        <h6 class="text-muted mb-0"><b>Rating: </b></h6>
+                        <div class="rate">
+                            <input type="radio" id="star5" name="rate" value="5" />
+                            <label for="star5" title="5">5 stars</label>
+                            <input type="radio" id="star4" name="rate" value="4" />
+                            <label for="star4" title="4">4 stars</label>
+                            <input type="radio" id="star3" name="rate" value="3" />
+                            <label for="star3" title="3">3 stars</label>
+                            <input type="radio" id="star2" name="rate" value="2" />
+                            <label for="star2" title="2">2 stars</label>
+                            <input type="radio" id="star1" name="rate" value="1" />
+                            <label for="star1" title="1">1 star</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <select class="form-control" name="reaction" id="reaction" required aria-placeholder="Reaction">
+                            <option selected disabled>Select reaction</option>
+                            <option value="Like">Like 👍🏻</option>
+                            <option value="Love">Love 😍</option>
+                            <option value="Angry">Angry 🤬</option>
+                            <option value="Sad">Sad 😥</option>
+                        </select>
+                    </div>
+                    <div class="col-12" style="margin-top: 5%;">
+                        <textarea placeholder="Leave Us A Comment" type="text" class="form-control"
+                            name="description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-Custom">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <%-include("partials/Footer.ejs")%>
