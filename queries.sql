@@ -132,39 +132,68 @@ create table review (
     dateSubmit datetime default current_timestamp
 );
 
-INSERT INTO USER (
-    Username,
-    email,
-    pass,
-    gender,
-    firstName,
-    lastName,
-    BirthDate
-) VALUES (
-    'abdullahadel',
-    'test1@email.com',
-    '$2a$10$quE6k.oeFChLdYr6VvgK8.25K/Ke2gWVV92ZyW/7YJ4ggrwyw7s.i',
-    'M',
-    'Abdullah',
-    'Adel',
-    '2001-4-1'
-), (
-    'abeerhussain',
-    'test2@email.com',
-    '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
-    'F',
-    'Abeer',
-    'Hussain',
-    '2000-4-10'
-),(
-    'essamwessam',
-    'test3@email.com',
-    '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
-    'M',
-    'Essam',
-    'Wessam',
-    '1999-11-11'
-);
+    create table tournament(
+        T_ID INT PRIMARY KEY auto_increment,
+        TITLE VARCHAR(50) NOT NULL UNIQUE,
+        STARTDATE DATETIME NOT NULL,
+        ENDDATE DATETIME NOT NULL,
+        FEES int,
+        DESCP VARCHAR(500)
+    );
+
+    create table CR_TOURNMT(
+        U_ID int NOT null references user(ID) on delete cascade,
+        T_ID int not null references tournament(T_ID) on delete cascade,
+        primary key(U_ID, T_ID)
+    );
+
+    create table T_contains_Cs(
+        T_ID int NOT NULL references tournament(T_ID) on delete cascade,
+        C_1_ID int NOT NULL references competition(ID) on delete cascade,
+        C_2_ID int NOT NULL references competition(ID) on delete cascade,
+        C_3_ID int NOT NULL references competition(ID) on delete cascade,
+        C_4_ID int NOT NULL references competition(ID) on delete cascade
+    );
+
+    create table participates_in_T (
+        userID int references user(ID) on delete cascade,
+        tournamentID int references tournament(T_ID) on delete cascade,
+        primary key(userID, tournamentID)
+    );
+
+    INSERT INTO USER (
+        Username,
+        email,
+        pass,
+        gender,
+        firstName,
+        lastName,
+        BirthDate
+    ) VALUES (
+        'abdullahadel',
+        'test1@email.com',
+        '$2a$10$quE6k.oeFChLdYr6VvgK8.25K/Ke2gWVV92ZyW/7YJ4ggrwyw7s.i',
+        'M',
+        'Abdullah',
+        'Adel',
+        '2001-4-1'
+    ), (
+        'abeerhussain',
+        'test2@email.com',
+        '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
+        'F',
+        'Abeer',
+        'Hussain',
+        '2000-4-10'
+    ),(
+        'essamwessam',
+        'test3@email.com',
+        '$2a$10$1rmlB4qweiPmCpjrIWjmQOprPYldraNi4jDZ.tbSZ0QXETgnlWBmC',
+        'M',
+        'Essam',
+        'Wessam',
+        '1999-11-11'
+    );
 
 INSERT INTO COMPETITION (
     TITLE,
