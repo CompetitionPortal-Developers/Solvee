@@ -33,31 +33,14 @@
     );
 
 create table todolist (
-	tasks varchar(100) not null,
-    deadline datetime,
-    U_ID int not null references user(ID),
+	U_ID int not null references user(ID),
     todoID int not null auto_increment,
-    primary key(U_ID,todo_ID)
+    primary key(todoID),
+    tasks varchar(100) not null,
+    deadline datetime
 );
     alter table donation auto_increment=1234;
-
-    create table todolist (
-        tasks varchar(100) not null,
-        deadline datetime
-    );
-
-CREATE TABLE EXAM (
-    E_ID INT PRIMARY KEY auto_increment, 
-    CODE VARCHAR(50) UNIQUE, 
-    TITLE VARCHAR(50) NOT NULL UNIQUE,
-    CATEGORY VARCHAR(50) NOT NULL, 
-    DESCP VARCHAR(500),
-    DURATION INT NOT NULL,
-    STARTDATE DATETIME NOT NULL,
-    ENDDATE DATETIME NOT NULL,
-    U_ID int not null references user(ID),
-    Qnum int not null
-);
+    
     CREATE TABLE COMPETITION (
         C_ID INT PRIMARY KEY auto_increment, 
         TITLE VARCHAR(50) NOT NULL UNIQUE,
@@ -104,13 +87,6 @@ CREATE TABLE EXAM (
         primary key(a_type,competitionID)
     );
 
-create table participate (
-    userID int references user(ID) on delete cascade,
-    competitionID int references competition(C_ID) on delete cascade,
-    primary key(userID, competitionID),
-    s_time datetime default current_timestamp,
-);
-
 create table solve (
     userID int references user(ID) on delete cascade,
     examID int references exam(E_ID) on delete cascade,
@@ -141,13 +117,6 @@ create table solve (
         Choice varchar(100) DEFAULT 'No Answer'
     );
 
-    create table Solves (
-        U_ID int not null references user(ID) on delete cascade,
-        E_ID int not null references EXAM(E_ID) on delete cascade,
-        primary key(U_ID,E_ID),
-        grade int not null
-    );
-
     create table RanksIn (
         U_ID int not null references user(ID) on delete cascade,
         C_ID int not null references COMPETITION(C_ID) on delete cascade,
@@ -174,7 +143,7 @@ create table solve (
     create table CR_TOURNMT(
         U_ID int NOT null references user(ID) on delete cascade,
         T_ID int not null references tournament(T_ID) on delete cascade,
-        primary key(U_ID, T_ID),
+        primary key(U_ID, T_ID)
     );
 
     create table T_contains_Cs(
@@ -182,13 +151,13 @@ create table solve (
         C_1_ID int NOT NULL references competition(ID) on delete cascade,
         C_2_ID int NOT NULL references competition(ID) on delete cascade,
         C_3_ID int NOT NULL references competition(ID) on delete cascade,
-        C_4_ID int NOT NULL references competition(ID) on delete cascade,
+        C_4_ID int NOT NULL references competition(ID) on delete cascade
     );
 
     create table participates_in_T (
         userID int references user(ID) on delete cascade,
         tournamentID int references tournament(T_ID) on delete cascade,
-        primary key(userID, tournamentID),
+        primary key(userID, tournamentID)
     );
 
     INSERT INTO USER (
