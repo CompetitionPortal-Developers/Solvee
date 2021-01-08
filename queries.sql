@@ -162,7 +162,7 @@ create table solve (
         react varchar(5)
     );
 
-    create table Tournament(
+    create table tournament(
         T_ID INT PRIMARY KEY auto_increment,
         TITLE VARCHAR(50) NOT NULL UNIQUE,
         STARTDATE DATETIME NOT NULL,
@@ -173,12 +173,12 @@ create table solve (
 
     create table CR_TOURNMT(
         U_ID int NOT null references user(ID) on delete cascade,
-        T_ID int not null references Tournament(T_ID) on delete cascade,
+        T_ID int not null references tournament(T_ID) on delete cascade,
         primary key(U_ID, T_ID),
     );
 
     create table T_contains_Cs(
-        T_ID int NOT NULL references Tournament(T_ID) on delete cascade,
+        T_ID int NOT NULL references tournament(T_ID) on delete cascade,
         C_1_ID int NOT NULL references competition(ID) on delete cascade,
         C_2_ID int NOT NULL references competition(ID) on delete cascade,
         C_3_ID int NOT NULL references competition(ID) on delete cascade,
@@ -187,9 +187,8 @@ create table solve (
 
     create table participates_in_T (
         userID int references user(ID) on delete cascade,
-        tournamentID int references Tournament(T_ID) on delete cascade,
+        tournamentID int references tournament(T_ID) on delete cascade,
         primary key(userID, tournamentID),
-        s_time datetime default current_timestamp
     );
 
     INSERT INTO USER (
