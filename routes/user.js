@@ -171,7 +171,7 @@ router.get('/:username', (req, res) => {
         DBconnection.query(query1, (err, profileInfo) => {
             if (err) return console.error(err);
             const query2 = "select a.a_type, c.TITLE from dbproject.award as a,dbproject.competition as c "
-                + " where a.userID="+req.user.ID+" and a.competitionID=c.C_ID";
+                + " where a.userID=" + req.user.ID + " and a.competitionID=c.C_ID";
             //Second query to get the awards of user
             DBconnection.query(query2, (err, awards) => {
                 if (err) return console.error(err);
@@ -223,12 +223,12 @@ router.get('/:username/edit-profile', (req, res) => {
 router.post('/:username/edit-profile', (req, res) => {
     const errors = []; //all errors push should be turned into req flash
     let { firstName, lastName, username, pass, confirmPass, education, job, birthdate, gender, bio } = req.body;
-    firstName=firstName.toString().replace(/'/g,"`");
-    lastName=lastName.toString().replace(/'/g,"`");
-    education=education.toString().replace(/'/g,"`");
-    username=username.toString().replace(/'/g,"`");
-    job=job.toString().replace(/'/g,"`");
-    bio=bio.toString().replace(/'/g,"`");
+    firstName = firstName.toString().replace(/'/g, "`");
+    lastName = lastName.toString().replace(/'/g, "`");
+    education = education.toString().replace(/'/g, "`");
+    username = username.toString().replace(/'/g, "`");
+    job = job.toString().replace(/'/g, "`");
+    bio = bio.toString().replace(/'/g, "`");
     if (req.isAuthenticated()) {
         let query;
         console.log(req.body);

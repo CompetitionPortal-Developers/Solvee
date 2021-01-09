@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
 const schedule = require("node-schedule");
 const { DBconnection } = require("../config/database");
+const { format } = require("../config/date-formatting");
 const dateFormat = require("../config/date-formatting");
 
 function GiveRewards(List,index,Award){
@@ -28,12 +29,6 @@ router.get('/', (req, res) => {
             competitions.forEach(competition => {
                 competition.STARTDATE = dateFormat.format(competition.STARTDATE);
                 competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-                if(competition.DESCP){
-                    if(competition.DESCP.length>151){
-                        competition.DESCP=competition.DESCP.toString().slice(0,150);
-                        competition.DESCP+="...";
-                    }
-                }
             });
 
         res.render('competitions', {
@@ -46,36 +41,44 @@ router.get('/', (req, res) => {
 
 router.get('/details/:c_id', (req, res) => {
     const errors = [];
-
-    if(req.isAuthenticated()){
-        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
-            if (err) return console.error(err);
-            if (!rows.length) return res.sendStatus(404);
-            const competition = rows[0];
-            competition.STARTDATE = dateFormat.format(competition.STARTDATE);
-            competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-            DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
-                res.render("competition-details", {
-                    title: competition.TITLE,
-                    competition,
-                    host: user,
-                    errors
-                });
+    DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
+        if (err) return console.error(err);
+        if (!rows.length) return res.sendStatus(404);
+        const competition = rows[0];
+        competition.STARTDATE = dateFormat.format(competition.STARTDATE);
+        competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+        DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
+            res.render("competition-details", {
+                title: competition.TITLE,
+                competition,
+                host: user,
+                errors
             });
         });
-    }else{
-        req.flash("error", "Please log in first");
-        res.redirect("/users/login");
-    }
+    });
 });
 
 router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
     const errors = [];
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
             + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID ";
         const comp_ID = req.params.c_id;
         const comp_TITLE = req.params.comp_name;
+
+        function GiveRewards(List, index, Award) {
+            if (index >= List.length || index == 3) {
+                return
+            } else {
+                const giveAward = "update dbproject.award set userID=" + List[index].ID + " where a_type='" + Award + "' and competitionID=" + comp_ID + " ;";
+                DBconnection.query(giveAward, (err) => {
+                    if (err) { return console.log(err); }
+                    if (index == 0) { Award = 'Silver'; }
+                    if (index == 1) { Award = 'Bronze'; }
+                    GiveRewards(List, index + 1, Award);
+                })
+            }
+        }
 
         DBconnection.query(query, (err, List) => {
             if (err) {
@@ -85,7 +88,7 @@ router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
                 List.sort((a, b) => {
                     return b.score - a.score;
                 });
-                GiveRewards(List,0,'Gold');
+                GiveRewards(List, 0, 'Gold');
                 res.render("leaderboard", {
                     title: comp_TITLE,
                     errors,
@@ -95,7 +98,7 @@ router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
                 });
             }
         })
-    }else {
+    } else {
         req.flash("error", "Please log in first");
         res.redirect("/users/login");
     }
@@ -237,7 +240,11 @@ router.get('/reviews/:c_id', (req, res) => {
                         Angry: ['angry', '#ffa500'],
                         Sad: ['frown', '#eeff00']
                     }
+                    for (var i = 0; i < reviews.length; i++) {
+                        reviews[i].dateSubmit = format(reviews[i].dateSubmit);
+                    }
                     reviews.forEach(review => review.react = reactions[review.react]);
+                    //console.log(reviews);
                     res.render("competition-reviews", {
                         title: competition.TITLE,
                         competition,
@@ -247,6 +254,30 @@ router.get('/reviews/:c_id', (req, res) => {
                 });
             }
         });
+    } else {
+        req.flash("error", "Please Login First");
+        res.redirect("/users/login");
+    }
+});
+
+router.post('/reviews/:c_id', (req, res) => {
+    if (req.isAuthenticated()) {
+        const { rate, reaction, description } = req.body;
+        const validateQuery = "select * from dbproject.participate where userID=" + req.user.ID + " and competitionID=" + req.params.c_id + " ;";
+        const query = "insert into dbproject.review (U_ID,C_ID,comment,rating,react) "
+            + "values(" + req.user.ID + "," + req.params.c_id + ",'" + description + "'," + rate + ",'" + reaction + "');";
+        DBconnection.query(validateQuery, (err, result) => {
+            if (result.length > 0) {
+                DBconnection.query(query, (err, results) => {
+                    if (err) { return console.log(err); }
+                    req.flash("success", "Your Review Is Submited Successfully");
+                    res.redirect("/competitions/reviews/" + req.params.c_id + "");
+                })
+            } else {
+                req.flash("error", "You Aren't A Participant To Leave A Review");
+                res.redirect("/competitions/reviews/" + req.params.c_id + "");
+            }
+        })
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
@@ -310,33 +341,33 @@ router.post('/:username/CreateCompetition', [
             });
         }
 
-        competitionTitle=competitionTitle.toString().replace(/'/g,"");
-        description=description.toString().replace(/'/g,"");
-        category=category.toString().replace(/'/g,"");
+        competitionTitle = competitionTitle.toString().replace(/'/g, "");
+        description = description.toString().replace(/'/g, "");
+        category = category.toString().replace(/'/g, "");
 
         //Date Validation
-        function Compare(startDate,endDate){
-            sDate=new Date(startDate.toString());
-            eDate=new Date(endDate.toString());
-            var Result=false;
-            if(sDate.getTime()<eDate.getTime()){
-                if(sDate.getDate()<=eDate.getDate()){
-                    Result=true;
+        function Compare(startDate, endDate) {
+            sDate = new Date(startDate.toString());
+            eDate = new Date(endDate.toString());
+            var Result = false;
+            if (sDate.getTime() < eDate.getTime()) {
+                if (sDate.getDate() <= eDate.getDate()) {
+                    Result = true;
                 }
             }
-            var today=new Date();
-            if(sDate.getDate()<today.getDate()){
-                Result=false;
-            }else{
-                if(sDate.getDate()==today.getDate()){
-                    if(sDate.getTime()<today.getTime()){
-                        Result=false;
+            var today = new Date();
+            if (sDate.getDate() < today.getDate()) {
+                Result = false;
+            } else {
+                if (sDate.getDate() == today.getDate()) {
+                    if (sDate.getTime() < today.getTime()) {
+                        Result = false;
                     }
                 }
             }
             return Result;
         }
-        if(!Compare(startDate,endDate)){
+        if (!Compare(startDate, endDate)) {
             req.flash("error", "Make Sure That Start Date Is Earlier Than End Date & Not Older Than Current Date");
             return res.redirect(redirectLink);
         }
@@ -406,7 +437,7 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
                 req.flash("error", "Please Fill In All Fields & Try Again");
                 return res.redirect(redirectLink);
             }
-            items[i]=items[i].toString().replace(/'/g,"");      //to not make query error
+            items[i] = items[i].toString().replace(/'/g, "");      //to not make query error
         }
         const counter = 4;
         let j = 0;
@@ -468,9 +499,9 @@ router.get("/CompetitionCreated/:Ctitle", (req, res) => {
                 console.log(err);
             } else {
                 let code = rows[0].C_ID;
-                const awardQuery="insert into dbproject.award (competitionID,a_type) values("+code+",'Gold'),("+code+",'Silver'),("+code+",'Bronze');";
-                DBconnection.query(awardQuery,(err)=>{
-                    if(err){return console.log(err);}
+                const awardQuery = "insert into dbproject.award (competitionID,a_type) values(" + code + ",'Gold'),(" + code + ",'Silver'),(" + code + ",'Bronze');";
+                DBconnection.query(awardQuery, (err) => {
+                    if (err) { return console.log(err); }
                     res.render("Ccompetition-success", {
                         title: "Competition Created",
                         errors,
