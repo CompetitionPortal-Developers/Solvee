@@ -41,10 +41,10 @@ create table todolist (
 alter table donation auto_increment=1234;
 
 CREATE TABLE EXAM (
-    E_ID INT PRIMARY KEY auto_increment, 
-    CODE VARCHAR(50) UNIQUE NOT NULL, 
+    E_ID INT PRIMARY KEY auto_increment,
+    CODE VARCHAR(50) UNIQUE NOT NULL,
     TITLE VARCHAR(50) NOT NULL UNIQUE,
-    CATEGORY VARCHAR(50) NOT NULL, 
+    CATEGORY VARCHAR(50) NOT NULL,
     DESCP VARCHAR(500),
     DURATION INT NOT NULL,
     STARTDATE DATETIME NOT NULL,
@@ -53,11 +53,11 @@ CREATE TABLE EXAM (
     Qnum int not null
 );
     CREATE TABLE COMPETITION (
-        C_ID INT PRIMARY KEY auto_increment, 
+        C_ID INT PRIMARY KEY auto_increment,
         TITLE VARCHAR(50) NOT NULL UNIQUE,
-        CATEGORY VARCHAR(50) NOT NULL, 
+        CATEGORY VARCHAR(50) NOT NULL,
         DESCP VARCHAR(500),
-        RATING FLOAT DEFAULT 0, 
+        RATING FLOAT DEFAULT 0,
         STARTDATE DATETIME NOT NULL,
         ENDDATE DATETIME NOT NULL,
         U_ID int not null references user(ID),
@@ -133,10 +133,9 @@ create table review (
     create table tournament(
         T_ID INT PRIMARY KEY auto_increment,
         TITLE VARCHAR(50) NOT NULL UNIQUE,
-        STARTDATE DATETIME NOT NULL,
-        ENDDATE DATETIME NOT NULL,
         FEES int,
-        DESCP VARCHAR(500)
+        DESCP VARCHAR(500),
+        U_ID int not null references user(U_ID)
     );
 
     create table Solves (
@@ -148,16 +147,15 @@ create table review (
 
     create table T_contains_Cs(
         T_ID int NOT NULL references tournament(T_ID) on delete cascade,
-        C_1_ID int NOT NULL references competition(ID) on delete cascade,
-        C_2_ID int NOT NULL references competition(ID) on delete cascade,
-        C_3_ID int NOT NULL references competition(ID) on delete cascade,
-        C_4_ID int NOT NULL references competition(ID) on delete cascade
+        C_ID int NOT NULL references competition(ID) on delete cascade,
+        primary key(T_ID,C_ID),
+        active boolean not null default 0
     );
 
     create table participates_in_T (
         userID int references user(ID) on delete cascade,
         tournamentID int references tournament(T_ID) on delete cascade,
-        primary key(userID, tournamentID)
+        primary key(userID, tournamentID),
     );
 
     INSERT INTO USER (
@@ -196,9 +194,9 @@ create table review (
 
 INSERT INTO COMPETITION (
     TITLE,
-    CATEGORY, 
+    CATEGORY,
     DESCP,
-    RATING, 
+    RATING,
     STARTDATE,
     ENDDATE,
     U_ID,
@@ -206,9 +204,9 @@ INSERT INTO COMPETITION (
     cost
 ) VALUES (
     'C++ Algorithms Challenge',
-    'Computer Science', 
+    'Computer Science',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    3.4, 
+    3.4,
     '2020-12-12 18:00:00',
     '2021-2-12 18:00:00',
     1,
@@ -216,9 +214,9 @@ INSERT INTO COMPETITION (
     1000
 ), (
     'SQL Queries Challenge',
-    'Computer Science', 
+    'Computer Science',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    0, 
+    0,
     '2020-12-25 09:00:00',
     '2021-2-28 09:00:00',
     2,
@@ -266,7 +264,7 @@ INSERT INTO QUESTIONS (
 INSERT INTO EXAM (
     TITLE,
     CODE,
-    CATEGORY, 
+    CATEGORY,
     DESCP,
     STARTDATE,
     ENDDATE,
@@ -284,3 +282,32 @@ INSERT INTO EXAM (
     '1',
     '4'
 );
+
+INSERT INTO LEADERBOARD (
+    U_ID,
+    C_ID,
+    GRADE,
+    DURATION,
+    SCORE
+) VALUES (
+    1,
+    1,
+    10,
+    44.54,
+    9.69
+),(
+    2,
+    1,
+    9,
+    4.54,
+    9.9
+),(
+    3,
+    1,
+    3,
+    120.54,
+    2.05
+);
+
+insert into tournament (TITLE,STARTDATE,ENDDATE,FEES,DESCP,U_ID)
+values('Math','2000-8-2','2000-2-8',55,'How Will Win',1);

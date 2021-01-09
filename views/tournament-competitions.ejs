@@ -1,0 +1,46 @@
+<%- include("partials/Header.ejs")%>
+
+<div class="container">
+    <%-messages("partials/Messages.ejs", locals)%>
+    <!--To publish the errors on screen for user if any were found-->
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1><%= T_TITLE %></h1>
+        </div>
+
+        <ul class="competiton-breadcrumb">
+            <li><a href="/tournaments/details/<%= Tournament[0].T_ID %>" >Details</a></li>
+            <li><a href="/tournaments/leaderboard/<%= Tournament[0].T_ID %>/<%= Tournament[0].TITLE %>">Leaderboard</a></li>
+            <li><a  class="active" style="pointer-events: none;" href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%= T_TITLE %>">Competitions</a></li>
+        </ul>
+
+        <hr style="margin: 0; background-color:#150999">
+        <%for(var i=0;i<Tournament.length;i++){%>
+            <div class="card-body competitionExamCard">
+                <h2 class="card-title"><%= Tournament[i].TITLE %></h2>
+                <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
+                    <%= Tournament[i].CATEGORY %>
+                    &nbsp;</span>
+                <br>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Start Date: </b>
+                    <%= Tournament[i].STARTDATE %> - <b>End Date:</b> <%= Tournament[i].ENDDATE %>
+                </span>
+                <hr>
+                <span>
+                    <span style="font-weight: bold;">Fees: <%= Tournament[i].cost %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+                </span>
+                <br>
+                <%if(Tournament[i].active){%>
+                    <a href="/competitions/details/<%= Tournament[i].C_ID %>" style="margin-top: 10px;"
+                        class="btn btn-outline-Custom">Start Now</a>
+                <%}%>
+            </div>
+        <%}%>
+        <div class="card-body competitionExamCard">
+            
+        </div>
+    </div>
+
+</div>
+
+<%-include("partials/Footer.ejs")%>

@@ -3,18 +3,18 @@
 
 <div class="container">
     <div class="card center">
-        <div class="TournamentHeader">
-            <h1>Tournaments</h1>
+        <div class="competitionExamHeader">
+            <h2 style="float: left;"><i class="fas fa-trophy" style="color:#150999 ;"></i> Tournaments</h2>
         </div>
         <!-- <form action="/competitions/search" method="post"> -->
         <div class="mb-3">
             <div class="input-group">
-                <input type="search" class="form-control" name="searchedTournament" id="searchedTournament"
+                <input type="search" class="form-control" name="searchedTournament" 
                     placeholder="Search">
                 <div class="input-group-prepend">
                     <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>Search</button>
 
-                    <a role="button" href="/Tournaments/CreateTournament" class="btn btn-success">Create
+                    <a role="button" href="/tournaments/createTournament" class="btn btn-success">Create
                         Tournament</a>
                 </div>
             </div>
@@ -28,13 +28,15 @@
         </div>
         <% } else { %>
         <% Tournaments.forEach(Tournament => { %>
-        <div class="card-body TournamentCard">
+        <div class="card-body competitionExamCard">
             <h2 class="card-title"><%= Tournament.TITLE %></h2>
             <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Start Date: </b>
-                <%= Tournament.STARTDATE %> - <b>End Date:</b> <%= Tournament.ENDDATE %>
+                 - <b>End Date:</b> 
             </span>
             <hr>
-           
+            <span>
+                <span style="font-weight: bold;">Fees: <%= Tournament.FEES %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+            </span>
             <br>
             <a href="/tournaments/details/<%= Tournament.T_ID %>" style="margin-top: 10px;"
                 class="btn btn-outline-Custom">Participate Now</a>

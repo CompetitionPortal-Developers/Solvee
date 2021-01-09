@@ -1,0 +1,51 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <form action="/tournaments/createTournament" method="post">
+    <div class="card center">
+        <section class="Basic-Info-Section ">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <label for="education" class="editProfileLabels form-label">Enter Tournament Title</label>
+                    <input type="text" min="2" max="50"  class="form-control" id="eduction" value="" name="tournamentTitle" required>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <label for="education" class="editProfileLabels form-label">Enter Tournament Cost</label>
+                    <input type="number" min="0" max="50" class="form-control" id="eduction" value="" name="fees" required>
+                  </div>
+            </div>
+            
+            <div class="col-12 genderAvatar">
+                <label for="description" class="editProfileLabels form-label">Enter Tournament's Description</label>
+                <textarea type="text" minlength="10" maxlength="500" class="form-control" name="description" required></textarea>
+              </div>
+            <br>
+            <hr style="color: #150999;">
+
+            <div class="col-12">
+                <label class="editProfileLabels form-label">Select The Competitions Included In Your Tournament :</label>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card-body competitionExamCard" style="min-height: 50vh; padding: 10%;">
+                            <%for(var i=0;i<userCompetitions.length;i++){%>
+                                <%if(checkComp[i]){%>
+                                    <input type="checkbox" value="<%=userCompetitions[i].C_ID%>" name="comp<%=userCompetitions[i].C_ID%>" id="">
+                                    <small><%=userCompetitions[i].TITLE%></small><br>
+                                <%}%>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+              </div>
+      
+            <div class="saveDiscard">
+              <a href="/tournaments" class="buttonProfile btn btn-danger">Discard</a>
+              <button type="submit" class="buttonProfile btn btn-outline-Custom" style="margin-right: 20px">Create Tournament</button>
+            </div>
+          </section>
+    </div>
+</form>
+</div>
+
+<%-include("partials/Footer.ejs")%>
