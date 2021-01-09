@@ -150,7 +150,7 @@ nav {
 }
 
 .bg-info {
-  background-color: #47a1b3 !important;
+  background-color: #3C3C3C !important;
 }
 
 .home-cards {
@@ -240,7 +240,7 @@ nav {
 }
 
 .navbar-links:hover {
-  color: #3a69bb !important;
+  color: #E51552 !important;
   font-weight: bold;
 }
 
@@ -305,6 +305,16 @@ ul.competiton-breadcrumb li a:hover {
   color: #150999;
   background-color: white;
   border-color: #150999;
+}
+
+.btn-Custom {
+  width: fit-content;
+  color: white;
+  background-color: #150999;
+  border-color: #150999;
+}
+.btn-Custom:hover{
+  background-color: #09034d;
 }
 
 .btn-outline-Custom:hover {
@@ -517,4 +527,8 @@ ul {
 .rate>input:checked~label:hover~label,
 .rate>label:hover~input:checked~label {
   color: #c59b08;
+}
+
+.goRight{
+  float:right;
 }

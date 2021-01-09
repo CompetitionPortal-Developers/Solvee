@@ -1,0 +1,39 @@
+<%- include("partials/Header.ejs")%>
+
+<div class="container">
+    <%-messages("partials/Messages.ejs", locals)%>
+    <!--To publish the errors on screen for user if any were found-->
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1><%= Tournament[0].TITLE %></h1>
+        </div>
+
+        <ul class="competiton-breadcrumb">
+            <li><a href="/tournaments/details/<%= Tournament[0].T_ID %>" class="active">Details</a></li>
+            <li><a href="/tournaments/leaderboard/<%= Tournament[0].T_ID %>/<%= Tournament[0].TITLE %>">Leaderboard</a></li>
+            <li><a href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>">Competitions</a></li>
+        </ul>
+
+        <hr style="margin: 0; background-color:#150999">
+        <div class="card-body competitionExamCard">
+            <p class="text-muted mb-0"><b>Host:</b> <%= Tournament[0].firstName %> <%= Tournament[0].lastName %></p>
+            <p class="text-muted"><b>Description:</b><br><%= Tournament[0].DESCP %></p>
+            <%for(var i=0;i<compDate.length;i++){%>
+                <span class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> <b>Round<%=i+1%> Starts on: </b>
+                    <%= compDate[i].STARTDATE %> &nbsp;&nbsp; - <b>Ends:</b> <%= compDate[i].ENDDATE %>
+                </span>
+                <br>
+            <%}%>
+            <hr>
+            <span>
+                <span style="font-weight: bold;">Fees: <%= Tournament[0].FEES %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+            </span>
+            <br>
+            <a href="/tournaments/start/<%= Tournament[0].T_ID %>" style="margin-top: 10px;"
+                class="btn btn-outline-Custom" >Start</a>
+        </div>
+    </div>
+
+</div>
+
+<%-include("partials/Footer.ejs")%>

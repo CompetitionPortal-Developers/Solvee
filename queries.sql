@@ -11,8 +11,6 @@ create table user (
     gender varchar(1) not null,
     firstName varchar(50) not null,
     lastName varchar(50) not null,
-    avatar varchar(50),
-    H boolean,
     BirthDate date not null,
     education varchar(50),
     job varchar(50),
@@ -43,10 +41,10 @@ create table todolist (
 alter table donation auto_increment=1234;
 
 CREATE TABLE EXAM (
-    E_ID INT PRIMARY KEY auto_increment, 
-    CODE VARCHAR(50) UNIQUE NOT NULL, 
+    E_ID INT PRIMARY KEY auto_increment,
+    CODE VARCHAR(50) UNIQUE NOT NULL,
     TITLE VARCHAR(50) NOT NULL UNIQUE,
-    CATEGORY VARCHAR(50) NOT NULL, 
+    CATEGORY VARCHAR(50) NOT NULL,
     DESCP VARCHAR(500),
     DURATION INT NOT NULL,
     STARTDATE DATETIME NOT NULL,
@@ -138,24 +136,22 @@ create table review (
 create table tournament(
     T_ID INT PRIMARY KEY auto_increment,
     TITLE VARCHAR(50) NOT NULL UNIQUE,
-    STARTDATE DATETIME NOT NULL,
-    ENDDATE DATETIME NOT NULL,
     FEES int,
-    DESCP VARCHAR(500)
+    DESCP VARCHAR(500),
+    U_ID int not null references user(U_ID)
 );
 
 create table T_contains_Cs(
     T_ID int NOT NULL references tournament(T_ID) on delete cascade,
-    C_1_ID int NOT NULL references competition(ID) on delete cascade,
-    C_2_ID int NOT NULL references competition(ID) on delete cascade,
-    C_3_ID int NOT NULL references competition(ID) on delete cascade,
-    C_4_ID int NOT NULL references competition(ID) on delete cascade
+    C_ID int NOT NULL references competition(ID) on delete cascade,
+    primary key(T_ID,C_ID),
+    active boolean not null default 0
 );
 
 create table participates_in_T (
     userID int references user(ID) on delete cascade,
     tournamentID int references tournament(T_ID) on delete cascade,
-    primary key(userID, tournamentID)
+    primary key(userID, tournamentID),
 );
 
 INSERT INTO USER (
@@ -194,9 +190,9 @@ INSERT INTO USER (
 
 INSERT INTO COMPETITION (
     TITLE,
-    CATEGORY, 
+    CATEGORY,
     DESCP,
-    RATING, 
+    RATING,
     STARTDATE,
     ENDDATE,
     U_ID,
@@ -204,9 +200,9 @@ INSERT INTO COMPETITION (
     cost
 ) VALUES (
     'C++ Algorithms Challenge',
-    'Computer Science', 
+    'Computer Science',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    3.4, 
+    3.4,
     '2020-12-12 18:00:00',
     '2021-2-12 18:00:00',
     1,
@@ -214,9 +210,9 @@ INSERT INTO COMPETITION (
     2000
 ), (
     'SQL Queries Challenge',
-    'Computer Science', 
+    'Computer Science',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    0, 
+    0,
     '2020-12-25 09:00:00',
     '2021-2-28 09:00:00',
     2,
@@ -264,7 +260,7 @@ INSERT INTO QUESTIONS (
 INSERT INTO EXAM (
     TITLE,
     CODE,
-    CATEGORY, 
+    CATEGORY,
     DESCP,
     STARTDATE,
     ENDDATE,

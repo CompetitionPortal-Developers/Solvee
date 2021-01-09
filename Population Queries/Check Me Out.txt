@@ -1,0 +1,1 @@
+Execute all of these in MySQL then check the website for the changes. Automating records for some entities isn't easy due to semantic constraints, however we only need 20+ for major entities (tournament is missing).
