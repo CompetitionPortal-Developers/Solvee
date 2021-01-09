@@ -2,19 +2,18 @@ const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
 const schedule = require("node-schedule");
 const { DBconnection } = require("../config/database");
-const { format } = require("../config/date-formatting");
 const dateFormat = require("../config/date-formatting");
 
-function GiveRewards(List,index,Award){
-    if(index>=List.length || index==3){
+function GiveRewards(List, index, Award, comp_ID) {
+    if (index >= List.length || index == 3) {
         return
-    }else{
-        const giveAward="update dbproject.award set userID="+List[index].ID+" where a_type='"+Award+"' and competitionID="+comp_ID+" ;";
-        DBconnection.query(giveAward,(err)=>{
-            if(err){return console.log(err);}
-            if(index==0){Award='Silver';}
-            if(index==1){Award='Bronze';}
-            GiveRewards(List,index+1,Award);
+    } else {
+        const giveAward = "update dbproject.award set userID=" + List[index].ID + " where a_type='" + Award + "' and competitionID=" + comp_ID + " ;";
+        DBconnection.query(giveAward, (err) => {
+            if (err) { return console.log(err); }
+            if (index == 0) { Award = 'Silver'; }
+            if (index == 1) { Award = 'Bronze'; }
+            GiveRewards(List, index + 1, Award, comp_ID);
         })
     }
 }
@@ -62,33 +61,16 @@ router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
     const errors = [];
     if (req.isAuthenticated()) {
         const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-            + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID ";
+            + " where C_ID=" + req.params.c_id + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
         const comp_ID = req.params.c_id;
         const comp_TITLE = req.params.comp_name;
-
-        function GiveRewards(List, index, Award) {
-            if (index >= List.length || index == 3) {
-                return
-            } else {
-                const giveAward = "update dbproject.award set userID=" + List[index].ID + " where a_type='" + Award + "' and competitionID=" + comp_ID + " ;";
-                DBconnection.query(giveAward, (err) => {
-                    if (err) { return console.log(err); }
-                    if (index == 0) { Award = 'Silver'; }
-                    if (index == 1) { Award = 'Bronze'; }
-                    GiveRewards(List, index + 1, Award);
-                })
-            }
-        }
 
         DBconnection.query(query, (err, List) => {
             if (err) {
                 return console.log(err);
             } else {
                 console.log(List);
-                List.sort((a, b) => {
-                    return b.score - a.score;
-                });
-                GiveRewards(List, 0, 'Gold');
+                GiveRewards(List, 0, 'Gold', comp_ID);
                 res.render("leaderboard", {
                     title: comp_TITLE,
                     errors,
@@ -123,14 +105,14 @@ router.get('/questions/:c_id', (req, res) => {
                 res.redirect('back');
             } else {
                 //Checking there is enough money
-                costQuery="select spirits from dbproject.user where ID="+req.user.ID+" ;";
-                DBconnection.query(costQuery,(err,money)=>{
-                    if(err){return console.log(err);}
-                    else{
+                costQuery = "select spirits from dbproject.user where ID=" + req.user.ID + " ;";
+                DBconnection.query(costQuery, (err, money) => {
+                    if (err) { return console.log(err); }
+                    else {
                         console.log(money);
-                        if(money[0].spirits>=competition.cost){
-                            const rest=money[0].spirits-competition.cost;
-                            minusCostQuery="update dbproject.user set spirits="+rest+" where ID="+req.user.ID+" ;";
+                        if (money[0].spirits >= competition.cost) {
+                            const rest = money[0].spirits - competition.cost;
+                            minusCostQuery = "update dbproject.user set spirits=" + rest + " where ID=" + req.user.ID + " ;";
                             DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE c_id=${req.params.c_id}`, (err, questions) => {
                                 if (err) return console.error(err);
                                 DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
@@ -139,8 +121,8 @@ router.get('/questions/:c_id', (req, res) => {
                                         req.flash('error', 'You already participated in this competition.');
                                         return res.redirect(`/competitions/reviews/${competition.C_ID}`);
                                     }
-                                    DBconnection.query(minusCostQuery,(err)=>{
-                                        if(err){return console.log(err);}
+                                    DBconnection.query(minusCostQuery, (err) => {
+                                        if (err) { return console.log(err); }
                                         const query = `INSERT INTO dbproject.participate (userID, competitionID) VALUES (${req.user.ID}, ${competition.C_ID});`;
                                         DBconnection.query(query, (err, results, fields) => {
                                             if (err) return console.error(err);
@@ -152,16 +134,16 @@ router.get('/questions/:c_id', (req, res) => {
                                             });
                                         });
                                     })
-                                    
+
                                 });
                             });
-                        }else{
+                        } else {
                             req.flash('error', "you don't have enough spirits to participate in that competition");
                             res.redirect('back');
                         }
                     }
                 });
-                
+
             }
         });
     } else {
@@ -217,7 +199,6 @@ router.post('/questions/:c_id', (req, res) => {
 });
 
 router.get('/reviews/:c_id', (req, res) => {
-
     if (req.isAuthenticated()) {
         const errors = [];
 
@@ -225,34 +206,25 @@ router.get('/reviews/:c_id', (req, res) => {
             if (err) return console.error(err);
             if (!competition.length) return res.sendStatus(404);
             competition = competition[0];
-            if (Date.now() < competition.STARTDATE) {
-                req.flash("error", "This competition hasn't started yet.");
-                res.redirect(`/competitions/details/${competition.C_ID}`);
-            } else if (Date.now() > competition.ENDDATE) {
-                req.flash("error", "This competition has already finished");
-                res.redirect(`/competitions/details/${competition.C_ID}`);
-            } else {
-                DBconnection.query(`SELECT * FROM dbproject.review, dbproject.user WHERE U_ID=ID AND C_ID=${req.params.c_id}`, (err, reviews) => {
-                    if (err) return console.error(err);
-                    const reactions = {
-                        Like: ['thumbs-up', '#1649b8'],
-                        Love: ['heart', '#E51552'],
-                        Angry: ['angry', '#ffa500'],
-                        Sad: ['frown', '#eeff00']
-                    }
-                    for (var i = 0; i < reviews.length; i++) {
-                        reviews[i].dateSubmit = format(reviews[i].dateSubmit);
-                    }
-                    reviews.forEach(review => review.react = reactions[review.react]);
-                    //console.log(reviews);
-                    res.render("competition-reviews", {
-                        title: competition.TITLE,
-                        competition,
-                        reviews,
-                        errors
-                    });
+            DBconnection.query(`SELECT * FROM dbproject.review, dbproject.user WHERE U_ID=ID AND C_ID=${req.params.c_id} ORDER BY dateSubmit DESC`, (err, reviews) => {
+                if (err) return console.error(err);
+                const reactions = {
+                    Like: ['thumbs-up', '#1649b8'],
+                    Love: ['heart', '#E51552'],
+                    Angry: ['angry', '#ffa500'],
+                    Sad: ['frown', '#eeff00']
+                }
+                for (var i = 0; i < reviews.length; i++) {
+                    reviews[i].dateSubmit = dateFormat.format(reviews[i].dateSubmit);
+                }
+                reviews.forEach(review => review.react = reactions[review.react]);
+                res.render("competition-reviews", {
+                    title: competition.TITLE,
+                    competition,
+                    reviews,
+                    errors
                 });
-            }
+            });
         });
     } else {
         req.flash("error", "Please Login First");
@@ -311,7 +283,7 @@ router.post('/:username/CreateCompetition', [
     body('endDate', 'End Date must be selected').notEmpty(),
 ], (req, res) => {
     if (req.isAuthenticated()) {
-        let redirectLink="/competitions/CreateCompetition";
+        let redirectLink = "/competitions/CreateCompetition";
         let errors = validationResult(req).errors;
         let {
             competitionTitle,
@@ -373,7 +345,7 @@ router.post('/:username/CreateCompetition', [
         }
 
         const query = "INSERT INTO dbproject.competition (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,Qnum,U_ID,cost) " +
-            "VALUES('" + competitionTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + questionNumber + "," + req.user.ID + ","+competitionCost+");";
+            "VALUES('" + competitionTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + questionNumber + "," + req.user.ID + "," + competitionCost + ");";
         DBconnection.query(query, (err, rows) => {
             if (err) {
                 console.log(err);
@@ -389,6 +361,21 @@ router.post('/:username/CreateCompetition', [
                     description
                 });
             } else {
+                schedule.scheduleJob(endDate, function () {
+                    console.log('The world is going to end today.', rows.insertId);
+
+                    const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
+                        + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
+
+                    DBconnection.query(query, (err, List) => {
+                        if (err) {
+                            return console.log(err);
+                        } else {
+                            console.log(List);
+                            GiveRewards(List, 0, 'Gold', rows.insertId);
+                        }
+                    });
+                });
                 res.render("Cquestions-entry", {
                     title: "Questions Entry",
                     errors,
@@ -431,6 +418,7 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
             console.log(obj[name]);
             items.push(obj[name]);
         }
+
         //Checking for empty questions
         for (let i = 0; i < items.length; i++) {
             if (items[i] == "") {
@@ -471,18 +459,10 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
                 console.log(err);
             } else {
                 InsertQ(j, rows[0].C_ID);
-                DBconnection.query(`SELECT ENDDATE FROM dbproject.COMPETITION WHERE TITLE=${req.params.Ctitle};`, (err, rows) => {
-                    console.log(rows);
-                    // schedule.scheduleJob(ENDDATE, function() {
-                    //     console.log('The world is going to end today.');
-                    // });
-                    res.redirect("/competitions/CompetitionCreated/" + req.params.Ctitle);
-                });
+                //rendering congrats page
+                res.redirect("/competitions/CompetitionCreated/" + req.params.Ctitle);
             }
         });
-
-
-        //rendering congrats page
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");

@@ -117,6 +117,10 @@ nav {
   background-color: #E51552;
 }
 
+#navbarDropdown::after {
+  display: none;
+}
+
 /*Center div*/
 .center {
   margin: auto;

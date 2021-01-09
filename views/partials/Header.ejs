@@ -90,38 +90,42 @@
             </button>
           </a>
         </li>
-        <% if (user) { %>
+      </ul>
+      <% if (user) { %>
+      <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false"><%= user.Username %> <i class="fas fa-chevron-down"></i>
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="text-align: center; ">
-            <li style="padding: 5%; width: min-content;"><a href="/users/logout/" class="btn btn-outline-Custom btn-block btn-lg-block">
+            <li style="padding: 5%;">
+              <i class="fas fa-coins">
+                <small style="font-size: 1.2em;"><%= user.spirits %></small>
+              </i>
+            </li>
+            <li style="padding: 5%;"><a href="/users/<%= user.Username %>/" class="btn btn-outline-Login">
+                <span>Profile</span>
+              </a>
+            </li>
+            <li style="padding: 5%;"><a href="/users/logout/" class="btn btn-outline-Custom btn-block btn-lg-block">
                 <span>Logout</span>
-            </a></li>
-            <li style="padding: 5%; width: min-content;"><a href="/users/<%= user.Username %>/" class="btn btn-outline-Login">
-              <span>Profile</span>
-          </a></li>
-            <li style="padding: 5%; width: min-content;"><i class="fas fa-coins"><small style="font-size: 1.2em;"><%= user.spirits %></small></i></li>
+              </a>
+            </li>
           </ul>
         </li>
+        <% } %>
       </ul>
-
-      
-      
-      <% } else { %>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="text-align: center; ">
-            <li style="padding: 5%; width: min-content;"><a href="/users/login/" class="btn btn-outline-Login btn-block">
-              <span>Login</span>
-          </a></li>
-            <li style="padding: 5%; width: min-content;"><a href="/users/register/" class="btn btn-outline-Custom">
-              <span>Register</span>
-          </a></li>
-      </ul>
+      <% if (!user) { %>
+      <a href="/users/login/">
+        <button class="btn btn-outline-Login" style="margin-right: 20px; border-radius: 50px;">
+          <span>Login</span>
+        </button>
+      </a>
+      <a href="/users/register/">
+        <button class="btn btn-outline-Custom" style="margin-right: 10px; border-radius: 50px;">
+          <span>Register</span>
+        </button>
+      </a>
       <% } %>
     </div>
   </nav>

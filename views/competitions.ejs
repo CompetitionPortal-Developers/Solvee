@@ -1,7 +1,7 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
-<!--To publish the errors on screen for user if any were found-->
+<%- include("partials/Header.ejs")%>
 
 <div class="container">
+    <%-messages("partials/Messages.ejs", locals)%>
     <div class="card center">
         <div class="competitionExamHeader">
             <h1>Competitions</h1>
@@ -39,7 +39,8 @@
             </span>
             <hr>
             <span>
-                <span style="font-weight: bold;">Fees: <%= competition.cost %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+                <span style="font-weight: bold;">Fees: <%= competition.cost %> </span><i class="fas fa-coins"
+                    style="color: #150999;"></i>
             </span>
             <br>
             <span class="text-muted">
