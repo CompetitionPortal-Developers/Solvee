@@ -27,6 +27,10 @@
                 <%= competition.STARTDATE %> - <b>End Date:</b> <%= competition.ENDDATE %>
             </span>
             <hr>
+            <span>
+                <span style="font-weight: bold;">Fees: <%= competition.cost %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+            </span>
+            <br>
             <span class="text-muted">
                 <% if (!competition.RATING) { %>
                 No Rating
@@ -36,7 +40,7 @@
             </span>
             <br>
             <a href="/competitions/questions/<%= competition.C_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-Custom">Start</a>
+                class="btn btn-outline-Custom" >Start</a>
         </div>
     </div>
 

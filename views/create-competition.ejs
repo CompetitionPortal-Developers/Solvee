@@ -5,19 +5,25 @@
   <form action="/competitions/<%=user.Username%>/CreateCompetition" method="post">
     <div class="card center">
       <section class="Basic-Info-Section ">
-
-        <div class="col-12">
-          <label for="education" class="editProfileLabels form-label">Enter Competition Title</label>
-          <input type="text" class="form-control" id="eduction" value="" name="competitionTitle">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label for="education" class="editProfileLabels form-label">Enter Competition Title</label>
+            <input type="text" class="form-control" id="eduction" value="" name="competitionTitle" required>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label for="education" class="editProfileLabels form-label">Enter Competition Cost</label>
+            <input type="number" value="1000" min="50" max="3000" class="form-control" id="eduction" value="" name="competitionCost" required>
+          </div>
         </div>
+        
 
         <div class="row genderAvatar">
           <div class="col-md-6 col-sm-12">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <label style="font-size: small;" class="input-group-text">Select Category</label>
+                <label style="font-size: small;" class="input-group-text" >Select Category</label>
               </div>
-              <select class="custom-select" name="category">
+              <select class="custom-select" name="category" required>
                 <option value="Computer Science">Programming</option>
                 <option value="Mathematics">Mathematics</option>
                 <option value="Physics">Physics</option>
@@ -30,18 +36,18 @@
               <div class="input-group-prepend">
                 <label style="font-size: small;" class="input-group-text">Number Of Questions In Competition</label>
               </div>
-              <input type="number" value="1" min="1" max="25" name="questionNumber">
+              <input type="number" value="1" min="1" max="25" name="questionNumber" required>
             </div>
           </div>
 
           <div class="genderAvatar col-12">
             <label for="startDate" class=" form-label">Enter Competition's Start Date</label>
-            <input type="datetime-local" class="form-control" name="startDate">
+            <input type="datetime-local" class="form-control" name="startDate" required>
           </div>
 
           <div class="genderAvatar col-12">
             <label for="endDate" class="editProfileLabels form-label">Enter Competition's End Date</label>
-            <input type="datetime-local" class="form-control" name="endDate">
+            <input type="datetime-local" class="form-control" name="endDate" required>
           </div>
 
           <div class="col-12 genderAvatar">

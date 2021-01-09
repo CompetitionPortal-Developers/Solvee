@@ -37,7 +37,7 @@ create table todolist (
     deadline datetime,
     U_ID int not null references user(ID),
     todoID int not null auto_increment,
-    primary key(U_ID,todo_ID)
+    primary key(todoID)
 );
     alter table donation auto_increment=1234;
 
@@ -67,7 +67,8 @@ CREATE TABLE EXAM (
         STARTDATE DATETIME NOT NULL,
         ENDDATE DATETIME NOT NULL,
         U_ID int not null references user(ID),
-        Qnum int not null
+        Qnum int not null,
+        cost int not null
     );
 
     CREATE TABLE EXAM (
@@ -144,7 +145,7 @@ create table solve (
         U_ID int not null references user(ID) on delete cascade,
         E_ID int not null references EXAM(E_ID) on delete cascade,
         primary key(U_ID,E_ID),
-        grade int not null
+        grade int not null default 0
     );
 
     create table RanksIn (

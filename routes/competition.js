@@ -1,8 +1,22 @@
 const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
-const { render } = require("ejs");
+const schedule = require("node-schedule");
 const { DBconnection } = require("../config/database");
 const dateFormat = require("../config/date-formatting");
+
+function GiveRewards(List,index,Award){
+    if(index>=List.length || index==3){
+        return
+    }else{
+        const giveAward="update dbproject.award set userID="+List[index].ID+" where a_type='"+Award+"' and competitionID="+comp_ID+" ;";
+        DBconnection.query(giveAward,(err)=>{
+            if(err){return console.log(err);}
+            if(index==0){Award='Silver';}
+            if(index==1){Award='Bronze';}
+            GiveRewards(List,index+1,Award);
+        })
+    }
+}
 
 router.get('/', (req, res) => {
     const errors = [];
@@ -63,21 +77,6 @@ router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
         const comp_ID = req.params.c_id;
         const comp_TITLE = req.params.comp_name;
 
-
-        function GiveRewards(List,index,Award){
-            if(index>=List.length || index==3){
-                return
-            }else{
-                const giveAward="update dbproject.award set userID="+List[index].ID+" where a_type='"+Award+"' and competitionID="+comp_ID+" ;";
-                DBconnection.query(giveAward,(err)=>{
-                    if(err){return console.log(err);}
-                    if(index==0){Award='Silver';}
-                    if(index==1){Award='Bronze';}
-                    GiveRewards(List,index+1,Award);
-                })
-            }
-        }
-
         DBconnection.query(query, (err, List) => {
             if (err) {
                 return console.log(err);
@@ -120,26 +119,46 @@ router.get('/questions/:c_id', (req, res) => {
                 req.flash('error', 'You can\'t participate in this comeptition as you are the host of it.');
                 res.redirect('back');
             } else {
-                DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE c_id=${req.params.c_id}`, (err, questions) => {
-                    if (err) return console.error(err);
-                    DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
-                        if (err) return console.error(err);
-                        if (rows.length) {
-                            req.flash('error', 'You already participated in this competition.');
-                            return res.redirect(`/competitions/reviews/${competition.C_ID}`);
-                        }
-                        const query = `INSERT INTO dbproject.participate (userID, competitionID) VALUES (${req.user.ID}, ${competition.C_ID});`;
-                        DBconnection.query(query, (err, results, fields) => {
-                            if (err) return console.error(err);
-                            res.render("competition-questions", {
-                                title: competition.TITLE,
-                                competition,
-                                questions,
-                                errors
+                //Checking there is enough money
+                costQuery="select spirits from dbproject.user where ID="+req.user.ID+" ;";
+                DBconnection.query(costQuery,(err,money)=>{
+                    if(err){return console.log(err);}
+                    else{
+                        console.log(money);
+                        if(money[0].spirits>=competition.cost){
+                            const rest=money[0].spirits-competition.cost;
+                            minusCostQuery="update dbproject.user set spirits="+rest+" where ID="+req.user.ID+" ;";
+                            DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE c_id=${req.params.c_id}`, (err, questions) => {
+                                if (err) return console.error(err);
+                                DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
+                                    if (err) return console.error(err);
+                                    if (rows.length) {
+                                        req.flash('error', 'You already participated in this competition.');
+                                        return res.redirect(`/competitions/reviews/${competition.C_ID}`);
+                                    }
+                                    DBconnection.query(minusCostQuery,(err)=>{
+                                        if(err){return console.log(err);}
+                                        const query = `INSERT INTO dbproject.participate (userID, competitionID) VALUES (${req.user.ID}, ${competition.C_ID});`;
+                                        DBconnection.query(query, (err, results, fields) => {
+                                            if (err) return console.error(err);
+                                            res.render("competition-questions", {
+                                                title: competition.TITLE,
+                                                competition,
+                                                questions,
+                                                errors
+                                            });
+                                        });
+                                    })
+                                    
+                                });
                             });
-                        });
-                    });
+                        }else{
+                            req.flash('error', "you don't have enough spirits to participate in that competition");
+                            res.redirect('back');
+                        }
+                    }
                 });
+                
             }
         });
     } else {
@@ -261,10 +280,11 @@ router.post('/:username/CreateCompetition', [
     body('endDate', 'End Date must be selected').notEmpty(),
 ], (req, res) => {
     if (req.isAuthenticated()) {
-        let redirectLink="/competitions/"+req.params.username+"/CreateCompetition";
+        let redirectLink="/competitions/CreateCompetition";
         let errors = validationResult(req).errors;
         let {
             competitionTitle,
+            competitionCost,
             category,
             questionNumber,
             startDate,
@@ -321,8 +341,8 @@ router.post('/:username/CreateCompetition', [
             return res.redirect(redirectLink);
         }
 
-        const query = "INSERT INTO dbproject.competition (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,Qnum,U_ID) " +
-            "VALUES('" + competitionTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + questionNumber + "," + req.user.ID + ");";
+        const query = "INSERT INTO dbproject.competition (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,Qnum,U_ID,cost) " +
+            "VALUES('" + competitionTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + questionNumber + "," + req.user.ID + ","+competitionCost+");";
         DBconnection.query(query, (err, rows) => {
             if (err) {
                 console.log(err);
@@ -420,11 +440,18 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
                 console.log(err);
             } else {
                 InsertQ(j, rows[0].C_ID);
+                DBconnection.query(`SELECT ENDDATE FROM dbproject.COMPETITION WHERE TITLE=${req.params.Ctitle};`, (err, rows) => {
+                    console.log(rows);
+                    // schedule.scheduleJob(ENDDATE, function() {
+                    //     console.log('The world is going to end today.');
+                    // });
+                    res.redirect("/competitions/CompetitionCreated/" + req.params.Ctitle);
+                });
             }
         });
 
+
         //rendering congrats page
-        res.redirect("/competitions/CompetitionCreated/" + req.params.Ctitle);
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");

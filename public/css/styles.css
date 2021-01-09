@@ -448,3 +448,11 @@ ul.competiton-breadcrumb li a:hover {
 .history:hover{
   background-color: white;
 }
+
+.dropdown::marker {
+  visibility: hidden;
+}
+
+ul {
+  list-style-type: none;
+}
