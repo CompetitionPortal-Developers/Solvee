@@ -55,6 +55,7 @@ app.use('/support-us', require("./routes/donation"));
 app.use('/competitions', require("./routes/competition"));
 app.use('/exams', require("./routes/exam"));
 app.use('/users', require('./routes/user'));
+app.use('/tournaments', require("./routes/tournament"));
 
 //db.endDBConnection();
 

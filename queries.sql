@@ -135,10 +135,9 @@ create table review (
     create table tournament(
         T_ID INT PRIMARY KEY auto_increment,
         TITLE VARCHAR(50) NOT NULL UNIQUE,
-        STARTDATE DATETIME NOT NULL,
-        ENDDATE DATETIME NOT NULL,
         FEES int,
-        DESCP VARCHAR(500)
+        DESCP VARCHAR(500),
+        U_ID int not null references user(U_ID)
     );
 
     create table Solves (
@@ -150,16 +149,15 @@ create table review (
 
     create table T_contains_Cs(
         T_ID int NOT NULL references tournament(T_ID) on delete cascade,
-        C_1_ID int NOT NULL references competition(ID) on delete cascade,
-        C_2_ID int NOT NULL references competition(ID) on delete cascade,
-        C_3_ID int NOT NULL references competition(ID) on delete cascade,
-        C_4_ID int NOT NULL references competition(ID) on delete cascade
+        C_ID int NOT NULL references competition(ID) on delete cascade,
+        primary key(T_ID,C_ID),
+        active boolean not null default 0
     );
 
     create table participates_in_T (
         userID int references user(ID) on delete cascade,
         tournamentID int references tournament(T_ID) on delete cascade,
-        primary key(userID, tournamentID)
+        primary key(userID, tournamentID),
     );
 
     INSERT INTO USER (
@@ -309,3 +307,6 @@ INSERT INTO LEADERBOARD (
     120.54,
     2.05
 );
+
+insert into tournament (TITLE,STARTDATE,ENDDATE,FEES,DESCP,U_ID) 
+values('Math','2000-8-2','2000-2-8',55,'How Will Win',1);
