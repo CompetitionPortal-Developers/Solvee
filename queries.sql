@@ -11,8 +11,6 @@ create table user (
     gender varchar(1) not null,
     firstName varchar(50) not null,
     lastName varchar(50) not null,
-    avatar varchar(50),
-    H boolean,
     BirthDate date not null,
     education varchar(50),
     job varchar(50),
@@ -204,7 +202,8 @@ INSERT INTO COMPETITION (
     STARTDATE,
     ENDDATE,
     U_ID,
-    Qnum
+    Qnum,
+    cost
 ) VALUES (
     'C++ Algorithms Challenge',
     'Computer Science', 
@@ -213,7 +212,8 @@ INSERT INTO COMPETITION (
     '2020-12-12 18:00:00',
     '2021-2-12 18:00:00',
     1,
-    2
+    2,
+    1000
 ), (
     'SQL Queries Challenge',
     'Computer Science', 
@@ -222,7 +222,8 @@ INSERT INTO COMPETITION (
     '2020-12-25 09:00:00',
     '2021-2-28 09:00:00',
     2,
-    2
+    2,
+    1000
 );
 
 INSERT INTO QUESTIONS (
@@ -282,30 +283,4 @@ INSERT INTO EXAM (
     '10',
     '1',
     '4'
-);
-
-INSERT INTO LEADERBOARD (
-    U_ID,
-    C_ID,
-    GRADE,
-    DURATION,
-    SCORE
-) VALUES (
-    1,
-    1,
-    10,
-    44.54,
-    9.69
-),(
-    2,
-    1,
-    9,
-    4.54,
-    9.9
-),(
-    3,
-    1,
-    3,
-    120.54,
-    2.05
 );
