@@ -5,7 +5,19 @@
     <!--To publish the errors on screen for user if any were found-->
     <div class="card center">
         <div class="competitionExamHeader">
-            <h1><%= exam.TITLE %></h1>
+            <h1>
+                <%if(exam.CATEGORY=="Programming"){%>
+                    <i class="fas fa-laptop-code" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Physics"){%>
+                    <i class="fas fa-bolt" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Mechanics"){%>
+                    <i class="fas fa-cogs" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Mathematics"){%>
+                    <i class="fas fa-sort-numeric-up-alt" style="color: #28A745;"></i>
+                <%}else{%>
+                    <i class="fab fa-medapps" style="color: #28A745;"></i>
+                <%}%>
+                 <%= exam.TITLE %></h1>
         </div>
 
         <hr style="margin: 0; background-color:#28A745">

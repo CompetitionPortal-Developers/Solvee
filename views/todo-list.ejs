@@ -2,8 +2,9 @@
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="box">
-    <h2>To-Do List</h2>
-    <%for(var i=0;i < rows.length;i++){%>
+    <h2><%=rows[0].tasks%></h2>
+    <br>
+    <%for(var i=1;i < rows.length;i++){%>
     <div class="item">
         <form action="/users/<%=username%>/todolist/delete/<%=rows[i].todoID%>" method="post">
             <button type="submit" class="btn delTodo"><i class="fas fa-trash-alt todoRemove"></i></button>

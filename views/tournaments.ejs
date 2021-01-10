@@ -29,17 +29,9 @@
         <% Tournaments.forEach(Tournament => { %>
         <div class="card-body competitionExamCard">
             <h2 class="card-title"><%= Tournament.TITLE %></h2>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-calendar-alt"></i> <b>Start Date: </b>
-                - <b>End Date:</b>
-            </span>
-            <hr>
-            <span>
-                <span style="font-weight: bold;">Fees: <%= Tournament.FEES %> </span><i class="fas fa-coins"
-                    style="color: #E51552;"></i>
-            </span>
             <br>
             <a href="/tournaments/details/<%= Tournament.T_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-danger">Participate Now</a>
+                class="btn btn-outline-danger">Details</a>
         </div>
         <% })} %>
     </div>

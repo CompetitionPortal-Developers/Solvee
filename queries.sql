@@ -48,7 +48,7 @@ CREATE TABLE EXAM (
     DESCP VARCHAR(500),
     DURATION INT NOT NULL,
     STARTDATE DATETIME NOT NULL,
-    U_ID int not null references user(ID),
+    U_ID int not null references user(ID) on delete cascade,
     Qnum int not null
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE COMPETITION (
     RATING FLOAT DEFAULT 0, 
     STARTDATE DATETIME NOT NULL,
     ENDDATE DATETIME NOT NULL,
-    U_ID int not null references user(ID),
+    U_ID int not null references user(ID) on delete cascade,
     Qnum int not null,
     cost int not null
 );
@@ -137,7 +137,7 @@ create table tournament(
     TITLE VARCHAR(50) NOT NULL UNIQUE,
     FEES int,
     DESCP VARCHAR(500),
-    U_ID int not null references user(U_ID)
+    U_ID int not null references user(U_ID) on delete cascade
 );
 
 create table T_contains_Cs(
