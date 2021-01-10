@@ -7,15 +7,20 @@
             <h2 style="float: left;"><i class="fas fa-medal" style="color: #150999;"></i> Competitions</h2>
         </div>
         <form action="/competitions/search" method="post">
-        <div class="mb-3">
-            <div class="input-group">
-                <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
-                    placeholder="Search By Competition Title">
-                <div class="input-group-prepend">
-                    <button type="submit" class=" btn btn-outline-Custom"><i class="fas fa-search"></i>Search</button>
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
+                        placeholder="Search by competition name or ID..."
+                        value="<%= (typeof searchedCompetition !== 'undefined') ? searchedCompetition : '' %>">
+                    <div class="input-group-prepend">
+                        <button type="submit" class="btn btn-outline-Custom">
+                            <i class="fas fa-search"></i>Search
+                        </button>
 
-                    <a role="button" href="/competitions/CreateCompetition" class="btn btn-Custom">Create
-                        Competition</a>
+                        <a role="button" href="/competitions/CreateCompetition" class="btn btn-Custom">
+                            Create Competition
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

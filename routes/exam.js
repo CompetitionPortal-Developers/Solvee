@@ -6,7 +6,7 @@ const dateFormat = require("../config/date-formatting");
 router.get('/', (req, res) => {
     const errors = [];
 
-    DBconnection.query('SELECT * FROM dbproject.exam;', (err, rows) => {
+    DBconnection.query('SELECT * FROM dbproject.exam ORDER BY STARTDATE DESC, DURATION DESC;', (err, rows) => {
         if (err) return console.error(err);
         const exams = rows;
         if (exams.length)
@@ -19,6 +19,39 @@ router.get('/', (req, res) => {
     });
 });
 
+router.post('/search', [
+    body('searchedExam', 'Please enter the name or the ID of the exam that you want to search for.').notEmpty()
+], (req, res) => {
+    const errors = [];
+    const { searchedExam } = req.body;
+    if (isNaN(searchedExam)) {
+        DBconnection.query('SELECT * FROM dbproject.exam ORDER BY STARTDATE DESC, DURATION DESC;', (err, exams) => {
+            if (err) return console.error(err);
+            if (exams.length)
+                exams.forEach(exam => exam.STARTDATE = dateFormat.format(exam.STARTDATE));
+            exams = exams.filter(exam => exam.TITLE.toLowerCase().includes(searchedExam.toLowerCase()));
+            return res.render('exams', {
+                title: "Exams",
+                exams,
+                searchedExam,
+                errors
+            });
+        });
+    } else {
+        DBconnection.query(`SELECT * FROM dbproject.exam WHERE E_ID=${searchedExam};`, (err, [exam]) => {
+            if (err) return console.error(err);
+            if (exam)
+                exam.STARTDATE = dateFormat.format(exam.STARTDATE);
+            const exams = typeof exam !== 'undefined' ? [exam] : [];
+            return res.render('exams', {
+                title: "Exams",
+                exams,
+                searchedExam,
+                errors
+            });
+        });
+    }
+});
 
 router.post("/search",(req,res)=>{
     let {searchedExam}=req.body;
