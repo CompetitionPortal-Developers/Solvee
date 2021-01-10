@@ -6,19 +6,21 @@
         <div class="competitionExamHeader">
             <h2 style="float: left;"><i class="fab fa-medapps" style="color: #28A745;"></i> Exams</h2>
         </div>
-        <!-- <form action="/exams/search" method="post"> -->
-        <div class="mb-3">
-            <div class="input-group">
-                <input type="search" class="form-control" name="searchedExam" id="searchedExam"
-                    placeholder="Search By Exam ID....">
-                <div class="input-group-prepend">
-                    <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
-                        Search</button>
-                    <a role="button" href="/exams/CreateExam" class="btn btn-success">Create Exam</a>
+        <form action="/exams/search" method="post">
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="search" class="form-control" name="searchedExam" id="searchedExam"
+                        placeholder="Search by exam name or ID..."
+                        value="<%= (typeof searchedExam !== 'undefined') ? searchedExam : '' %>">
+                    <div class="input-group-prepend">
+                        <button type="submit" class=" btn btn-outline-success">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <a role="button" href="/exams/CreateExam" class="btn btn-success">Create Exam</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- </form> -->
+        </form>
         <br><br>
         <hr style="background-color:#28A745">
         <% if(!exams.length) { %>

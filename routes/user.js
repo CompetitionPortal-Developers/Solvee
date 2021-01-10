@@ -387,11 +387,11 @@ router.get("/:username/todolist", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const privacyquery = "select ID from dbproject.user where username='" + req.params.username + "';";
-        const query = "select * from dbproject.todolist where U_ID=" + req.user.ID + ";";
+        const query = "select * from dbproject.todolist where U_ID=" + req.user.ID + " order by deadline;";
         DBconnection.query(privacyquery, (err, results) => {
             if (err) { console.log(err); }
             else {
-                if (results[0].ID == req.user.ID) {
+                if (results[0].ID === req.user.ID) {
                     DBconnection.query(query, (err, rows) => {
                         if (err) { return console.log(err); }
                         else {
@@ -437,7 +437,6 @@ router.post("/:username/todolist/add", (req, res) => {
         DBconnection.query(query, (err) => {
             if (err) { console.log(err); }
             else {
-                req.flash("success", "The Task Is Added Successfully");
                 res.redirect(redirectUrl);
             }
         })
@@ -459,7 +458,6 @@ router.post("/:username/todolist/delete/:taskid", (req, res) => {
                     DBconnection.query(query, (err, rows) => {
                         if (err) { console.log(err); }
                         else {
-                            req.flash("success", "The Task Is Deleted Successfully");
                             res.redirect(redirectUrl);
                         }
                     })
