@@ -286,7 +286,6 @@ ul.competiton-breadcrumb li+li:before {
 }
 
 ul.competiton-breadcrumb li a {
-  color: #150999;
   text-decoration: none;
   transition: all 0.3s;
 }
@@ -531,4 +530,10 @@ ul {
 
 .goRight{
   float:right;
+}
+.not-active-tournament{
+  color:black;
+}
+.not-active-tournament:hover{
+  color:#E51552;
 }

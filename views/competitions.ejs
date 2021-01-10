@@ -33,7 +33,19 @@
         <% } else { %>
         <% competitions.forEach(competition => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title"><%= competition.TITLE %></h2>
+            <h2>
+                <%if(competition.CATEGORY=="Programming"){%>
+                    <i class="fas fa-laptop-code" style="color: #150999;"></i>
+                <%}else if(competition.CATEGORY=="Physics"){%>
+                    <i class="fas fa-bolt" style="color: #150999;"></i>
+                <%}else if(competition.CATEGORY=="Mechanics"){%>
+                    <i class="fas fa-cogs" style="color: #150999;"></i>
+                <%}else if(competition.CATEGORY=="Mathematics"){%>
+                    <i class="fas fa-sort-numeric-up-alt" style="color: #150999;"></i>
+                <%}else{%>
+                    <i class="fas fa-medal" style="color: #150999;"></i>
+                <%}%>
+                 <%= competition.TITLE %></h2>
             <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
                 <%= competition.CATEGORY %>
                 &nbsp;</span>
