@@ -2,60 +2,60 @@
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
-    <form action="/exams/<%=user.Username%>/CreateExam" method="post">
+  <form action="/exams/<%=user.Username%>/CreateExam" method="post">
     <div class="card center">
-        <section class="Basic-Info-Section ">
-      
-            <div class="col-12">
-              <label for="education" class="editProfileLabels form-label">Enter Exam Title</label>
-              <input type="text" class="form-control" id="eduction" value="" name="examTitle">
-            </div>
+      <section class="Basic-Info-Section ">
 
-            <div class="row genderAvatar">
-                <div class="col-md-6 col-sm-12">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label style="font-size: small;" class="input-group-text">Select Category</label>
-                    </div>
-                    <select class="custom-select" name="category">
-                      <option value="computerScience">Programming</option>
-                      <option value="math">Mathematics</option>
-                      <option value="physics">Physics</option>
-                      <option value="Mechanics">Mechanics</option>
-                    </select>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label style="font-size: small;" class="input-group-text">Number Of Questions In Exam</label>
-                      </div>
-                      <input type="number" value="1" min="1" max="25" name="questionNumber">
-                  </div>
-            </div>
-      
-                <div class="genderAvatar col-12">
-                    <label for="startDate" class=" form-label">Enter Exam's Start Date</label>
-                    <input type="datetime-local" class="form-control" name="startDate">
-                </div>
+        <div class="col-12">
+          <label for="education" class="editProfileLabels form-label">Enter Exam Title</label>
+          <input type="text" class="form-control" id="eduction" value="" name="examTitle">
+        </div>
 
-                <div class="genderAvatar col-12">
-                    <label for="duration" class="editProfileLabels form-label">Enter Exams's Duration In Minutes</label>
-                    <input value="10" type='number' min='1' max='180' class="form-control" name="duration">
-                </div>
-      
-            <div class="col-12 genderAvatar">
-              <label for="description" class="editProfileLabels form-label">Enter Exams's Description</label>
-              <textarea type="text" class="form-control" name="description"></textarea>
+        <div class="row genderAvatar">
+          <div class="col-md-6 col-sm-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label style="font-size: small;" class="input-group-text">Select Category</label>
+              </div>
+              <select class="custom-select" name="category">
+                <option value="Computer Science">Programming</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Mechanics">Mechanics</option>
+              </select>
             </div>
-      
-            <div class="saveDiscard">
-              <a href="/exams" class="buttonProfile btn btn-danger">Discard</a>
-              <button type="submit" class="buttonProfile btn btn-info" style="margin-right: 20px">Next</button>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label style="font-size: small;" class="input-group-text">Number Of Questions In Exam</label>
+              </div>
+              <input type="number" value="1" min="1" max="25" name="questionNumber">
             </div>
-          </section>
+          </div>
+
+          <div class="genderAvatar col-12">
+            <label for="startDate" class=" form-label">Enter Exam's Start Date</label>
+            <input type="datetime-local" class="form-control" name="startDate">
+          </div>
+
+          <div class="genderAvatar col-12">
+            <label for="duration" class="editProfileLabels form-label">Enter Exams's Duration In Minutes</label>
+            <input value="10" type='number' min='1' max='180' class="form-control" name="duration">
+          </div>
+
+          <div class="col-12 genderAvatar">
+            <label for="description" class="editProfileLabels form-label">Enter Exams's Description</label>
+            <textarea type="text" class="form-control" name="description"></textarea>
+          </div>
+
+          <div class="saveDiscard">
+            <a href="/exams" class="buttonProfile btn btn-danger">Discard</a>
+            <button type="submit" class="buttonProfile btn btn-info" style="margin-right: 20px">Next</button>
+          </div>
+      </section>
     </div>
-</form>
+  </form>
 </div>
 
 <%-include("partials/Footer.ejs")%>

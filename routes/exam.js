@@ -10,10 +10,7 @@ router.get('/', (req, res) => {
         if (err) return console.error(err);
         const exams = rows;
         if (exams.length)
-            exams.forEach(exam => {
-                exam.STARTDATE = dateFormat.format(exam.STARTDATE);
-                exam.ENDDATE = dateFormat.format(exam.ENDDATE);
-            });
+            exams.forEach(exam => exam.STARTDATE = dateFormat.format(exam.STARTDATE));
         res.render('exams', {
             title: "Exams",
             exams,
@@ -99,8 +96,8 @@ router.post('/:username/CreateExam', [
         startDate = dateFormat.DBformat(startDate);
         endDate = dateFormat.DBformat(endDate);
 
-        const query = "INSERT INTO dbproject.exam (TITLE,CATEGORY,DESCP,STARTDATE,ENDDATE,DURATION,Qnum,U_ID) "
-            + "VALUES('" + examTitle + "','" + category + "','" + description + "','" + startDate + "','" + endDate + "'," + duration + "," + questionNumber + "," + req.user.ID + ");";
+        const query = "INSERT INTO dbproject.exam (TITLE,CATEGORY,DESCP,STARTDATE,DURATION,Qnum,U_ID) "
+            + "VALUES('" + examTitle + "','" + category + "','" + description + "','" + startDate + "'," + duration + "," + questionNumber + "," + req.user.ID + ");";
         DBconnection.query(query, (err, rows) => {
             if (err) {
                 console.log(err);
@@ -260,6 +257,7 @@ router.get("/details/:E_ID/:Code", (req, res) => {
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + ";";
         DBconnection.query(query, (err, exam) => {
             if (err) { return console.log(err); }
+            if (!exam.length) return res.sendStatus(404);
             else {
                 if (exam[0].CODE == req.params.Code) {
                     const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
@@ -304,7 +302,7 @@ router.get('/questions/:e_id/:Code', (req, res) => {
             if (Date.now() < exam.STARTDATE) {
                 req.flash("error", "This exam hasn't started yet.");
                 res.redirect(redirectLink);
-            } else if (Date.now() > exam.ENDDATE) {
+            } else if (Date.now() > (new Date(exam.STARTDATE).getTime() + exam.DURATION * 60 * 1000)) {
                 req.flash("error", "This exam has already finished");
                 res.redirect(redirectLink);
             } else if (exam.U_ID === req.user.ID) {
@@ -351,7 +349,7 @@ router.post('/questions/:e_id', (req, res) => {
             if (Date.now() < exam.STARTDATE) {
                 req.flash("error", "This exam hasn't started yet.");
                 res.redirect("/exams/" + req.params.e_id + "");
-            } else if (Date.now() > exam.ENDDATE) {
+            } else if (Date.now() > (new Date(exam.STARTDATE).getTime() + exam.DURATION * 60 * 1000)) {
                 req.flash("error", "This exam has already finished");
                 res.redirect("/exams/" + req.params.e_id + "");
             } else {
@@ -368,8 +366,19 @@ router.post('/questions/:e_id', (req, res) => {
                     const updateQuery = "update dbproject.solve set grades=" + grade.toString() + " where examID=" + req.params.e_id + " and userID=" + req.user.ID + " ;";
                     DBconnection.query(updateQuery, (err) => {
                         if (err) { return console.log(err); }
-                        req.flash('success', 'Your answers are submitted!');
-                        res.redirect("/exams");
+                        DBconnection.query(`SELECT Q_ID FROM DBPROJECT.QUESTIONS WHERE E_ID=${req.params.e_id}`, (err, Q_IDs) => {
+                            if (err) return console.error(err);
+                            let insertUserAnswerwsQuery = `INSERT INTO dbproject.UserAnswers VALUES`;
+                            Q_IDs.forEach((question, q) => {
+                                insertUserAnswerwsQuery += ` (${req.user.ID}, ${question.Q_ID}, '${userAnswers[`q${q + 1}`]}'),`;
+                            });
+                            insertUserAnswerwsQuery = insertUserAnswerwsQuery.slice(0, -1) + ";";
+                            DBconnection.query(insertUserAnswerwsQuery, err => {
+                                if (err) return console.error(err);
+                                req.flash('success', 'Your answers are submitted!');
+                                res.redirect("/exams");
+                            });
+                        });
                     })
                 });
             }
@@ -379,7 +388,5 @@ router.post('/questions/:e_id', (req, res) => {
         res.redirect("/users/login");
     }
 });
-
-
 
 module.exports = router;

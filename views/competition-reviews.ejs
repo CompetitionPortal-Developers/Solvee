@@ -13,7 +13,8 @@
                 <li><a href="/competitions/leaderboard/<%= competition.C_ID %>/<%= competition.TITLE %>">Leaderboard</a>
                 </li>
             </ul>
-            <button class="btn btn-outline-Login" data-toggle="modal" data-target="#reviewModal">Review</button>
+            <button class="btn btn-outline-Login" data-toggle="modal" id="review"
+                data-target="#reviewModal">Review</button>
         </div>
         <hr style="margin: 0; background-color:#150999">
         <% if(!reviews.length) { %>
@@ -95,5 +96,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    if (parseInt("<%- errors.length %>")) {
+        document.getElementById("review").click();
+    }
+</script>
 
 <%-include("partials/Footer.ejs")%>

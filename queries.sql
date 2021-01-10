@@ -42,13 +42,12 @@ alter table donation auto_increment=1234;
 
 CREATE TABLE EXAM (
     E_ID INT PRIMARY KEY auto_increment,
-    CODE VARCHAR(50) UNIQUE NOT NULL,
+    CODE VARCHAR(50) UNIQUE DEFAULT "XSolvee",
     TITLE VARCHAR(50) NOT NULL UNIQUE,
     CATEGORY VARCHAR(50) NOT NULL,
     DESCP VARCHAR(500),
     DURATION INT NOT NULL,
     STARTDATE DATETIME NOT NULL,
-    ENDDATE DATETIME NOT NULL,
     U_ID int not null references user(ID),
     Qnum int not null
 );
@@ -127,9 +126,9 @@ create table review (
     U_ID int not null references user(ID) on delete cascade,
     C_ID int not null references COMPETITION(C_ID) on delete cascade,
     primary key(U_ID, C_ID),
-    comment varchar(200),
-    rating int,
-    react varchar(5),
+    comment varchar(200) not null,
+    rating int not null,
+    react varchar(5) not null,
     dateSubmit datetime default current_timestamp
 );
 
@@ -151,7 +150,7 @@ create table T_contains_Cs(
 create table participates_in_T (
     userID int references user(ID) on delete cascade,
     tournamentID int references tournament(T_ID) on delete cascade,
-    primary key(userID, tournamentID),
+    primary key(userID, tournamentID)
 );
 
 INSERT INTO USER (
@@ -263,7 +262,6 @@ INSERT INTO EXAM (
     CATEGORY,
     DESCP,
     STARTDATE,
-    ENDDATE,
     DURATION,
     U_ID,
     Qnum
@@ -273,7 +271,6 @@ INSERT INTO EXAM (
     'Physics',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     '2020-2-20 09:00:00',
-    '2020-2-22 09:00:00',
     '10',
     '1',
     '4'

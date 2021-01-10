@@ -143,7 +143,6 @@ router.get('/questions/:c_id', (req, res) => {
                         }
                     }
                 });
-
             }
         });
     } else {
@@ -232,9 +231,18 @@ router.get('/reviews/:c_id', (req, res) => {
     }
 });
 
-router.post('/reviews/:c_id', (req, res) => {
+router.post('/reviews/:c_id', [
+    body('rate', 'Rate is required in a review').notEmpty(),
+    body('reaction', 'Reaction is required in a review').notEmpty(),
+    body('description', 'Description is required in a review').notEmpty()
+], (req, res) => {
     if (req.isAuthenticated()) {
+        let errors = validationResult(req).errors;
         const { rate, reaction, description } = req.body;
+        if (errors.length) {
+            errors.forEach(err => req.flash('error', err.msg));
+            return res.redirect('back');
+        }
         const validateQuery = "select * from dbproject.participate where userID=" + req.user.ID + " and competitionID=" + req.params.c_id + " ;";
         const query = "insert into dbproject.review (U_ID,C_ID,comment,rating,react) "
             + "values(" + req.user.ID + "," + req.params.c_id + ",'" + description + "'," + rate + ",'" + reaction + "');";
@@ -278,6 +286,7 @@ router.post('/:username/CreateCompetition', [
         min: 0,
         max: 500
     }),
+    body('competitionCost', 'Competition cost Number must be entered').notEmpty(),
     body('questionNumber', 'Question Number must be selected').notEmpty(),
     body('startDate', 'Start Date must be selected').notEmpty(),
     body('endDate', 'End Date must be selected').notEmpty(),
@@ -305,6 +314,7 @@ router.post('/:username/CreateCompetition', [
                 title: "Competition Creation",
                 errors,
                 competitionTitle,
+                competitionCost,
                 category,
                 questionNumber,
                 startDate,
@@ -362,7 +372,7 @@ router.post('/:username/CreateCompetition', [
                 });
             } else {
                 schedule.scheduleJob(endDate, function () {
-                    console.log('The world is going to end today.', rows.insertId);
+                    console.log(rows.insertId);
 
                     const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
                         + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
@@ -373,6 +383,25 @@ router.post('/:username/CreateCompetition', [
                         } else {
                             console.log(List);
                             GiveRewards(List, 0, 'Gold', rows.insertId);
+                            const totalSpirits = List.length * competitionCost;
+                            let prizeQuery;
+                            switch (List.length) {
+                                case 1:
+                                    prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
+                                    break;
+                                case 2:
+                                    prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
+                                    break;
+                                case 3:
+                                    prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
+                                    break;
+                                case 4:
+                                    prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
+                                    break;
+                                case 5:
+                                    prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
+                                    break;
+                            }
                         }
                     });
                 });

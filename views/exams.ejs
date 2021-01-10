@@ -1,4 +1,4 @@
-<%- include("partials/Header.ejs")%> 
+<%- include("partials/Header.ejs")%>
 
 <div class="container">
     <%-messages("partials/Messages.ejs", locals)%>
@@ -7,40 +7,49 @@
             <h2 style="float: left;"><i class="fab fa-medapps" style="color: #28A745;"></i> Exams</h2>
         </div>
         <!-- <form action="/exams/search" method="post"> -->
-            <div class="mb-3">
-                <div class="input-group">
-                    <input type="search" class="form-control" name="searchedExam" id="searchedExam"
-                        placeholder="Search By Exam ID....">
-                    <div class="input-group-prepend">
-                        <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
-                            Search</button>
-                        <a role="button" href="/exams/CreateExam" class="btn btn-success">Create Exam</a>    
-                    </div>
+        <div class="mb-3">
+            <div class="input-group">
+                <input type="search" class="form-control" name="searchedExam" id="searchedExam"
+                    placeholder="Search By Exam ID....">
+                <div class="input-group-prepend">
+                    <button type="submit" class=" btn btn-outline-success"><i class="fas fa-search"></i>
+                        Search</button>
+                    <a role="button" href="/exams/CreateExam" class="btn btn-success">Create Exam</a>
                 </div>
             </div>
+        </div>
         <!-- </form> -->
+        <br><br>
+        <hr style="background-color:#28A745">
+        <% if(!exams.length) { %>
+        <div>
+            <h1 class="card-title text-center text-muted">There are no exams</h1>
+        </div>
+        <% } else { %>
         <% exams.forEach(exam => { %>
         <div class="card-body competitionExamCard">
             <h2 class="card-title"><%= exam.TITLE %></h2>
-            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> Duration: <%= exam.DURATION %> Mins
+            <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> Duration: <%= exam.DURATION %>
+                Mins
                 &nbsp;</span>
             <br>
             <span class="text-muted"><i style="color:#28A745" class="far fa-calendar-alt"></i> Start Date:
-                <%= exam.STARTDATE %> - End Date: <%= exam.ENDDATE %></span>
+                <%= exam.STARTDATE %></span>
             <hr>
             <form action="/exams/details/<%=exam.E_ID%>" method="post">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" name="code" placeholder="Enter Exam's Code" aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    
-                    <button class="btn btn-outline-success">Solve Now</button>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="code" placeholder="Enter Exam's Code"
+                        aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
 
+                        <button class="btn btn-outline-success">Solve Now</button>
+
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
 
         </div>
-        <% }) %>
+        <% })} %>
     </div>
 
 </div>

@@ -7,15 +7,19 @@
             <h1><%= title %></h1>
         </div>
 
-        <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25"
-                aria-valuemin="0" aria-valuemax="100"></div>
+        <div>
+            <p class="text-center mb-0">Remaining time</p>
+            <p class="text-center" id="timer"></p>
+            <div class="progress">
+                <div class="progress-bar bg-success" id="progressbar" role="progressbar" aria-valuenow="25"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
         </div>
 
         <hr style="background-color:#28A745">
 
         <div class="container">
-            <form action="/exams/questions/<%= exam.E_ID %>" method="POST">
+            <form id="examForm" action="/exams/questions/<%= exam.E_ID %>" method="POST">
                 <% 
                 function shuffle(array) {
                     let currentIndex = array.length, temporaryValue, randomIndex;
@@ -89,5 +93,49 @@
     </div>
 
 </div>
+
+<script>
+    let interval,
+        updatedSeconds = 0,
+        updatedMinutes = parseInt("<%- exam.DURATION %>") - Math.round((Date.now() - (new Date(
+            "<%- exam.STARTDATE %>"))) / (1000 * 60)),
+        duration = parseInt("<%- exam.DURATION %>"),
+        timer = document.getElementById("timer"),
+        progressbar = document.getElementById("progressbar"),
+        examForm = document.getElementById("examForm"),
+        percentage = (((updatedMinutes * 60) + updatedSeconds) / (duration * 60)) * 100;
+
+    const start = () => {
+        run();
+        interval = setInterval(run, 1000);
+    };
+
+    const run = () => {
+        if (updatedSeconds === 0 && updatedMinutes !== 0) {
+            updatedMinutes--;
+            updatedSeconds = 60;
+        }
+        if (updatedMinutes === 0 && updatedSeconds === 0) {
+            //do the work
+            examForm.submit();
+            return;
+        } else {
+            updatedSeconds--;
+        }
+
+        timer.innerText =
+            `${updatedMinutes >= 10 ? updatedMinutes : `0${updatedMinutes}`} : ${updatedSeconds >= 10 ? updatedSeconds : `0${updatedSeconds}`}`;
+        percentage = (((updatedMinutes * 60) + updatedSeconds) / (duration * 60)) * 100;
+        if (Math.floor(percentage) <= 25) {
+            progressbar.classList.remove("bg-success");
+            progressbar.classList.add("bg-danger");
+        }
+        progressbar.style.width = percentage + '%';
+    };
+
+    window.addEventListener("load", () => {
+        start();
+    });
+</script>
 
 <%-include("partials/Footer.ejs")%>

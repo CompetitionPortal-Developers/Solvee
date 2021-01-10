@@ -3,37 +3,39 @@
 
 <div class="container">
     <form action="/exams/<%=user.Username%>/CreateExam/<%=questionNumber%>/<%=examTitle%>" method="post">
-    <div class="card center">
-        <div class="competitionExamHeader">
-            <h1>Please Fill In The <%=questionNumber+1%> Questions</h1>
-        </div>
-        <hr style="background-color:#150999">
+        <div class="card center">
+            <div class="competitionExamHeader">
+                <h1>Please Fill In The <%=questionNumber%> Questions</h1>
+            </div>
+            <hr style="background-color:#150999">
 
-        <%for(var i=0;i< questionNumber ;i++){%>
-        <div class="card-body competitionExamCard">
-            <div class="col-12 genderAvatar">
-                <label for="description" class="editProfileLabels form-label">Enter Question <%=i%> Content :</label>
-                <textarea type="text" class="form-control" name="Question<%=i%>"></textarea>
-              </div>
-              <div class="genderAvatar col-12">
-                <input placeholder="Enter Here The Question's Correct Choice" type="text" class="form-control" name="choice<%=i%>">
+            <%for(var i=0;i< questionNumber ;i++){%>
+            <div class="card-body competitionExamCard">
+                <div class="col-12 genderAvatar">
+                    <label for="description" class="editProfileLabels form-label">Enter Question <%=i+1%> Content
+                        :</label>
+                    <textarea type="text" class="form-control" name="Question<%=i+1%>"></textarea>
+                </div>
+                <div class="genderAvatar col-12">
+                    <input placeholder="Enter Here The Question's Correct Choice" type="text" class="form-control"
+                        name="choice<%=i+1%>">
+                </div>
+
+                <div class="genderAvatar col-12">
+                    <input placeholder="Enter 2nd Choice" type="text" class="form-control" name="Wrong1<%=i+1%>">
+                </div>
+
+                <div class="genderAvatar col-12">
+                    <input placeholder="Enter 3rd Choice" type="text" class="form-control" name="Wrong2<%=i+1%>">
+                </div>
+
+                <div class="genderAvatar col-12">
+                    <input placeholder="Enter 4th Choice" type="text" class="form-control" name="Wrong3<%=i+1%>">
+                </div>
             </div>
-    
-            <div class="genderAvatar col-12">
-                <input placeholder="Enter 1st Choice" type="text" class="form-control" name="Wrong1<%=i%>">
-            </div>
-    
-            <div class="genderAvatar col-12">
-                <input placeholder="Enter 2nd Choice" type="text" class="form-control" name="Wrong2<%=i%>">
-            </div>
-    
-            <div class="genderAvatar col-12">
-                <input placeholder="Enter 3rd Choice" type="text" class="form-control" name="Wrong3<%=i%>">
-            </div>    
-        </div>
-        <hr>
-        
-        <%}%>
+            <hr>
+
+            <%}%>
         <div class="saveDiscard">
             <a href="/exams" class="buttonProfile btn btn-danger">Discard</a>
             <button type="submit" class="buttonProfile btn btn-info" style="margin-right: 20px">Finish</button>
