@@ -20,41 +20,101 @@ function GiveRewards(List, index, Award, comp_ID) {
 
 router.get('/', (req, res) => {
     const errors = [];
-
-    DBconnection.query('SELECT * FROM dbproject.competition ORDER BY STARTDATE DESC, ENDDATE DESC;', (err, rows) => {
+    let deleteQueries=[];
+    const deleteEmpty="select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is not null);"
+    DBconnection.query(deleteEmpty,(err,toBeDeleted)=>{
         if (err) return console.error(err);
-        const competitions = rows;
-        if (competitions.length)
-            competitions.forEach(competition => {
-                competition.STARTDATE = dateFormat.format(competition.STARTDATE);
-                competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-            });
+        for(var i=0;i<toBeDeleted.length;i++){
+            let singleQuery="delete from dbproject.competition where C_ID="+toBeDeleted[i].C_ID+" ;";
+            deleteQueries.push(singleQuery);
+        }
+        function deleteCompetition(deleteQueries,index){
+            if(index>=deleteQueries.length){
+                DBconnection.query('SELECT * FROM dbproject.competition'
+                +' where C_ID not in (select t.C_ID from dbproject.t_contains_cs as t) '
+                +' ORDER BY STARTDATE DESC, ENDDATE DESC;', (err, rows) => {
+                    if (err) return console.error(err);
+                    const competitions = rows;
+                    if (competitions.length)
+                        competitions.forEach(competition => {
+                            competition.STARTDATE = dateFormat.format(competition.STARTDATE);
+                            competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+                        });
 
-        res.render('competitions', {
-            title: "Competitions",
-            competitions,
-            errors
-        });
-    });
+                    res.render('competitions', {
+                        title: "Competitions",
+                        competitions,
+                        errors
+                    });
+                });
+            }else{
+                DBconnection.query(deleteQueries[index],(err)=>{
+                    if (err) return console.error(err);
+                    console.log("query "+deleteQueries[index]+" is done");
+                    deleteCompetition(deleteQueries,index+1);
+                })
+            }
+        }
+        deleteCompetition(deleteQueries,0);
+        
+    })
+    
 });
+
+router.post("/search",(req,res)=>{
+    let {searchedCompetition}=req.body;
+    if(searchedCompetition==""){
+        req.flash("error","Fill The Search Bar First");
+        res.redirect('back');
+    }
+    searchedCompetition = searchedCompetition.toString().replace(/'/g, "");
+    const query="select * from dbproject.competition where TITLE='"+searchedCompetition+"' ;";
+    DBconnection.query(query,(err,Result)=>{
+        if(err){return console.log(err);}
+        if(Result.length!=0){
+            res.redirect("/competitions/details/"+Result[0].C_ID+"");
+        }else{
+            req.flash("error","Competition Wasn't Found");
+            res.redirect('back');
+        }
+    })
+})
 
 router.get('/details/:c_id', (req, res) => {
     const errors = [];
-    DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
-        if (err) return console.error(err);
-        if (!rows.length) return res.sendStatus(404);
-        const competition = rows[0];
-        competition.STARTDATE = dateFormat.format(competition.STARTDATE);
-        competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-        DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
-            res.render("competition-details", {
-                title: competition.TITLE,
-                competition,
-                host: user,
-                errors
-            });
+    if(req.isAuthenticated()){
+        let alreadyParticpant=false;
+        const CreatorQuery="select U_ID from dbproject.competition where C_ID="+req.params.c_id+" ;";
+        const alreadyParticipated="select userID from dbproject.participate where competitionID="+req.params.c_id+" and userID="+req.user.ID+" ;";
+        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
+            if (err) return console.error(err);
+            if (!rows.length) return res.sendStatus(404);
+            DBconnection.query(CreatorQuery,(err,Creator)=>{
+                if (err) return console.error(err);
+                DBconnection.query(alreadyParticipated,(err,Participant)=>{
+                    if (err) return console.error(err);
+                    const competition = rows[0];
+                    if(competition.STARTDATE>Date.now() || competition.ENDDATE<Date.now() || Creator.length!=0 || Participant.length!=0){
+                        alreadyParticpant=true;
+                    }
+                    competition.STARTDATE = dateFormat.format(competition.STARTDATE);
+                    competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+                    DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
+                        res.render("competition-details", {
+                            title: competition.TITLE,
+                            competition,
+                            host: user,
+                            errors,
+                            alreadyParticpant
+                        });
+                    });
+                })
+            })
         });
-    });
+    }else{
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
 });
 
 router.get('/leaderboard/:c_id/:comp_name/', (req, res) => {
@@ -309,6 +369,10 @@ router.post('/:username/CreateCompetition', [
             errors.unshift({ msg: "Please Fill In All Fields" });
         }
 
+        if(competitionCost<0 || competitionCost>5000){
+            errors.unshift({ msg: "Competition Cost Must Be Between 0-5000" });
+        }
+
         if (errors.length) {
             return res.render("create-competition", {
                 title: "Competition Creation",
@@ -323,9 +387,9 @@ router.post('/:username/CreateCompetition', [
             });
         }
 
-        competitionTitle = competitionTitle.toString().replace(/'/g, "");
-        description = description.toString().replace(/'/g, "");
-        category = category.toString().replace(/'/g, "");
+        competitionTitle = competitionTitle.toString().replace(/'/g, "`");
+        description = description.toString().replace(/'/g, "`");
+        category = category.toString().replace(/'/g, "`");
 
         //Date Validation
         function Compare(startDate, endDate) {
@@ -454,7 +518,7 @@ router.post('/:username/CreateCompetition/:Qnum/:Ctitle', (req, res) => {
                 req.flash("error", "Please Fill In All Fields & Try Again");
                 return res.redirect(redirectLink);
             }
-            items[i] = items[i].toString().replace(/'/g, "");      //to not make query error
+            items[i] = items[i].toString().replace(/'/g, "`");      //to not make query error
         }
         const counter = 4;
         let j = 0;

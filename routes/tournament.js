@@ -18,6 +18,24 @@ router.get("/", (req, res) => {
     })
 });
 
+router.post("/search",(req,res)=>{
+    let {searchedTournament}=req.body;
+    if(searchedTournament==""){
+        req.flash("error","Fill The Search Bar First");
+        res.redirect('back');
+    }
+    searchedTournament = searchedTournament.toString().replace(/'/g, "");
+    const query="select * from dbproject.tournament where TITLE='"+searchedTournament+"' ;";
+    DBconnection.query(query,(err,Result)=>{
+        if(Result.length!=0){
+            res.redirect("/tournaments/details/"+Result[0].T_ID+"");
+        }else{
+            req.flash("error","Tournament Wasn't Found");
+            res.redirect('back');
+        }
+    })
+})
+
 router.get("/details/:T_ID", (req, res) => {
     let errors = [];
     let alreadyParticipated=false;
@@ -87,8 +105,6 @@ router.get("/competitions/:T_ID/:T_TITLE", (req, res) => {
             + "where t.T_ID=" + req.params.T_ID + " and t.C_ID=c.C_ID;";
         DBconnection.query(query, (err, Tournament) => {
             if (err) { return console.log(err); }
-
-
 
             for (var i = 0; i < Tournament.length; i++) {
                 if (Tournament[i].STARTDATE < Date.now()) {
@@ -283,7 +299,7 @@ router.get("/leaderboard/:T_ID/:T_TITLE",(req,res)=>{
                         +"from ( "
                         +"select ll.score,u.Username "
                         +"from leaderboard as ll,t_contains_cs as t,user as u,participates_in_t as p "
-                        +"where ll.C_ID=t.C_ID and ll.U_ID=u.ID and t.T_ID="+T_ID+" and u.ID=p.userID "
+                        +"where ll.C_ID=t.C_ID and ll.U_ID=u.ID and t.T_ID="+T_ID+" and u.ID=p.userID and p.tournamentID="+T_ID+" "
                         +") as l "
                         +"group by l.Username "
                         +"order by l.score desc ;";

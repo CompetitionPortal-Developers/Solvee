@@ -1,25 +1,25 @@
 <%- include("partials/Header.ejs")%>
 
-<div class="container">
+<div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
     <div class="card center">
         <div class="competitionExamHeader">
             <h2 style="float: left;"><i class="fas fa-medal" style="color: #150999;"></i> Competitions</h2>
         </div>
-        <!-- <form action="/competitions/search" method="post"> -->
+        <form action="/competitions/search" method="post">
         <div class="mb-3">
             <div class="input-group">
                 <input type="search" class="form-control" name="searchedCompetition" id="searchedCompetition"
-                    placeholder="Search">
+                    placeholder="Search By Competition Title">
                 <div class="input-group-prepend">
-                    <a role="button" href="" class=" btn btn-outline-Custom"><i class="fas fa-search"></i>Search</button>
+                    <button type="submit" class=" btn btn-outline-Custom"><i class="fas fa-search"></i>Search</button>
 
                     <a role="button" href="/competitions/CreateCompetition" class="btn btn-Custom">Create
                         Competition</a>
                 </div>
             </div>
         </div>
-        <!-- </form> -->
+        </form>
         <br><br>
         <hr style="background-color:#150999">
         <% if(!competitions.length) { %>
@@ -64,7 +64,7 @@
             </span>
             <br>
             <a href="/competitions/details/<%= competition.C_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-Custom">Participate Now</a>
+                class="btn btn-outline-Custom">More Details</a>
         </div>
         <% })} %>
     </div>

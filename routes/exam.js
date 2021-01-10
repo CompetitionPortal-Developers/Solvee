@@ -20,6 +20,30 @@ router.get('/', (req, res) => {
 });
 
 
+router.post("/search",(req,res)=>{
+    let {searchedExam}=req.body;
+    let errors=[];
+    if(searchedExam==""){
+        req.flash("error","Fill The Search Bar First");
+        res.redirect('back');
+    }
+    searchedExam = searchedExam.toString().replace(/'/g, "");
+    const query="select * from dbproject.exam where TITLE='"+searchedExam+"' ;";
+    DBconnection.query(query,(err,exams)=>{
+        if(err){return console.log(err);}
+        if(exams.length!=0){
+            res.render('exams', {
+                title: "Exams",
+                exams,
+                errors
+            });
+        }else{
+            req.flash("error","Exam Wasn't Found");
+            res.redirect('back');
+        }
+    })
+})
+
 //If the user pressed discard the exam creation
 router.get('/CreateExam', (req, res) => {
     const errors = [];
@@ -253,34 +277,48 @@ router.post("/details/:E_ID", (req, res) => {
 
 router.get("/details/:E_ID/:Code", (req, res) => {
     let errors = [];
+    let alreadyparticpate=false;
     if (req.isAuthenticated()) {
-        const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + ";";
+        const CreatorQuery="select U_ID from dbproject.exam where E_ID="+req.params.E_ID+" ;";
+        const alreadyParticipated="select userID from dbproject.solve where examID="+req.params.E_ID+" and userID="+req.user.ID+" ;";
+        const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
         DBconnection.query(query, (err, exam) => {
             if (err) { return console.log(err); }
             if (!exam.length) return res.sendStatus(404);
             else {
-                if (exam[0].CODE == req.params.Code) {
-                    const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
-                    DBconnection.query(queryUser, (err, host) => {
+                DBconnection.query(CreatorQuery,(err,Creator)=>{
+                    if (err) { return console.log(err); }
+                    DBconnection.query(alreadyParticipated,(err,Participant)=>{
                         if (err) { return console.log(err); }
-                        else {
-                            const examCode = req.params.Code;
-                            exam = exam[0];
-                            exam.STARTDATE = dateFormat.format(exam.STARTDATE);
-                            host = host[0];
-                            res.render("exam-details", {
-                                title: "Exam details",
-                                errors,
-                                exam,
-                                host,
-                                examCode
+                        if(exam.STARTDATE>Date.now() || exam.ENDDATE<Date.now() || Creator.length!=0 || Participant.length!=0){
+                            alreadyParticpant=true;
+                        }
+                        if (exam[0].CODE == req.params.Code) {
+                            const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
+                            DBconnection.query(queryUser, (err, host) => {
+                                if (err) { return console.log(err); }
+                                else {
+                                    const examCode = req.params.Code;
+                                    exam = exam[0];
+                                    exam.STARTDATE = dateFormat.format(exam.STARTDATE);
+                                    host = host[0];
+                                    res.render("exam-details", {
+                                        title: "Exam details",
+                                        errors,
+                                        exam,
+                                        host,
+                                        examCode,
+                                        alreadyParticpant
+                                    })
+                                }
                             })
+                        } else {
+                            req.flash("error", "Incorrect Code , Can't Access The Exam");
+                            res.redirect("/exams");
                         }
                     })
-                } else {
-                    req.flash("error", "Incorrect Code , Can't Access The Exam");
-                    res.redirect("/exams");
-                }
+                })
+                
             }
         })
     } else {
