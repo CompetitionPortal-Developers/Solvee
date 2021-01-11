@@ -196,7 +196,8 @@ router.get("/createTournament", (req, res) => {
     if (req.isAuthenticated()) {
         const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
         let checkComp = [];
-        const queryGetComp = "select * from dbproject.competition where U_ID=" + req.user.ID + " ;";
+        const queryGetComp = "select * from dbproject.competition as c "
+                            +" where c.U_ID=" + req.user.ID + " and c.C_ID not in (select t.C_ID from dbproject.t_contains_cs as t );";
         DBconnection.query(deleteEmptyCompetitions,(err)=>{
             if (err) { return console.log(err); }
             DBconnection.query(queryGetComp, (err, userCompetitions) => {
@@ -234,10 +235,8 @@ router.post("/createTournament", (req, res) => {
         const compNumber = "select max(T_ID) as IDtournament from dbproject.tournament;";
 
         let objBody = req.body;
+        console.log(objBody);
         let { tournamentTitle, description, fees } = objBody;
-        delete objBody.tournamentTitle;
-        delete objBody.description;
-        delete objBody.fees;
         if (tournamentTitle == "" || tournamentTitle.length > 50 || tournamentTitle.length < 2) {
             req.flash("error", "Tournament Title Must Be Between 2-50 Characters");
             res.redirect("/tournaments/createTournament");
@@ -246,10 +245,17 @@ router.post("/createTournament", (req, res) => {
             req.flash("error", "Tournament Description Must Be Between 10-500 Characters");
             res.redirect("/tournaments/createTournament");
         }
-        if (fees.toString().length == "" || fees > 10000 || fees < 3000) {
+        if (fees.toString().length == "" || fees > 10000 || fees < 3000 ) {
             req.flash("error", "Tournament Fees Must Be Between 0-50 Coins");
             res.redirect("/tournaments/createTournament");
         }
+
+        if (Object.values(objBody).length<5 || Object.values(objBody).length>8) {
+            res.send("you can' but less than 2 or more than 5 comp per tournament");
+        }
+        delete objBody.tournamentTitle;
+        delete objBody.description;
+        delete objBody.fees;
         tournamentTitle = tournamentTitle.toString().replace(/'/g, "\\'");
         description = description.toString().replace(/'/g, "\\'");
         const query = "insert into dbproject.tournament (TITLE,FEES,DESCP,U_ID) values('" + tournamentTitle + "'," + fees + ",'" + description + "'," + req.user.ID + ");";
@@ -257,12 +263,16 @@ router.post("/createTournament", (req, res) => {
         let selectedComp = [];
         const competitions = Object.values(objBody);
         let j = 0;
-
+        if(competitions.length<2 && competitions.length>5){
+            console.log("herelol");
+            req.flash("error", "Tournament Must Include 2-5 Competitions, Please Select Competitions Within Limit");
+            res.redirect("/tournaments/createTournament");
+        }else{
         DBconnection.query(query, (err) => {
             if (err) {
                 req.flash("error", "Please Change Tournament Title & Try Again");
                 res.redirect('back');
-            }
+            }else{
             DBconnection.query(compNumber, (err, result) => {
                 const T_ID = result[0].IDtournament;
                 let updateFees = "update dbproject.competition set cost=0 where C_ID in (select b.c_ID from dbproject.t_contains_cs as b where b.T_ID=" + T_ID + ");";
@@ -273,8 +283,12 @@ router.post("/createTournament", (req, res) => {
                     }
                     j++;
                     let insert = "(" + T_ID + "," + competitions[i] + ",0)";
+                    console.log(insert);
                     queryy += insert
                 }
+                queryy+=";"
+                console.log("to be executed");
+                console.log(queryy);
                 if (j < 2 || j > 5) {
                     console.log("here1");
                     req.flash("error", "Tournament Must Include 2-5 Competitions, Please Select Competitions Within Limit");
@@ -288,39 +302,14 @@ router.post("/createTournament", (req, res) => {
                             return console.log(err);
                         }
                         console.log("here4");
-                        // schedule.scheduleJob(endDate, function () {
-                        //     console.log(`\n\n\n\n\n\n\n\n Tournament ${tournamentTitle} is finished.`);
-                        //     console.log(rows.insertId);
-
-                        //     const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-                        //         + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
-
-                        //     DBconnection.query(query, (err, List) => {
-                        //         if (err) {
-                        //             return console.log(err);
-                        //         } else {
-                        //             console.log(List);
-                        //             GiveRewards(List, 0, 'Gold', rows.insertId);
-                        //             const totalSpirits = List.length * competitionCost;
-                        //             const spiritsDistribution = [
-                        //                 [0],
-                        //                 [totalSpirits],
-                        //                 [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
-                        //                 [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
-                        //                 [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
-                        //                 [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
-                        //             ]
-                        //             console.log(spiritsDistribution);
-                        //             giveSpirits(List, 0, spiritsDistribution);
-                        //         }
-                        //     });
-                        // });
                         req.flash("success", "Your Tournament Is Created Successfully");
                         res.redirect("/tournaments/");
                     });
                 });
             });
+        }
         });
+    }
     } else {
         req.flash("error", "Please log in first");
         res.redirect("/users/login");
