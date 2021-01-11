@@ -288,33 +288,33 @@ router.post("/createTournament", (req, res) => {
                             return console.log(err);
                         }
                         console.log("here4");
-                        schedule.scheduleJob(endDate, function () {
-                            console.log(`\n\n\n\n\n\n\n\n Tournament ${tournamentTitle} is finished.`);
-                            console.log(rows.insertId);
+                        // schedule.scheduleJob(endDate, function () {
+                        //     console.log(`\n\n\n\n\n\n\n\n Tournament ${tournamentTitle} is finished.`);
+                        //     console.log(rows.insertId);
 
-                            const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-                                + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
+                        //     const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
+                        //         + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
 
-                            DBconnection.query(query, (err, List) => {
-                                if (err) {
-                                    return console.log(err);
-                                } else {
-                                    console.log(List);
-                                    GiveRewards(List, 0, 'Gold', rows.insertId);
-                                    const totalSpirits = List.length * competitionCost;
-                                    const spiritsDistribution = [
-                                        [0],
-                                        [totalSpirits],
-                                        [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
-                                        [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
-                                        [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
-                                        [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
-                                    ]
-                                    console.log(spiritsDistribution);
-                                    giveSpirits(List, 0, spiritsDistribution);
-                                }
-                            });
-                        });
+                        //     DBconnection.query(query, (err, List) => {
+                        //         if (err) {
+                        //             return console.log(err);
+                        //         } else {
+                        //             console.log(List);
+                        //             GiveRewards(List, 0, 'Gold', rows.insertId);
+                        //             const totalSpirits = List.length * competitionCost;
+                        //             const spiritsDistribution = [
+                        //                 [0],
+                        //                 [totalSpirits],
+                        //                 [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
+                        //                 [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
+                        //                 [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
+                        //                 [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
+                        //             ]
+                        //             console.log(spiritsDistribution);
+                        //             giveSpirits(List, 0, spiritsDistribution);
+                        //         }
+                        //     });
+                        // });
                         req.flash("success", "Your Tournament Is Created Successfully");
                         res.redirect("/tournaments/");
                     });
@@ -388,7 +388,7 @@ router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
             let queryLB = "select u.Username,l.grade,l.duration,l.score,l.C_ID,date(c.STARTDATE) as stDate,c.TITLE "
                 + "from dbproject.leaderboard as l,dbproject.user as u,dbproject.competition as c,dbproject.t_contains_cs as t "
                 + "where l.C_ID=c.C_ID and t.C_ID=c.C_ID and t.T_ID=" + T_ID + " and u.ID=l.U_ID "
-                + "order by stDate asc;";
+                + "order by l.C_ID asc;";
             DBconnection.query(queryLB, (err, Result) => {
                 if (err) { return console.log(err); }
                 let lastStandingQuery = "select count(X.C_ID) as cc "
@@ -399,19 +399,18 @@ router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
                     + ") as X "
                     + "group by X.C_ID "
                     + "order by X.st ;";
+                const numberOfCompetitions="select count(C_ID) as numCompetitions from dbproject.t_contains_cs where T_ID="+T_ID+" ;";
                 DBconnection.query(lastStandingQuery, (err, competitionCount) => {
                     if (err) { return console.log(err); }
-                    //console.log(Result);
-                    //console.log(competitionCount);
-                    res.render("tournament-leaderboard", {
-                        title: "Tournament LeaderBoard",
-                        errors,
-                        Result,
-                        competitionCount,
-                        T_ID,
-                        T_TITLE,
-                        Top5
-                    })
+                        res.render("tournament-leaderboard", {
+                            title: "Tournament LeaderBoard",
+                            errors,
+                            Result,
+                            competitionCount,
+                            T_ID,
+                            T_TITLE,
+                            Top5
+                    });
                 })
             })
         })

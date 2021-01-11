@@ -9,10 +9,10 @@
        <h1><i class="fas fa-trophy" style="color:#E51552 ;"></i> <%= T_TITLE %></h1>
     </div>
 
-    <ul class="competiton-breadcrumb">
-      <li><a href="/tournaments/details/<%= T_ID %>" class="not-active-tournament">Details</a></li>
+    <ul class="tournament-breadcrumb">
+      <li><a href="/tournaments/details/<%= T_ID %>" class="not-active-tournament" >Details</a></li>
       <li><a href="/tournaments/leaderboard/<%= T_ID %>/<%= T_TITLE %>" class="active">Leaderboard</a></li>
-      <li><a href="/tournaments/competitions/<%=  T_ID %>/<%=T_TITLE%>" class="not-active-tournament">Competitions</a></li>
+      <li><a href="/tournaments/competitions/<%=  T_ID %>/<%=T_TITLE%>" class="not-active-tournament" >Competitions</a></li>
     </ul>
 
     <hr style="margin: 0; background-color:#E51552">
@@ -27,7 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          <%for(var i=0;i<Top5.length;i++){%>
+          <%for(var i=0;i<Top5.length && i<5;i++){%>
           <tr>
             <td>#<%=i+1%></td>
             <td><a href="/users/<%= Top5[i].Username %>" style="color: #212529;"><%=Top5[i].Username%></a></td>
@@ -37,14 +37,19 @@
         </tbody>
       </table>
     </div>
-    <hr>
+    <br>
+    <hr style="color:#E51552 ;">
     <br>
     <h2 style="padding: 5% 0 2% 1%;">Round Results:</h2>
             <div class="table-responsive">
             <table class="table table-striped table-sm text-center">
                 <thead>
                 <tr>
-                    <th>Competition</th>
+                  <%if(Result.length>0){%>
+                  <th>Round Title: <%=Result[0].TITLE%></th>
+                  <%}else{%>
+                    <th>Round Title: none</th>
+                    <%}%>
                     <th>Username</th>
                     <th>Grade</th>
                     <th>Duration</th>
@@ -62,10 +67,19 @@
                         <td></td>
                         <td></td>
                     </tr>
+                    <thead>
+                      <tr>
+                          <th>Round Title: <%=Result[k].TITLE%></th>
+                          <th>Username</th>
+                          <th>Grade</th>
+                          <th>Duration</th>
+                          <th>Score</th>
+                      </tr>
+                      </thead>
                 <%}%>
             <%}%>
             <tr>
-                <td><%=Result[k].TITLE%></td>
+                <td></td>
                 <td><a href="/users/<%= Result[k].Username %>" style="color: #212529;"><%=Result[k].Username%></a></td>
                 <td><%=Result[k].grade%></td>
                 <td><%=Result[k].duration%></td>
