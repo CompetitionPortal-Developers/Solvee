@@ -544,3 +544,6 @@ ul {
 .tournamentDisplayStyle {
   text-align: center;
 }
+.checkbox:checked:before{
+  background-color:green;
+}

@@ -32,13 +32,56 @@
                 <%= exam.STARTDATE %> - <b>Duration:</b> <%= exam.DURATION %> Mins
             </span>
             <hr>
-            <%if(!alreadyparticpate){%>
+            <%if(!isTheCreator && !alreadyparticpate){%>
             <a href="/exams/questions/<%= exam.E_ID %>/<%=examCode%>" style="margin-top: 10px;"
-                class="btn btn-outline-success">Start</a>
+                class="btn btn-outline-success">Solve Now</a>
+            <%}%>
+            <%if(isTheCreator){%>
+                <button class="btn btn-outline-success" data-toggle="modal" id="review"
+                data-target="#GradesExam">View Grades</button>
             <%}%>
         </div>
     </div>
 
 </div>
+
+<div class="modal fade" id="GradesExam" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"><%= exam.TITLE %> Grades</h5>
+                    <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex row">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm text-center">
+                          <thead>
+                            <tr>
+                              <th>Username</th>
+                              <th>Grade</th>
+                              <th>Start Time</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <%for(var i=0;i<Grades.length;i++){%>
+                            <tr>
+                              <td><a href="/users/<%= Grades[i].Username %>" style="color: #212529;"><%=Grades[i].Username%></a></td>
+                              <td><a href="/exams/viewGrade/<%=exam.E_ID %>/<%=Grades[i].ID%>" style="color: #212529;"><%=Grades[i].grades%></a></td>
+                              <td><%=Grades[i].s_time%></td>
+                            </tr>
+                            
+                            <%}%>
+                          </tbody>
+                        </table>
+                      </div>
+                </div>
+                
+        </div>
+    </div>
+</div>
+
 
 <%-include("partials/Footer.ejs")%>

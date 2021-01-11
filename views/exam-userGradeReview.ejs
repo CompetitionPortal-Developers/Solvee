@@ -1,0 +1,75 @@
+<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<!--To publish the errors on screen for user if any were found-->
+
+<div class="container">
+    <div class="card center">
+        <div class="competitionExamHeader">
+            <h1><%= Grades[0].Username %> Answers</h1>
+        </div>
+
+        <hr style="background-color:#28A745">
+
+        <div class="container">
+            <div class="card-body competitionExamCard" >
+            <%for(var i=0;i < Grades.length;i++){%>
+            
+                <p>Question <%=i+1%> :</p>
+                <div style="padding-left: 5%;">
+                <h5 class="card-title">
+                    <%=Grades[i].QUESTION%>
+                </h5>
+                <div class="form-check">
+                    <p class="form-check-label" style="color: green; font-weight: bold;">
+                        <small>a) </small> <%=Grades[i].CHOICE_1%>
+                    </p>
+                </div>
+                <%if(Grades[i].Choice==Grades[i].CHOICE_2){%>
+                <div class="form-check">
+                    <p class="form-check-label" style="color: red; font-weight: bold;">
+                        <small>b) </small> <%=Grades[i].CHOICE_2%>
+                    </p>
+                </div>
+                <%}else{%>
+                    <div class="form-check">
+                        <p class="form-check-label">
+                            <small>b) </small> <%=Grades[i].CHOICE_2%>
+                        </p>
+                    </div>
+                <%}%>
+                <%if(Grades[i].Choice==Grades[i].CHOICE_3){%>
+                     </small><div class="form-check">
+                        <p class="form-check-label" style="color: red; font-weight: bold;">
+                            <small>c) </small> <%=Grades[i].CHOICE_3%>
+                        </p>
+                    </div>
+                    <%}else{%>
+                        <div class="form-check">
+                            <p class="form-check-label">
+                                <small>c) </small> <%=Grades[i].CHOICE_3%>
+                            </p>
+                        </div>
+                    <%}%>
+                    <%if(Grades[i].Choice==Grades[i].CHOICE_4){%>
+                        <div class="form-check">
+                            <p class="form-check-label" style="color: red; font-weight: bold;">
+                                <small>d) </small> <%=Grades[i].CHOICE_4%>
+                            </p>
+                        </div>
+                        <%}else{%>
+                            <div class="form-check">
+                                <p class="form-check-label">
+                                    <small>d) </small> <%=Grades[i].CHOICE_4%>
+                                </p>
+                            </div>
+                        <%}%>
+                    </div>
+            <hr>
+            <%}%>
+        </div>
+        </div>
+    </div>
+
+</div>
+
+
+<%-include("partials/Footer.ejs")%>
