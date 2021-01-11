@@ -430,6 +430,10 @@ router.get("/:username/todolist", (req, res) => {
             if (err) { return console.log(err); }
             else {
                 if (rows.length != 0) {
+                    rows.forEach(row => {
+                        if (row.deadline)
+                            row.deadline = dateFormatting.format(new Date(row.deadline));
+                    })
                     res.render("todo-list", {
                         title: "To Do List",
                         username: req.params.username,

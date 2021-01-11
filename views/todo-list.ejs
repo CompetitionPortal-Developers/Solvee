@@ -15,7 +15,7 @@
         <%}else{%>
         <p><%=rows[i].tasks%> <br>
             <small class="text-muted"><i style="color:#150999" class="far fa-calendar-alt"></i> Due Date :
-                <%=rows[i].deadline.toString().slice(0,15)%></small>
+                <%=rows[i].deadline%></small>
             <% if (Date.now() > rows[i].deadline) { %>
             <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> <b>late</b></span>
             <% } %>

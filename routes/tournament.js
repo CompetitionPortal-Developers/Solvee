@@ -4,26 +4,12 @@ const schedule = require("node-schedule");
 const { DBconnection } = require("../config/database");
 const dateFormat = require("../config/date-formatting");
 
-function GiveRewards(List, index, Award, comp_ID) {
-    if (index >= List.length || index == 3) {
-        return
-    } else {
-        const giveAward = "update dbproject.award set userID=" + List[index].ID + " where a_type='" + Award + "' and competitionID=" + comp_ID + " ;";
-        DBconnection.query(giveAward, (err) => {
-            if (err) { return console.log(err); }
-            if (index == 0) { Award = 'Silver'; }
-            if (index == 1) { Award = 'Bronze'; }
-            GiveRewards(List, index + 1, Award, comp_ID);
-        })
-    }
-}
-
 function giveSpirits(List, index, spiritsDistribution) {
     if (index >= List.length || index === 5)
         return;
-    DBconnection.query(`SELECT SPIRITS FROM DBPROJECT.USER WHERE ID=${List[index].ID};`, (err, [{ SPIRITS }]) => {
-        console.log(`User ${List[index].ID} has ${SPIRITS} spirits`);
-        const updateSpirits = `UPDATE DBPROJECT.USER SET SPIRITS=${SPIRITS + spiritsDistribution[List.length][index]} WHERE ID=${List[index].ID};`;
+    DBconnection.query(`SELECT SPIRITS FROM DBPROJECT.USER WHERE Username=${List[index].Username};`, (err, [{ SPIRITS }]) => {
+        console.log(`User ${List[index].Username} has ${SPIRITS} spirits`);
+        const updateSpirits = `UPDATE DBPROJECT.USER SET SPIRITS=${SPIRITS + spiritsDistribution[List.length][index]} WHERE Username=${List[index].Username};`;
         DBconnection.query(updateSpirits, err => {
             if (err) return console.error(err);
             giveSpirits(List, index + 1, spiritsDistribution);
@@ -247,7 +233,7 @@ router.post("/createTournament", (req, res) => {
             res.redirect("/tournaments/createTournament");
         }
         if (fees.toString().length == "" || fees > 10000 || fees < 3000) {
-            req.flash("error", "Tournament Fees Must Be Between 0-50 Coins");
+            req.flash("error", "Tournament Fees Must Be Between 3000-10000 Spirits");
             res.redirect("/tournaments/createTournament");
         }
         tournamentTitle = tournamentTitle.toString().replace(/'/g, "\\'");
@@ -258,13 +244,15 @@ router.post("/createTournament", (req, res) => {
         const competitions = Object.values(objBody);
         let j = 0;
 
-        DBconnection.query(query, (err) => {
+        DBconnection.query(query, (err, result) => {
             if (err) {
                 req.flash("error", "Please Change Tournament Title & Try Again");
                 res.redirect('back');
             }
+            console.log(result.insertId);
             DBconnection.query(compNumber, (err, result) => {
                 const T_ID = result[0].IDtournament;
+                console.log(T_ID);
                 let updateFees = "update dbproject.competition set cost=0 where C_ID in (select b.c_ID from dbproject.t_contains_cs as b where b.T_ID=" + T_ID + ");";
                 let queryy = "insert into dbproject.t_contains_cs values";
                 for (var i = 0; i < competitions.length; i++) {
@@ -288,35 +276,48 @@ router.post("/createTournament", (req, res) => {
                             return console.log(err);
                         }
                         console.log("here4");
-                        // schedule.scheduleJob(endDate, function () {
-                        //     console.log(`\n\n\n\n\n\n\n\n Tournament ${tournamentTitle} is finished.`);
-                        //     console.log(rows.insertId);
+                        const queryENDDate = "select c.STARTDATE,c.ENDDATE,c.TITLE "
+                            + "from competition as c,t_contains_cs as t "
+                            + "where c.C_ID=t.C_ID and t.T_ID=" + T_ID + " "
+                            + "order by c.ENDDATE desc;"
+                        DBconnection.query(queryENDDate, (err, maxEndDate) => {
+                            if (err) return console.error(err);
+                            console.log(maxEndDate[0].ENDDATE);
+                            schedule.scheduleJob(maxEndDate[0].ENDDATE, function () {
+                                console.log(`\n\n\n\n\n\n\n\nTournament ${tournamentTitle} is finished.`);
+                                console.log(T_ID);
 
-                        //     const query = "select u.ID,u.Username,l.grade,l.duration,l.score from dbproject.leaderboard as l,dbproject.user as u "
-                        //         + "where l.C_ID=" + rows.insertId + " and " + "u.ID=l.U_ID order by score desc, grade desc, duration asc;";
+                                const joinQuery = "select sum(l.score) as total,l.Username "
+                                    + "from ( "
+                                    + "select ll.score,u.Username "
+                                    + "from leaderboard as ll,t_contains_cs as t,user as u,participates_in_t as p "
+                                    + "where ll.C_ID=t.C_ID and ll.U_ID=u.ID and t.T_ID=" + T_ID + " and u.ID=p.userID and p.tournamentID=" + T_ID + " "
+                                    + ") as l "
+                                    + "group by l.Username "
+                                    + "order by l.score desc ;";
 
-                        //     DBconnection.query(query, (err, List) => {
-                        //         if (err) {
-                        //             return console.log(err);
-                        //         } else {
-                        //             console.log(List);
-                        //             GiveRewards(List, 0, 'Gold', rows.insertId);
-                        //             const totalSpirits = List.length * competitionCost;
-                        //             const spiritsDistribution = [
-                        //                 [0],
-                        //                 [totalSpirits],
-                        //                 [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
-                        //                 [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
-                        //                 [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
-                        //                 [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
-                        //             ]
-                        //             console.log(spiritsDistribution);
-                        //             giveSpirits(List, 0, spiritsDistribution);
-                        //         }
-                        //     });
-                        // });
-                        req.flash("success", "Your Tournament Is Created Successfully");
-                        res.redirect("/tournaments/");
+                                DBconnection.query(joinQuery, (err, List) => {
+                                    if (err) {
+                                        return console.log(err);
+                                    } else {
+                                        console.log(List);
+                                        const totalSpirits = List.length * fees;
+                                        const spiritsDistribution = [
+                                            [0],
+                                            [totalSpirits],
+                                            [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
+                                            [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
+                                            [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
+                                            [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
+                                        ]
+                                        console.log(spiritsDistribution);
+                                        giveSpirits(List, 0, spiritsDistribution);
+                                    }
+                                });
+                            });
+                            req.flash("success", "Your Tournament Is Created Successfully");
+                            res.redirect("/tournaments/");
+                        });
                     });
                 });
             });
@@ -343,7 +344,7 @@ router.get("/join/:T_ID/:T_TITLE", (req, res) => {
                     if (err) { return console.log(err); }
                     const totalFees = competitionFees[0].total + tournamentFees[0].FEES
                     if (totalFees > userMoney[0].spirits) {
-                        req.flash("error", "You Must Have At Least " + competitionFees[0].cost + tournamentFees[0].FEES + " To Join Tournament");
+                        req.flash("error", "You Must Have At Least " + tournamentFees[0].FEES + " To Join Tournament");
                         res.redirect("back");
                     } else {
                         const newBalance = userMoney[0].spirits - totalFees;
@@ -383,7 +384,7 @@ router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
             + "group by l.Username "
             + "order by l.score desc ;";
         DBconnection.query(joinQuery, (err, Top5) => {//Getting the total score of the participants
-            //console.log(Top5);
+            console.log(Top5);
             if (err) { return console.log(err); }
             let queryLB = "select u.Username,l.grade,l.duration,l.score,l.C_ID,date(c.STARTDATE) as stDate,c.TITLE "
                 + "from dbproject.leaderboard as l,dbproject.user as u,dbproject.competition as c,dbproject.t_contains_cs as t "
@@ -399,17 +400,17 @@ router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
                     + ") as X "
                     + "group by X.C_ID "
                     + "order by X.st ;";
-                const numberOfCompetitions="select count(C_ID) as numCompetitions from dbproject.t_contains_cs where T_ID="+T_ID+" ;";
+                const numberOfCompetitions = "select count(C_ID) as numCompetitions from dbproject.t_contains_cs where T_ID=" + T_ID + " ;";
                 DBconnection.query(lastStandingQuery, (err, competitionCount) => {
                     if (err) { return console.log(err); }
-                        res.render("tournament-leaderboard", {
-                            title: "Tournament LeaderBoard",
-                            errors,
-                            Result,
-                            competitionCount,
-                            T_ID,
-                            T_TITLE,
-                            Top5
+                    res.render("tournament-leaderboard", {
+                        title: "Tournament LeaderBoard",
+                        errors,
+                        Result,
+                        competitionCount,
+                        T_ID,
+                        T_TITLE,
+                        Top5
                     });
                 })
             })
