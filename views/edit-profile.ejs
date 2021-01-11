@@ -7,12 +7,12 @@
       <div class="row ">
         <div class="col-sm-6 ">
           <label for="firstName" class="editProfileLabels form-label">First name</label>
-          <input type="text" class="form-control" name="firstName" value="<%=user.firstName%>">
+          <input type="text" class="form-control" name="firstName" value="<%=user.firstName%>" minlength="0" maxlength="50">
         </div>
 
         <div class="col-sm-6">
           <label for="lastName" class="editProfileLabels form-label">Last name</label>
-          <input type="text" class="form-control" name="lastName" id="lastName" value="<%=user.lastName%>">
+          <input type="text" class="form-control" name="lastName" id="lastName" value="<%=user.lastName%>" minlength="0" maxlength="50">
         </div>
       </div>
       <div class="row">
@@ -20,7 +20,7 @@
           <label for="username" class="editProfileLabels form-label">Username</label>
           <div class="input-group">
             <span class="input-group-text">@</span>
-            <input type="text" class="form-control" name="username" value="<%=user.Username%>">
+            <input type="text" class="form-control" name="username" value="<%=user.Username%>" minlength="0" maxlength="50">
           </div>
         </div>
 
@@ -28,30 +28,30 @@
           <label for="email" class="editProfileLabels form-label">Email</label>
           <div class="input-group">
             <span class="input-group-text">&#9993;</span>
-            <input type="email" class="form-control" name="email" value="<%=user.email%>">
+            <input type="email" class="form-control" name="email"  value="<%=user.email%>" readonly>
           </div>
         </div>
       </div>
       <div class="row editProfileLabels">
         <div class="col-sm-6">
           <label for="firstName" class="editProfileLabels form-label">New Password</label>
-          <input type="password" class="form-control" placeholder="**********" name="pass">
+          <input type="password" class="form-control" placeholder="**********" name="pass" minlength="0" maxlength="50">
         </div>
 
         <div class="col-sm-6">
           <label for="lastName" class="editProfileLabels form-label">Re-enter New Password</label>
-          <input type="password" class="form-control" placeholder="**********" name="confirmPass">
+          <input type="password" class="form-control" placeholder="**********" name="confirmPass" minlength="0" maxlength="50">
         </div>
       </div>
 
       <div class="col-12">
         <label for="education" class="editProfileLabels form-label">Education</label>
-        <input type="text" class="form-control" id="eduction" value="<%=user.education%>" name="education">
+        <input type="text" class="form-control" id="eduction" value="<%=user.education%>" name="education" minlength="0" maxlength="50">
       </div>
 
       <div class="col-12">
         <label for="job" class="editProfileLabels form-label">Job</label>
-        <input type="text" class="form-control" id="job" value="<%=user.job%>" name="job">
+        <input type="text" class="form-control" id="job" value="<%=user.job%>" name="job" minlength="0" maxlength="50">
       </div>
 
       <div class="col-12">
@@ -84,7 +84,7 @@
 
       <div class="col-12">
         <label for="bio" class="editProfileLabels form-label">Bio</label>
-        <textarea type="text" class="form-control" id="bio" name="bio"><%=user.bio%></textarea>
+        <textarea type="text" class="form-control" id="bio" name="bio" minlength="0" maxlength="300"><%=user.bio%></textarea>
       </div>
 
       <div class="saveDiscard">

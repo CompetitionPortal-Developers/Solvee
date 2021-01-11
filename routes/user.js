@@ -11,7 +11,7 @@ router.get('/user', (req, res) => {
     const errors = [];
     DBconnection.query('SELECT * FROM dbproject.user', (err, rows) => {
         if (err) return console.error(err);
-        console.log(rows[0].ID);
+        //console.log(rows[0].ID);
         res.render("user-profile", {
             title: "User",
             errors,
@@ -67,18 +67,29 @@ router.post("/register", [
     body('birthdate', 'Birth Date must be selected').notEmpty(),
     body('gender', 'Gender must be selected').notEmpty(),
 ], (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let errors = validationResult(req).errors;
     let { firstname, lastname, username, email, password, gender, birthdate } = req.body;
+    firstname = firstname.toString().replace(/'/g, "\\'");
+    lastname = lastname.toString().replace(/'/g, "\\'");
+    username = username.toString().replace(/'/g, "\\'");
+    email = email.toString().replace(/'/g, "\\'");
+    password = password.toString().replace(/'/g, "\\'");
+    gender = gender.toString().replace(/'/g, "\\'");
 
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
         errors.unshift({ msg: "Please Fill In All Fields" });
     }
-    let limitYear = new Date(Date.now()).getFullYear - 8;
     const yearOfBirth = birthdate.toString().slice(0, 4);
-    if (yearOfBirth >= limitYear) {
-        errors.unshift({ msg: "You Must Be Older Than 8 Years To Register" });
+    if (yearOfBirth >= 2013) {
+        errors.unshift({ msg: "You Must Be Born On 2013's or Older To Register" });
     }
+    const lastUsernameLength=username.length;
+    username = username.toString().replace(/ /g, "");
+    if(username.length<lastUsernameLength){
+        errors.unshift({ msg: "Username Can't Contain Spaces" });
+    }
+
     if (errors.length)
         return res.render("register", {
             title: "Register",
@@ -178,7 +189,7 @@ router.get('/:username', (req, res) => {
             DBconnection.query(query2, (err, awards) => {
                 if (err) return console.error(err);
                 let birthDate = "-";
-                console.log(awards);
+                //console.log(awards);
                 if (profileInfo[0].BirthDate)
                     birthDate = profileInfo[0].BirthDate.toString().slice(0, 16);
 
@@ -199,20 +210,21 @@ router.get('/:username', (req, res) => {
 
 router.get('/:username/edit-profile', (req, res) => {
     if (req.isAuthenticated()) {
-        const query = "select * from dbproject.user where Username='" + req.params.username + "' ;";
+        const query = "select * from dbproject.user where Username='" + req.params.username + "' and ID="+req.user.ID+" ;";
         DBconnection.query(query, (err, profileInfo) => {
             if (err) return console.error(err);
-            console.log(profileInfo);
-            if (req.user.ID !== profileInfo[0].ID) {
+            if (profileInfo.length!=0) {
+                const date = new Date(req.user.BirthDate.toString());
+                const birthDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                res.render("edit-profile", {
+                    title: "Edit Profile",
+                    birthDate
+                });
+            }else{
                 req.flash('error', "You can't access this page.");
                 return res.redirect(`/users/${req.user.Username}`);
             }
-            const date = new Date(req.user.BirthDate.toString());
-            const birthDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-            res.render("edit-profile", {
-                title: "Edit Profile",
-                birthDate
-            });
+            
         });
     }
     else {
@@ -222,7 +234,7 @@ router.get('/:username/edit-profile', (req, res) => {
 });
 
 router.post('/:username/edit-profile', (req, res) => {
-    const errors = []; //all errors push should be turned into req flash
+    let errors = []; //all errors push should be turned into req flash
     let { firstName, lastName, username, pass, confirmPass, education, job, birthdate, gender, bio } = req.body;
     firstName = firstName.toString().replace(/'/g, "\\'");
     lastName = lastName.toString().replace(/'/g, "\\'");
@@ -232,18 +244,18 @@ router.post('/:username/edit-profile', (req, res) => {
     bio = bio.toString().replace(/'/g, "\\'");
     if (req.isAuthenticated()) {
         let query;
-        console.log(req.body);
+        let usernameChanged=false;
+        //console.log(req.body);
         if (firstName !== "") {
             if (firstName.length < 50) {
-                firstName = firstName.toString().replace(/'/g, "`");
-                query = "update user set firstName='" + firstName + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject.user set firstName='" + firstName + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
                         errors.push("Error while updating first name");
                         // req.flash("error_msg", "Error While Updating First Name");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             } else {
                 errors.push("First name is too long. It must be less than 50 characters");
@@ -252,15 +264,14 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (lastName !== "") {
             if (lastName.length < 50) {
-                lastName = lastName.toString().replace(/'/g, "`");
-                query = "update user set lastName='" + lastName + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject.user set lastName='" + lastName + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
                         errors.push("Error While Updating Last Name");
                         // req.flash("error_msg", "Error While Updating Last Name");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             } else {
                 errors.push("Last name is too long. It must be less than 50 characters");
@@ -269,17 +280,24 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (username !== "") {
             if (username.length < 50) {
-                username = username.toString().replace(/'/g, "`");
-                query = "update user set Username='" + username + "' where ID=" + req.user.ID + " ;";
-                DBconnection.query(query, (err, results) => {
-                    if (err) {
-                        console.log(err);
-                        req.flash("error_msg", "The Username Is Already Taken");
-                    }
-                    console.log(results);
-                });
+                const pastLength=username.length;
+                username = username.toString().replace(/ /g, "");
+                if(username.length<pastLength){
+                    req.flash("error", "Username Can't Include Spaces");
+                }else{
+                    query = "update dbproject.user set Username='" + username + "' where ID=" + req.user.ID + " ;";
+                    DBconnection.query(query, (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            req.flash("error", "The Username Is Already Taken");
+                        }else{
+                            usernameChanged=true;
+                        }
+                        //console.log(results);
+                    });
+                }
             } else {
-                req.flash("error_msg", "Username Must Contains Between 1-50 Characters, Please Try Again");
+                req.flash("error", "Username Must Contains Between 1-50 Characters, Please Try Again");
             }
         }
         if (pass !== "") {
@@ -288,7 +306,7 @@ router.post('/:username/edit-profile', (req, res) => {
                     if (pass.length < 500) {
                         let password = pass
                         if (password.length < 7) {
-                            req.flash("error_msg", "Password Must Contains At Least 7 Characters");
+                            req.flash("error", "Password Must Contains At Least 7 Characters");
                         }
                         else {
                             bcrypt.genSalt(10, (err, salt) => {
@@ -296,22 +314,22 @@ router.post('/:username/edit-profile', (req, res) => {
                                 bcrypt.hash(password, salt, (err, hash) => {
                                     if (err) return console.error(err);
                                     password = hash;
-                                    query = "update user set pass='" + hash + "' where ID=" + req.user.ID + " ;";
+                                    query = "update dbproject.user set pass='" + hash + "' where ID=" + req.user.ID + " ;";
                                     DBconnection.query(query, (err, results, fields) => {
                                         if (err) {
                                             console.log(err);
-                                            req.flash("error_msg", "Error While Updating Password , PLease Try Agian");
+                                            req.flash("error", "Error While Updating Password , PLease Try Agian");
                                         }
-                                        console.log(results, fields);
+                                        //console.log(results, fields);
                                     });
                                 });
                             });
                         }
                     } else {
-                        req.flash("error_msg", "Password Must Contains Between 7-500 Characters , Please Try Again");
+                        req.flash("error", "Password Must Contains Between 7-500 Characters , Please Try Again");
                     }
                 } else {
-                    req.flash("error_msg", "The Two Passwords You Entered Are Different");
+                    req.flash("error", "The Two Passwords You Entered Are Different");
                 }
             }
         } else {
@@ -319,76 +337,77 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (education !== "") {
             if (education.length < 50) {
-                education = education.toString().replace(/'/g, "`");
-                query = "update user set education='" + education + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject.user set education='" + education + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
-                        req.flash("error_msg", "The Education You Entered Is Invalid");
+                        req.flash("error", "The Education You Entered Is Invalid");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Education Must Contains Between 0-50 Characters , Please Try Again");
+                req.flash("error", "Education Must Contains Between 0-50 Characters , Please Try Again");
             }
         }
         if (job !== "") {
             if (job.length < 50) {
-                job = job.toString().replace(/'/g, "`");
-                query = "update user set job='" + job + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject.user set job='" + job + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
-                        req.flash("error_msg", "The Job You Entered Is Invalid");
+                        req.flash("error", "The Job You Entered Is Invalid");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Job Must Contains Between 0-50 Characters, Please Try Again");
+                req.flash("error", "Job Must Contains Between 0-50 Characters, Please Try Again");
             }
         }
         if (bio !== "") {
             if (bio.length < 300) {
-                bio = bio.toString().replace(/'/g, "`");
-                query = "update user set bio='" + bio + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject.user set bio='" + bio + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
-                        req.flash("error_msg", "The Bio You Entered Is Invalid");
+                        req.flash("error", "The Bio You Entered Is Invalid");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Bio Must Contains Between 0-300 Characters , Please Try Again");
+                req.flash("error", "Bio Must Contains Between 0-300 Characters , Please Try Again");
             }
         }
         if (gender !== "") {
-            query = "update user set gender='" + gender + "' where ID=" + req.user.ID + " ;";
+            query = "update dbproject.user set gender='" + gender + "' where ID=" + req.user.ID + " ;";
             DBconnection.query(query, (err, results) => {
                 if (err) {
                     console.log(err);
-                    req.flash("error_msg", "The Gender You Entered Is Invalid");
+                    req.flash("error", "The Gender You Entered Is Invalid");
                 }
-                console.log(results);
+                //console.log(results);
             });
         }
         if (birthdate != "") {
-            console.log(birthdate.slice(0, 4));
+            //console.log(birthdate.slice(0, 4));
             if (birthdate.slice(0, 4) > new Date(Date.now()).getFullYear() - 8 || birthdate.slice(0, 4) < new Date(Date.now()).getFullYear() - 80) {
                 req.flash('error', 'Your age must be between 8 and 80 years old');
             } else {
-                query = "update user set BirthDate='" + birthdate + "' where ID=" + req.user.ID + " ;";
+                query = "update dbproject,user set BirthDate='" + birthdate + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
                         console.log(err);
-                        req.flash("error_msg", "The BirthDate You Entered Is Invalid");
+                        req.flash("error", "The BirthDate You Entered Is Invalid");
                     }
-                    console.log(results);
+                    //console.log(results);
                 });
             }
         }
         req.flash("success", "Your Profile Is Updated");
-        res.redirect(`/users/${req.params.username}`);
+        const getUsername="select username from dbproject.user where ID="+req.user.ID+" ;";
+        DBconnection.query(getUsername,(err,getUser)=>{
+            if(err){return console.log(err);}
+            res.redirect("/users/"+getUser[0].username+"");
+        })
     }
     else {
         req.flash("error", "Please Login First");
@@ -399,29 +418,25 @@ router.post('/:username/edit-profile', (req, res) => {
 router.get("/:username/todolist", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
-        const privacyquery = "select ID from dbproject.user where username='" + req.params.username + "';";
-        const query = "select * from dbproject.todolist where U_ID=" + req.user.ID + " order by deadline;";
-        DBconnection.query(privacyquery, (err, results) => {
-            if (err) { console.log(err); }
-            else {
-                if (results[0].ID === req.user.ID) {
-                    DBconnection.query(query, (err, rows) => {
-                        if (err) { return console.log(err); }
-                        else {
-                            res.render("todo-list", {
-                                title: "To Do List",
-                                username: req.params.username,
-                                errors,
-                                rows
-                            });
-                        }
-                    })
-                } else {
-                    req.flash("error", "You Aren't Allowed To Access Other's To Do List");
-                    res.redirect("/");
-                }
-            }
-        })
+        const query = "select * from dbproject.todolist as t,dbproject.user as u "
+                    +" where t.U_ID=" + req.user.ID + " and u.ID=t.U_ID and u.Username='"+req.params.username+"' "
+                    +" order by t.deadline;";
+                        DBconnection.query(query, (err, rows) => {
+                            if (err) { return console.log(err); }
+                            else {
+                                if(rows.length!=0){
+                                    res.render("todo-list", {
+                                        title: "To Do List",
+                                        username: req.params.username,
+                                        errors,
+                                        rows
+                                    });
+                                }else{
+                                    req.flash("error", "You Aren't Allowed To Access Other's To Do List");
+                                    res.redirect("/");
+                                }
+                            }
+                        })
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
@@ -432,13 +447,14 @@ router.post("/:username/todolist/add", (req, res) => {
     let errors = [];
     const redirectUrl = "/users/" + req.params.username + "/todolist";
     let { todoContent, todoDate } = req.body;
+
     if (req.isAuthenticated()) {
         let query = "";
         if (todoContent == "") {
             req.flash("error", "Please Fill In Task Content & Try Again");
             return res.redirect(redirectUrl);
         }
-        var Task = todoContent.toString().replace(/'/g, "");
+        var Task =todoContent.toString().replace(/'/g, "\\'");
         if (todoDate == "") {
             query = "insert into dbproject.todolist (U_ID,tasks) "
                 + "values(" + req.user.ID + ",'" + Task + "')";
@@ -466,16 +482,18 @@ router.post("/:username/todolist/delete/:taskid", (req, res) => {
         DBconnection.query(privacyquery, (err, results) => {
             if (err) { console.log(err); }
             else {
-                if (results[0].ID == req.user.ID) {
-                    DBconnection.query(query, (err, rows) => {
-                        if (err) { console.log(err); }
-                        else {
-                            res.redirect(redirectUrl);
-                        }
-                    })
-                } else {
-                    req.flash("error", "You Aren't Allowed To Access Other's To Do List");
-                    res.redirect("/");
+                if(results.length!=0){
+                    if (results[0].ID == req.user.ID) {
+                        DBconnection.query(query, (err, rows) => {
+                            if (err) { console.log(err); }
+                            else {
+                                res.redirect(redirectUrl);
+                            }
+                        })
+                    } else {
+                        req.flash("error", "You Aren't Allowed To Access Other's To Do List");
+                        res.redirect("/");
+                    }
                 }
             }
         })
@@ -489,6 +507,7 @@ router.get("/:username/history", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const username = req.params.username;
+        const checkPrivacy="select * from dbproject.user where ID="+req.user.ID+" and Username='"+username+"' ;";
         const examQuery = "select * from dbproject.exam where U_ID=" + req.user.ID + " ;";
         const CompetitionQuery = 'SELECT * FROM dbproject.competition'
             + ' where U_ID=' + req.user.ID + ' AND  C_ID not in (select t.C_ID from dbproject.t_contains_cs as t) '
@@ -526,7 +545,15 @@ router.get("/:username/history", (req, res) => {
             }
         }
         let queryResults = [];
-        ExecuteQuery(0, queries, queryResults);
+        DBconnection.query(checkPrivacy,(err,Privacy)=>{
+            if(err){return console.log(err);}
+            if(Privacy.length!=0){
+                ExecuteQuery(0, queries, queryResults);
+            }else{
+                req.flash("error", "You aren't allowed to access this page");
+                res.redirect("/");
+            }
+        })
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
