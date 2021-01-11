@@ -1,25 +1,40 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
-<!--To publish the errors on screen for user if any were found-->
+<%- include("partials/Header.ejs")%>
 
 <div class="container" style="min-height: 100vh;">
+    <%-messages("partials/Messages.ejs", locals)%>
+    <%-messages("partials/Messages.ejs", locals)%>
+    <% if (typeof errors !== 'undefined') { %>
+    <% errors.forEach(error => { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error.msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <% }); %>
+    <% } %>
     <div class="card center ">
         <div class="competitionExamHeader">
             <h2 style="float: left;"><i class="fas fa-trophy" style="color:#E51552 ;"></i> Tournaments</h2>
         </div>
-            <form action="/tournaments/search" method="post">
-        <div class="mb-3"> 
-            <div class="input-group">
-                
-                <input type="search" class="form-control" name="searchedTournament" placeholder="Search By Tournament Title">
-                <div class="input-group-prepend ">
-                    <button type="submit" class=" btn btn-outline-danger"><i class="fas fa-search"></i>Search</button>
+        <form action="/tournaments/search" method="post">
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="search" class="form-control" name="searchedTournament"
+                        placeholder="Search By Tournament Title"
+                        value="<%= (typeof searchedExam !== 'undefined') ? searchedExam : '' %>">
+                    <div class="input-group-prepend ">
+                        <button type="submit" class=" btn btn-outline-danger">
+                            <i class="fas fa-search"></i>Search
+                        </button>
 
-                    <a role="button" href="/tournaments/createTournament" class="btn btn-danger">Create
-                        Tournament</a>
+                        <a role="button" href="/tournaments/createTournament" class="btn btn-danger">
+                            Create Tournament
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
         <br><br>
         <hr style="background-color:#E51552">
         <% if(!Tournaments.length) { %>

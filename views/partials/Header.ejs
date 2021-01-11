@@ -88,10 +88,13 @@
         </li>
       </ul>
       <% if (user) { %>
-      <ul class="navbar-nav">
+      <ul class="navbar-nav mr-4">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false"><%= user.Username %> <i class="fas fa-chevron-down"></i>
+            aria-expanded="false">
+            <div style="min-width: 7rem;">
+              <%= user.Username %> <i class="fas fa-chevron-down"></i>
+            </div>
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="text-align: center; ">
             <li style="padding: 5%;">

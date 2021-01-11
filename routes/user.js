@@ -74,10 +74,9 @@ router.post("/register", [
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
         errors.unshift({ msg: "Please Fill In All Fields" });
     }
-    let limitYear = new Date("2014-01-1");
+    let limitYear = new Date(Data.now()).getFullYear - 8;
     const yearOfBirth = birthdate.toString().slice(0, 4);
-    if (yearOfBirth >= limitYear.getFullYear()) {
-        console.log("A77aaa");
+    if (yearOfBirth >= limitYear) {
         errors.unshift({ msg: "You Must Be Older Than 8 Years To Register" });
     }
     if (errors.length)
@@ -91,8 +90,6 @@ router.post("/register", [
             gender,
             birthdate
         });
-
-
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return console.error(err);
         bcrypt.hash(password, salt, (err, hash) => {
@@ -493,7 +490,9 @@ router.get("/:username/history", (req, res) => {
     if (req.isAuthenticated()) {
         const username = req.params.username;
         const examQuery = "select * from dbproject.exam where U_ID=" + req.user.ID + " ;";
-        const CompetitionQuery = "select * from dbproject.competition where U_ID=" + req.user.ID + " ;";
+        const CompetitionQuery = 'SELECT * FROM dbproject.competition'
+            + ' where U_ID=' + req.user.ID + ' AND  C_ID not in (select t.C_ID from dbproject.t_contains_cs as t) '
+            + ' ORDER BY STARTDATE DESC, ENDDATE DESC;';
         const solveQuery = "select s.s_time,s.grades,e.TITLE from dbproject.solve as s,dbproject.exam as e "
             + "where s.userID=" + req.user.ID + " and e.E_ID=s.examID;";
         const participateQuery = "select l.score,c.TITLE from dbproject.leaderboard as l,dbproject.competition as c "
@@ -503,7 +502,7 @@ router.get("/:username/history", (req, res) => {
         const tournamentQuery = "select * from dbproject.tournament where U_ID=" + req.user.ID + " ;";
         const queries = [examQuery, CompetitionQuery, solveQuery, participateQuery, tournamentQuery, participateTournament];
         function ExecuteQuery(index, queries, queryResults) {
-            if (index >= 4) {
+            if (index >= 6) {
                 res.render("user-history", {
                     title: "Account History",
                     errors,

@@ -2,6 +2,17 @@
 
 <div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
+    <%-messages("partials/Messages.ejs", locals)%>
+    <% if (typeof errors !== 'undefined') { %>
+    <% errors.forEach(error => { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error.msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <% }); %>
+    <% } %>
     <div class="card center">
         <div class="competitionExamHeader">
             <h2 style="float: left;"><i class="fab fa-medapps" style="color: #28A745;"></i> Exams</h2>
@@ -32,15 +43,15 @@
         <div class="card-body competitionExamCard">
             <h2 class="card-title">
                 <%if(exam.CATEGORY=="Programming"){%>
-                    <i class="fas fa-laptop-code" style="color: #28A745;"></i>
+                <i class="fas fa-laptop-code" style="color: #28A745;"></i>
                 <%}else if(exam.CATEGORY=="Physics"){%>
-                    <i class="fas fa-bolt" style="color: #28A745;"></i>
+                <i class="fas fa-bolt" style="color: #28A745;"></i>
                 <%}else if(exam.CATEGORY=="Mechanics"){%>
-                    <i class="fas fa-cogs" style="color: #28A745;"></i>
+                <i class="fas fa-cogs" style="color: #28A745;"></i>
                 <%}else if(exam.CATEGORY=="Mathematics"){%>
-                    <i class="fas fa-sort-numeric-up-alt" style="color: #28A745;"></i>
+                <i class="fas fa-sort-numeric-up-alt" style="color: #28A745;"></i>
                 <%}else{%>
-                    <i class="fab fa-medapps" style="color: #28A745;"></i>
+                <i class="fab fa-medapps" style="color: #28A745;"></i>
                 <%}%>
                 <%= exam.TITLE %>
             </h2>

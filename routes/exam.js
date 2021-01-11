@@ -5,26 +5,60 @@ const dateFormat = require("../config/date-formatting");
 
 router.get('/', (req, res) => {
     const errors = [];
-
-    DBconnection.query('SELECT * FROM dbproject.exam ORDER BY STARTDATE DESC, DURATION DESC;', (err, rows) => {
+    let deleteQueries = [];
+    const deleteEmpty = "select E_ID from dbproject.exam where E_ID not in (select E_ID from dbproject.questions where c_id is not null);"
+    DBconnection.query(deleteEmpty, (err, toBeDeleted) => {
         if (err) return console.error(err);
-        const exams = rows;
-        if (exams.length)
-            exams.forEach(exam => exam.STARTDATE = dateFormat.format(exam.STARTDATE));
-        res.render('exams', {
-            title: "Exams",
-            exams,
-            errors
-        });
-    });
+        for (var i = 0; i < toBeDeleted.length; i++) {
+            let singleQuery = "delete from dbproject.exam where E_ID=" + toBeDeleted[i].E_ID + " ;";
+            deleteQueries.push(singleQuery);
+        }
+        function deleteCompetition(deleteQueries, index) {
+            if (index >= deleteQueries.length) {
+                DBconnection.query('SELECT * FROM dbproject.exam'
+                    + ' ORDER BY STARTDATE DESC, DURATION DESC;', (err, exams) => {
+                        if (err) return console.error(err);
+                        if (exams.length)
+                            exams.forEach(exam => exam.STARTDATE = dateFormat.format(exam.STARTDATE));
+
+                        res.render('exams', {
+                            title: "Exams",
+                            exams,
+                            errors
+                        });
+                    });
+            } else {
+                DBconnection.query(deleteQueries[index], (err) => {
+                    if (err) return console.error(err);
+                    console.log("query " + deleteQueries[index] + " is done");
+                    deleteCompetition(deleteQueries, index + 1);
+                })
+            }
+        }
+        deleteCompetition(deleteQueries, 0);
+    })
 });
 
 router.post('/search', [
     body('searchedExam', 'Please enter the name or the ID of the exam that you want to search for.').notEmpty()
 ], (req, res) => {
-    const errors = [];
+    let errors = validationResult(req).errors;
     const { searchedExam } = req.body;
-    if (isNaN(searchedExam)) {
+    if (errors.length) {
+        const query = 'SELECT * FROM dbproject.exam ORDER BY STARTDATE DESC, DURATION DESC;';
+        DBconnection.query(query, (err, exams) => {
+            if (err) return console.error(err);
+            if (exams.length)
+                exams.forEach(competition => competition.STARTDATE = dateFormat.format(competition.STARTDATE));
+
+            return res.render('exams', {
+                title: "Exams",
+                exams,
+                searchedExam,
+                errors
+            });
+        });
+    } else if (isNaN(searchedExam)) {
         DBconnection.query('SELECT * FROM dbproject.exam ORDER BY STARTDATE DESC, DURATION DESC;', (err, exams) => {
             if (err) return console.error(err);
             if (exams.length)
@@ -52,30 +86,6 @@ router.post('/search', [
         });
     }
 });
-
-router.post("/search",(req,res)=>{
-    let {searchedExam}=req.body;
-    let errors=[];
-    if(searchedExam==""){
-        req.flash("error","Fill The Search Bar First");
-        res.redirect('back');
-    }
-    searchedExam = searchedExam.toString().replace(/'/g, "");
-    const query="select * from dbproject.exam where TITLE='"+searchedExam+"' ;";
-    DBconnection.query(query,(err,exams)=>{
-        if(err){return console.log(err);}
-        if(exams.length!=0){
-            res.render('exams', {
-                title: "Exams",
-                exams,
-                errors
-            });
-        }else{
-            req.flash("error","Exam Wasn't Found");
-            res.redirect('back');
-        }
-    })
-})
 
 //If the user pressed discard the exam creation
 router.get('/CreateExam', (req, res) => {
@@ -310,21 +320,21 @@ router.post("/details/:E_ID", (req, res) => {
 
 router.get("/details/:E_ID/:Code", (req, res) => {
     let errors = [];
-    let alreadyparticpate=false;
+    let alreadyparticpate = false;
     if (req.isAuthenticated()) {
-        const CreatorQuery="select U_ID from dbproject.exam where E_ID="+req.params.E_ID+" ;";
-        const alreadyParticipated="select userID from dbproject.solve where examID="+req.params.E_ID+" and userID="+req.user.ID+" ;";
+        const CreatorQuery = "select U_ID from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
+        const alreadyParticipated = "select userID from dbproject.solve where examID=" + req.params.E_ID + " and userID=" + req.user.ID + " ;";
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
         DBconnection.query(query, (err, exam) => {
             if (err) { return console.log(err); }
             if (!exam.length) return res.sendStatus(404);
             else {
-                DBconnection.query(CreatorQuery,(err,Creator)=>{
+                DBconnection.query(CreatorQuery, (err, Creator) => {
                     if (err) { return console.log(err); }
-                    DBconnection.query(alreadyParticipated,(err,Participant)=>{
+                    DBconnection.query(alreadyParticipated, (err, Participant) => {
                         if (err) { return console.log(err); }
-                        if(exam.STARTDATE>Date.now() || exam.ENDDATE<Date.now() || Creator.length!=0 || Participant.length!=0){
-                            alreadyParticpant=true;
+                        if (exam.STARTDATE > Date.now() || exam.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
+                            alreadyParticpant = true;
                         }
                         if (exam[0].CODE == req.params.Code) {
                             const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
@@ -351,7 +361,7 @@ router.get("/details/:E_ID/:Code", (req, res) => {
                         }
                     })
                 })
-                
+
             }
         })
     } else {

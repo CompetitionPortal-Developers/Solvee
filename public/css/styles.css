@@ -312,7 +312,8 @@ ul.competiton-breadcrumb li a:hover {
   background-color: #150999;
   border-color: #150999;
 }
-.btn-Custom:hover{
+
+.btn-Custom:hover {
   background-color: #09034d;
 }
 
@@ -528,15 +529,18 @@ ul {
   color: #c59b08;
 }
 
-.goRight{
-  float:right;
+.goRight {
+  float: right;
 }
-.not-active-tournament{
-  color:black;
+
+.not-active-tournament {
+  color: black;
 }
-.not-active-tournament:hover{
-  color:#E51552;
+
+.not-active-tournament:hover {
+  color: #E51552;
 }
-.tournamentDisplayStyle{
+
+.tournamentDisplayStyle {
   text-align: center;
 }

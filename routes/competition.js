@@ -69,17 +69,32 @@ router.get('/', (req, res) => {
             }
         }
         deleteCompetition(deleteQueries, 0);
-
     })
-
 });
 
 router.post('/search', [
     body('searchedCompetition', 'Please enter the name or the ID of the compeition that you want to search for.').notEmpty()
 ], (req, res) => {
-    const errors = [];
+    let errors = validationResult(req).errors;
     const { searchedCompetition } = req.body;
-    if (isNaN(searchedCompetition)) {
+    if (errors.length) {
+        const query = 'SELECT * FROM dbproject.competition WHERE C_ID NOT IN ( SELECT C.C_ID FROM dbproject.competition AS C, dbproject.t_contains_cs AS T WHERE C.C_ID=T.C_ID ) ORDER BY STARTDATE DESC, ENDDATE DESC;';
+        DBconnection.query(query, (err, competitions) => {
+            if (err) return console.error(err);
+            if (competitions.length)
+                competitions.forEach(competition => {
+                    competition.STARTDATE = dateFormat.format(competition.STARTDATE);
+                    competition.ENDDATE = dateFormat.format(competition.ENDDATE);
+                });
+
+            return res.render('competitions', {
+                title: "Competitions",
+                competitions,
+                searchedCompetition,
+                errors
+            });
+        });
+    } else if (isNaN(searchedCompetition)) {
         const query = 'SELECT * FROM dbproject.competition WHERE C_ID NOT IN ( SELECT C.C_ID FROM dbproject.competition AS C, dbproject.t_contains_cs AS T WHERE C.C_ID=T.C_ID ) ORDER BY STARTDATE DESC, ENDDATE DESC;';
         DBconnection.query(query, (err, competitions) => {
             if (err) return console.error(err);
@@ -97,7 +112,7 @@ router.post('/search', [
             });
         });
     } else {
-        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${searchedCompetition};`, (err, [competition]) => {
+        DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${searchedCompetition} AND C_ID NOT IN ( SELECT C.C_ID FROM dbproject.competition AS C, dbproject.t_contains_cs AS T WHERE C.C_ID=T.C_ID );`, (err, [competition]) => {
             if (err) return console.error(err);
             if (competition) {
                 competition.STARTDATE = dateFormat.format(competition.STARTDATE);
@@ -415,9 +430,9 @@ router.post('/:username/CreateCompetition', [
             });
         }
 
-        competitionTitle = competitionTitle.toString().replace(/'/g, "`");
-        description = description.toString().replace(/'/g, "`");
-        category = category.toString().replace(/'/g, "`");
+        competitionTitle = competitionTitle.toString().replace(/'/g, "\\'");
+        description = description.toString().replace(/'/g, "\\'");
+        category = category.toString().replace(/'/g, "\\'");
 
         //Date Validation
         function Compare(startDate, endDate) {
