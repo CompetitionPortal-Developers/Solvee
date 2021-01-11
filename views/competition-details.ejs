@@ -7,15 +7,15 @@
         <div class="competitionExamHeader">
             <h1>
                 <%if(competition.CATEGORY=="Programming"){%>
-                    <i class="fas fa-laptop-code" style="color: #150999;"></i>
+                <i class="fas fa-laptop-code" style="color: #150999;"></i>
                 <%}else if(competition.CATEGORY=="Physics"){%>
-                    <i class="fas fa-bolt" style="color: #150999;"></i>
+                <i class="fas fa-bolt" style="color: #150999;"></i>
                 <%}else if(competition.CATEGORY=="Mechanics"){%>
-                    <i class="fas fa-cogs" style="color: #150999;"></i>
+                <i class="fas fa-cogs" style="color: #150999;"></i>
                 <%}else if(competition.CATEGORY=="Mathematics"){%>
-                    <i class="fas fa-sort-numeric-up-alt" style="color: #150999;"></i>
+                <i class="fas fa-sort-numeric-up-alt" style="color: #150999;"></i>
                 <%}else{%>
-                    <i class="fas fa-medal" style="color: #150999;"></i>
+                <i class="fas fa-medal" style="color: #150999;"></i>
                 <%}%>
                  <%= competition.TITLE %></h1>
         </div>
@@ -29,7 +29,9 @@
 
         <hr style="margin: 0; background-color:#150999">
         <div class="card-body competitionExamCard">
-            <p class="text-muted mb-0"><b>Host:</b> <%= host.firstName %> <%= host.lastName %></p>
+            <a href="/users/<%= host.Username %>/" style="color: black;">
+                <p class="text-muted mb-0"><b>Host:</b> <%= host.firstName %> <%= host.lastName %></p>
+            </a>
             <p class="text-muted"><b>Description:</b><br><%= competition.DESCP %></p>
             <span class="text-muted"><i style="color:#E51552" class="far fa-list-alt"></i> <b>Category: </b>
                 <%= competition.CATEGORY %>
@@ -40,7 +42,8 @@
             </span>
             <hr>
             <span>
-                <span style="font-weight: bold;">Fees: <%= competition.cost %> </span><i class="fas fa-coins" style="color: #150999;"></i>
+                <span style="font-weight: bold;">Fees: <%= competition.cost %> </span><i class="fas fa-coins"
+                    style="color: #150999;"></i>
             </span>
             <br>
             <span class="text-muted">
@@ -53,7 +56,7 @@
             <br>
             <%if(!alreadyParticpant){%>
             <a href="/competitions/questions/<%= competition.C_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-Custom" >Participate</a>
+                class="btn btn-outline-Custom">Participate</a>
             <%}%>
         </div>
     </div>

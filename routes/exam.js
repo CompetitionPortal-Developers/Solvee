@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
 const { DBconnection } = require("../config/database");
-const { DBformat } = require("../config/date-formatting");
 const dateFormat = require("../config/date-formatting");
 
 router.get('/', (req, res) => {
@@ -302,25 +301,25 @@ router.post("/details/:E_ID", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const { code } = req.body;
-        const creatorQuery="select * from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID="+req.user.ID+" ;";
+        const creatorQuery = "select * from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID=" + req.user.ID + " ;";
         console.log(code);
-        const getCode="select CODE from dbproject.exam where E_ID="+req.params.E_ID+" ;";
+        const getCode = "select CODE from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + ";";
-        DBconnection.query(creatorQuery,(err,Creator)=>{
+        DBconnection.query(creatorQuery, (err, Creator) => {
             if (err) { return console.log(err); }
-            else if(Creator.length!=0){
-                DBconnection.query(getCode,(err,theCode)=>{
-                    if(err){return console.log(err);}
+            else if (Creator.length != 0) {
+                DBconnection.query(getCode, (err, theCode) => {
+                    if (err) { return console.log(err); }
                     res.redirect("/exams/details/" + req.params.E_ID + "/" + theCode[0].CODE);
                 })
-            }else{
-                if(code=="" || code==undefined){
+            } else {
+                if (code == "" || code == undefined) {
                     req.flash("error", "Please Enter The Code Of Exam To Be Able To Enter");
                     res.redirect("/exams");
-                }else{
+                } else {
                     DBconnection.query(query, (err, exam) => {
-                        if (err) { 
-                            return console.log(err); 
+                        if (err) {
+                            return console.log(err);
                         }
                         else {
                             if (exam[0].CODE != code) {
@@ -340,28 +339,28 @@ router.post("/details/:E_ID", (req, res) => {
     }
 })
 
-router.get("/viewGrade/:E_ID/:U_ID",(req,res)=>{
-    let errors=[];
-    if(req.isAuthenticated()){
-        const examID=req.params.E_ID;
-        const userID=req.params.U_ID;
-        const query="select * from dbproject.user as u,dbproject.useranswers as ua,dbproject.questions as q "
-                    +"where u.ID=ua.U_ID and u.ID="+userID+" and q.e_id="+examID+" and q.Q_ID=ua.Q_ID ;";
-        DBconnection.query(query,(err,Grades)=>{
-            if(err){return console.log(err);}
-            if(Grades.length!=0){
-                res.render("exam-userGradeReview",{
-                    title:"Grade View",
+router.get("/viewGrade/:E_ID/:U_ID", (req, res) => {
+    let errors = [];
+    if (req.isAuthenticated()) {
+        const examID = req.params.E_ID;
+        const userID = req.params.U_ID;
+        const query = "select * from dbproject.user as u,dbproject.useranswers as ua,dbproject.questions as q "
+            + "where u.ID=ua.U_ID and u.ID=" + userID + " and q.e_id=" + examID + " and q.Q_ID=ua.Q_ID ;";
+        DBconnection.query(query, (err, Grades) => {
+            if (err) { return console.log(err); }
+            if (Grades.length != 0) {
+                res.render("exam-userGradeReview", {
+                    title: "Grade View",
                     errors,
                     Grades
                 });
-            }else{
+            } else {
                 req.flash("error", "No Grades Yet");
                 res.redirect('back');
             }
         })
     }
-    else{
+    else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
     }
@@ -370,12 +369,12 @@ router.get("/viewGrade/:E_ID/:U_ID",(req,res)=>{
 router.get("/details/:E_ID/:Code", (req, res) => {
     let errors = [];
     let alreadyparticpate = false;
-    let isTheCreator=false;
+    let isTheCreator = false;
     if (req.isAuthenticated()) {
-        const getGrades="select u.Username,s.s_time,s.grades,u.ID from dbproject.solve as s,dbproject.user as u "
-                        +" where s.examID="+req.params.E_ID+" and s.userID=u.ID "
-                        +" order by s.grades desc ;";
-        const CreatorQuery = "select U_ID from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID="+req.user.ID+" ;";
+        const getGrades = "select u.Username,s.s_time,s.grades,u.ID from dbproject.solve as s,dbproject.user as u "
+            + " where s.examID=" + req.params.E_ID + " and s.userID=u.ID "
+            + " order by s.grades desc ;";
+        const CreatorQuery = "select U_ID from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID=" + req.user.ID + " ;";
         const alreadyParticipated = "select userID from dbproject.solve where examID=" + req.params.E_ID + " and userID=" + req.user.ID + " ;";
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
         DBconnection.query(query, (err, exam) => {
@@ -386,21 +385,21 @@ router.get("/details/:E_ID/:Code", (req, res) => {
                     if (err) { return console.log(err); }
                     DBconnection.query(alreadyParticipated, (err, Participant) => {
                         if (err) { return console.log(err); }
-                        if (exam[0].STARTDATE > Date.now()  || Participant.length != 0) {
+                        if (exam[0].STARTDATE > Date.now() || Participant.length != 0) {
                             alreadyparticpate = true;
                         }
-                        if(Creator.length!=0){
-                            isTheCreator=true;
+                        if (Creator.length != 0) {
+                            isTheCreator = true;
                         }
                         if (exam[0].CODE == req.params.Code) {
                             const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
                             DBconnection.query(queryUser, (err, host) => {
                                 if (err) { return console.log(err); }
-                                DBconnection.query(getGrades,(err,Grades)=>{
+                                DBconnection.query(getGrades, (err, Grades) => {
                                     if (err) { return console.log(err); }
                                     else {
-                                        for(var i=0;i<Grades.length;i++){
-                                            Grades[i].s_time=DBformat(Grades[i].s_time);
+                                        for (var i = 0; i < Grades.length; i++) {
+                                            Grades[i].s_time = dateFormat.DBformat(Grades[i].s_time);
                                         }
                                         const examCode = req.params.Code;
                                         exam = exam[0];
@@ -434,7 +433,6 @@ router.get("/details/:E_ID/:Code", (req, res) => {
     }
 })
 
-
 router.get('/questions/:e_id/:Code', (req, res) => {
     const errors = [];
     if (req.isAuthenticated()) {
@@ -456,7 +454,7 @@ router.get('/questions/:e_id/:Code', (req, res) => {
             } else {
                 DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE e_id=${req.params.e_id}`, (err, questions) => {
                     if (err) return console.error(err);
-                    if(questions.length!=0){
+                    if (questions.length != 0) {
                         DBconnection.query(`SELECT s_time FROM dbproject.solve WHERE userID=${req.user.ID} AND examID=${exam.E_ID};`, (err, rows) => {
                             if (err) return console.error(err);
                             if (rows.length) {
@@ -476,15 +474,15 @@ router.get('/questions/:e_id/:Code', (req, res) => {
                                 });
                             });
                         });
-                    }else{
-                        const delEmptyExam="delete from dbproject.exam where E_ID="+exam.E_ID+" ;";
-                        DBconnection.query(delEmptyExam,(err)=>{
-                            if(err){return console.log(err);}
+                    } else {
+                        const delEmptyExam = "delete from dbproject.exam where E_ID=" + exam.E_ID + " ;";
+                        DBconnection.query(delEmptyExam, (err) => {
+                            if (err) { return console.log(err); }
                             req.flash('error', "Sorry Exam Was Removed By The Website");
                             res.redirect("/exams");
                         })
                     }
-                    
+
                 });
             }
         });

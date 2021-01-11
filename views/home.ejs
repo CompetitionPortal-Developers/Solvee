@@ -1,7 +1,8 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<%- include("partials/Header.ejs")%>
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
+  <%-messages("partials/Messages.ejs", locals)%>
   <div class="row center">
     <div class="row">
       <div class="col-lg-8">
@@ -14,6 +15,21 @@
       <div class="col-lg-4"></div>
     </div>
     <div style="padding-top: 3%" class="row">
+      <div class="col-lg-4">
+        <a style="color:white;" href="/tournaments/">
+          <div class="home-cards card text-white bg-info h-100">
+            <div class="card-header">
+              <h5 class="text-center"><i class="fas fa-trophy"></i> Tournaments</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">
+                Opt for the maximum reward of spirits by advncing in tournaments,
+                stay focused and survive to the last round.
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
       <div class="col-lg-4">
         <a style="color:white;" href="/competitions">
           <div class="home-cards card text-white bg-info h-100">
@@ -39,21 +55,6 @@
               <p class="card-text">
                 Create online exams/quizes to your students where you can set the
                 questions and time for the exam and check your students answers.
-              </p>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-4">
-        <a style="color:white;" href="/tournaments/">
-          <div class="home-cards card text-white bg-info h-100">
-            <div class="card-header">
-              <h5 class="text-center"><i class="fas fa-trophy" ></i> Tournaments</h5>
-            </div>
-            <div class="card-body">
-              <p class="card-text">
-                Opt for the maximum reward of spirits by advncing in tournaments,
-                stay focused and survive to the last round.
               </p>
             </div>
           </div>

@@ -82,7 +82,6 @@ create table award (
     userID int references user(ID) on delete set null ,
     competitionID int references competition(C_ID) on delete cascade,
     a_type varchar(50) not null,
-    in_T bit default 0,
     primary key(a_type,competitionID)
 );
 

@@ -35,7 +35,7 @@ router.get("/", (req, res) => {
     let errors = [];
     const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
     const query = "select * from dbproject.tournament ;";
-    DBconnection.query(deleteEmptyCompetitions,(err)=>{
+    DBconnection.query(deleteEmptyCompetitions, (err) => {
         if (err) { return console.log(err); }
         DBconnection.query(query, (err, Tournaments) => {
             if (err) { return console.log(err); }
@@ -197,7 +197,7 @@ router.get("/createTournament", (req, res) => {
         const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
         let checkComp = [];
         const queryGetComp = "select * from dbproject.competition where U_ID=" + req.user.ID + " ;";
-        DBconnection.query(deleteEmptyCompetitions,(err)=>{
+        DBconnection.query(deleteEmptyCompetitions, (err) => {
             if (err) { return console.log(err); }
             DBconnection.query(queryGetComp, (err, userCompetitions) => {
                 if (err) { return console.log(err); }
