@@ -1,16 +1,17 @@
 <%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
 <!--To publish the errors on screen for user if any were found-->
 
-<div class="container">
-    <div class="card center">
+<div class="container" style="min-height: 100vh;">
+    <div class="card center ">
         <div class="competitionExamHeader">
             <h2 style="float: left;"><i class="fas fa-trophy" style="color:#E51552 ;"></i> Tournaments</h2>
         </div>
-        <!-- <form action="/competitions/search" method="post"> -->
-        <div class="mb-3">
+            <form action="/tournaments/search" method="post">
+        <div class="mb-3"> 
             <div class="input-group">
-                <input type="search" class="form-control" name="searchedTournament" placeholder="Search">
-                <div class="input-group-prepend">
+                
+                <input type="search" class="form-control" name="searchedTournament" placeholder="Search By Tournament Title">
+                <div class="input-group-prepend ">
                     <button type="submit" class=" btn btn-outline-danger"><i class="fas fa-search"></i>Search</button>
 
                     <a role="button" href="/tournaments/createTournament" class="btn btn-danger">Create
@@ -18,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <!-- </form> -->
+    </form>
         <br><br>
         <hr style="background-color:#E51552">
         <% if(!Tournaments.length) { %>
@@ -27,11 +28,11 @@
         </div>
         <% } else { %>
         <% Tournaments.forEach(Tournament => { %>
-        <div class="card-body competitionExamCard">
+        <div class="card-body competitionExamCard ">
             <h2 class="card-title"><%= Tournament.TITLE %></h2>
             <br>
             <a href="/tournaments/details/<%= Tournament.T_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-danger">Details</a>
+                class="btn btn-outline-danger ">More Details</a>
         </div>
         <% })} %>
     </div>

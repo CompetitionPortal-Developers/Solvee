@@ -1,6 +1,6 @@
 <%- include("partials/Header.ejs")%>
 
-<div class="container">
+<div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
     <div class="card center">
         <div class="competitionExamHeader">
@@ -30,7 +30,20 @@
         <% } else { %>
         <% exams.forEach(exam => { %>
         <div class="card-body competitionExamCard">
-            <h2 class="card-title"><%= exam.TITLE %></h2>
+            <h2 class="card-title">
+                <%if(exam.CATEGORY=="Programming"){%>
+                    <i class="fas fa-laptop-code" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Physics"){%>
+                    <i class="fas fa-bolt" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Mechanics"){%>
+                    <i class="fas fa-cogs" style="color: #28A745;"></i>
+                <%}else if(exam.CATEGORY=="Mathematics"){%>
+                    <i class="fas fa-sort-numeric-up-alt" style="color: #28A745;"></i>
+                <%}else{%>
+                    <i class="fab fa-medapps" style="color: #28A745;"></i>
+                <%}%>
+                <%= exam.TITLE %>
+            </h2>
             <span class="text-muted"><i style="color:#E51552" class="far fa-clock"></i> Duration: <%= exam.DURATION %>
                 Mins
                 &nbsp;</span>
@@ -44,7 +57,7 @@
                         aria-label="Enter Exam's Code" aria-describedby="basic-addon2">
                     <div class="input-group-append">
 
-                        <button class="btn btn-outline-success">Solve Now</button>
+                        <button class="btn btn-outline-success">More Details</button>
 
                     </div>
                 </div>

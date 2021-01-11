@@ -1,6 +1,6 @@
 <%- include("partials/Header.ejs")%>
 
-<div class="container">
+<div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
     <div class="card center">
         <div class="competitionExamHeader">
@@ -23,6 +23,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </form>
         <br><br>
         <hr style="background-color:#150999">
@@ -68,7 +69,7 @@
             </span>
             <br>
             <a href="/competitions/details/<%= competition.C_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-Custom">Participate Now</a>
+                class="btn btn-outline-Custom">More Details</a>
         </div>
         <% })} %>
     </div>

@@ -281,12 +281,12 @@ ul.competiton-breadcrumb li {
 
 ul.competiton-breadcrumb li+li:before {
   padding: 8px;
-  color: #8d8b8b;
   content: "|\00a0";
 }
 
 ul.competiton-breadcrumb li a {
   text-decoration: none;
+  color: #150999;
   transition: all 0.3s;
 }
 
@@ -536,4 +536,7 @@ ul {
 }
 .not-active-tournament:hover{
   color:#E51552;
+}
+.tournamentDisplayStyle{
+  text-align: center;
 }

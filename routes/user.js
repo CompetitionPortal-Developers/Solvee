@@ -71,10 +71,15 @@ router.post("/register", [
     let errors = validationResult(req).errors;
     let { firstname, lastname, username, email, password, gender, birthdate } = req.body;
 
-    if (username === "" || email === "" || password === "" || lastname === "" || firstname === "")
+    if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
         errors.unshift({ msg: "Please Fill In All Fields" });
-
-
+    }
+    let limitYear = new Date("2014-01-1");
+    const yearOfBirth = birthdate.toString().slice(0, 4);
+    if (yearOfBirth >= limitYear.getFullYear()) {
+        console.log("A77aaa");
+        errors.unshift({ msg: "You Must Be Older Than 8 Years To Register" });
+    }
     if (errors.length)
         return res.render("register", {
             title: "Register",
@@ -233,6 +238,7 @@ router.post('/:username/edit-profile', (req, res) => {
         console.log(req.body);
         if (firstName !== "") {
             if (firstName.length < 50) {
+                firstName = firstName.toString().replace(/'/g, "`");
                 query = "update user set firstName='" + firstName + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -249,6 +255,7 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (lastName !== "") {
             if (lastName.length < 50) {
+                lastName = lastName.toString().replace(/'/g, "`");
                 query = "update user set lastName='" + lastName + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -265,6 +272,7 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (username !== "") {
             if (username.length < 50) {
+                username = username.toString().replace(/'/g, "`");
                 query = "update user set Username='" + username + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -274,7 +282,7 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Too long String for Username , Please Try Again");
+                req.flash("error_msg", "Username Must Contains Between 1-50 Characters, Please Try Again");
             }
         }
         if (pass !== "") {
@@ -303,7 +311,7 @@ router.post('/:username/edit-profile', (req, res) => {
                             });
                         }
                     } else {
-                        req.flash("error_msg", "Too long String for Password, Please Try Again");
+                        req.flash("error_msg", "Password Must Contains Between 7-500 Characters , Please Try Again");
                     }
                 } else {
                     req.flash("error_msg", "The Two Passwords You Entered Are Different");
@@ -313,7 +321,8 @@ router.post('/:username/edit-profile', (req, res) => {
             req.flash("success", "Note Your Password Wasn't Changed");
         }
         if (education !== "") {
-            if (username.length < 50) {
+            if (education.length < 50) {
+                education = education.toString().replace(/'/g, "`");
                 query = "update user set education='" + education + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -323,11 +332,12 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Too long String for Education , Please Try Again");
+                req.flash("error_msg", "Education Must Contains Between 0-50 Characters , Please Try Again");
             }
         }
         if (job !== "") {
-            if (username.length < 50) {
+            if (job.length < 50) {
+                job = job.toString().replace(/'/g, "`");
                 query = "update user set job='" + job + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -337,11 +347,12 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Too long String for Job , Please Try Again");
+                req.flash("error_msg", "Job Must Contains Between 0-50 Characters, Please Try Again");
             }
         }
         if (bio !== "") {
-            if (username.length < 300) {
+            if (bio.length < 300) {
+                bio = bio.toString().replace(/'/g, "`");
                 query = "update user set bio='" + bio + "' where ID=" + req.user.ID + " ;";
                 DBconnection.query(query, (err, results) => {
                     if (err) {
@@ -351,7 +362,7 @@ router.post('/:username/edit-profile', (req, res) => {
                     console.log(results);
                 });
             } else {
-                req.flash("error_msg", "Too long String for Bio , Please Try Again");
+                req.flash("error_msg", "Bio Must Contains Between 0-300 Characters , Please Try Again");
             }
         }
         if (gender !== "") {
@@ -425,13 +436,12 @@ router.post("/:username/todolist/add", (req, res) => {
     const redirectUrl = "/users/" + req.params.username + "/todolist";
     let { todoContent, todoDate } = req.body;
     if (req.isAuthenticated()) {
-        var Task = todoContent.toString().replace(/'/g, "");
-        console.log(Task);
         let query = "";
         if (todoContent == "") {
             req.flash("error", "Please Fill In Task Content & Try Again");
             return res.redirect(redirectUrl);
         }
+        var Task = todoContent.toString().replace(/'/g, "");
         if (todoDate == "") {
             query = "insert into dbproject.todolist (U_ID,tasks) "
                 + "values(" + req.user.ID + ",'" + Task + "')";
@@ -488,7 +498,10 @@ router.get("/:username/history", (req, res) => {
             + "where s.userID=" + req.user.ID + " and e.E_ID=s.examID;";
         const participateQuery = "select l.score,c.TITLE from dbproject.leaderboard as l,dbproject.competition as c "
             + "where l.U_ID=" + req.user.ID + " and l.C_ID=c.C_ID ;";
-        const queries = [examQuery, CompetitionQuery, solveQuery, participateQuery];
+        const participateTournament = "select t.TITLE  from dbproject.participates_in_t as p,dbproject.tournament as t "
+            + "where t.T_ID=p.tournamentID and userID=" + req.user.ID + " ;";
+        const tournamentQuery = "select * from dbproject.tournament where U_ID=" + req.user.ID + " ;";
+        const queries = [examQuery, CompetitionQuery, solveQuery, participateQuery, tournamentQuery, participateTournament];
         function ExecuteQuery(index, queries, queryResults) {
             if (index >= 4) {
                 res.render("user-history", {
@@ -528,6 +541,13 @@ router.get("/:username/history/:type/:ID", (req, res) => {
     type = type.toString();
     const deleteID = req.params.ID;
     const query = "delete from dbproject." + type + " where " + type[0] + "_ID=" + deleteID + " ;";
+    if (type == "Tournament") {
+        //To delete the competitions in the Tournament to be deleted
+        const cascadeQuery = "delete from dbproject.competition where C_ID in (select C_ID from dbproject.t_contains_cs as t where t.T_ID=" + req.params.ID + ");";
+        DBconnection.query(cascadeQuery, (err) => {
+            if (err) { return console.log(err); }
+        })
+    }
     DBconnection.query(userquery, (err, results) => {
         if (err) { return console.log(err); }
         if (results) {
