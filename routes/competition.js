@@ -33,8 +33,8 @@ function giveSpirits(List, index, spiritsDistribution) {
 
 router.get('/', (req, res) => {
     const errors = [];
-
-    DBconnection.query('SELECT * FROM dbproject.competition ORDER BY STARTDATE DESC, ENDDATE DESC;', (err, rows) => {
+    const query = 'SELECT * FROM dbproject.competition WHERE C_ID NOT IN ( SELECT C.C_ID FROM dbproject.competition AS C, dbproject.t_contains_cs AS T WHERE C.C_ID=T.C_ID ) ORDER BY STARTDATE DESC, ENDDATE DESC;';
+    DBconnection.query(query, (err, rows) => {
         if (err) return console.error(err);
         const competitions = rows;
         if (competitions.length)
@@ -57,7 +57,8 @@ router.post('/search', [
     const errors = [];
     const { searchedCompetition } = req.body;
     if (isNaN(searchedCompetition)) {
-        DBconnection.query('SELECT * FROM dbproject.competition ORDER BY STARTDATE DESC, ENDDATE DESC;', (err, competitions) => {
+        const query = 'SELECT * FROM dbproject.competition WHERE C_ID NOT IN ( SELECT C.C_ID FROM dbproject.competition AS C, dbproject.t_contains_cs AS T WHERE C.C_ID=T.C_ID ) ORDER BY STARTDATE DESC, ENDDATE DESC;';
+        DBconnection.query(query, (err, competitions) => {
             if (err) return console.error(err);
             if (competitions.length)
                 competitions.forEach(competition => {
@@ -440,25 +441,7 @@ router.post('/:username/CreateCompetition', [
                                 [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
                             ]
                             console.log(spiritsDistribution);
-                            giveSpirits(List, 0, spiritsDistribution)
-                            // let prizeQuery;
-                            // switch (List.length) {
-                            //     case 1:
-                            //         prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
-                            //         break;
-                            //     case 2:
-                            //         prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
-                            //         break;
-                            //     case 3:
-                            //         prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
-                            //         break;
-                            //     case 4:
-                            //         prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
-                            //         break;
-                            //     case 5:
-                            //         prizeQuery = `UPDATE dbproject.user SET spirits=${totalSpirits} where ID=${List[0].ID};`;
-                            //         break;
-                            // }
+                            giveSpirits(List, 0, spiritsDistribution);
                         }
                     });
                 });

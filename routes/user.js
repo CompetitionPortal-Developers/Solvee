@@ -222,12 +222,12 @@ router.get('/:username/edit-profile', (req, res) => {
 router.post('/:username/edit-profile', (req, res) => {
     const errors = []; //all errors push should be turned into req flash
     let { firstName, lastName, username, pass, confirmPass, education, job, birthdate, gender, bio } = req.body;
-    firstName = firstName.toString().replace(/'/g, "`");
-    lastName = lastName.toString().replace(/'/g, "`");
-    education = education.toString().replace(/'/g, "`");
-    username = username.toString().replace(/'/g, "`");
-    job = job.toString().replace(/'/g, "`");
-    bio = bio.toString().replace(/'/g, "`");
+    firstName = firstName.toString().replace(/'/g, "\\'");
+    lastName = lastName.toString().replace(/'/g, "\\'");
+    education = education.toString().replace(/'/g, "\\'");
+    username = username.toString().replace(/'/g, "\\'");
+    job = job.toString().replace(/'/g, "\\'");
+    bio = bio.toString().replace(/'/g, "\\'");
     if (req.isAuthenticated()) {
         let query;
         console.log(req.body);
@@ -365,14 +365,19 @@ router.post('/:username/edit-profile', (req, res) => {
             });
         }
         if (birthdate != "") {
-            query = "update user set BirthDate='" + birthdate + "' where ID=" + req.user.ID + " ;";
-            DBconnection.query(query, (err, results) => {
-                if (err) {
-                    console.log(err);
-                    req.flash("error_msg", "The BirthDate You Entered Is Invalid");
-                }
-                console.log(results);
-            });
+            console.log(birthdate.slice(0, 4));
+            if (birthdate.slice(0, 4) > new Date(Date.now()).getFullYear() - 8 || birthdate.slice(0, 4) < new Date(Date.now()).getFullYear() - 80) {
+                req.flash('error', 'Your age must be between 8 and 80 years old');
+            } else {
+                query = "update user set BirthDate='" + birthdate + "' where ID=" + req.user.ID + " ;";
+                DBconnection.query(query, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        req.flash("error_msg", "The BirthDate You Entered Is Invalid");
+                    }
+                    console.log(results);
+                });
+            }
         }
         req.flash("success", "Your Profile Is Updated");
         res.redirect(`/users/${req.params.username}`);
