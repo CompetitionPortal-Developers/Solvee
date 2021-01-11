@@ -7,7 +7,7 @@
         <hr style="background-color:#E51552">
         <%for(var i=0;i < queryResults[4].length;i++){%>
         <div class="card-body competitionExamCard">
-            <h5 class="card-title"><%=queryResults[4][i].TITLE%>
+            <h5 class="card-title"><a href="/competitions/details/<%=queryResults[4][i].T_ID%>" style="color: black;"><%=queryResults[4][i].TITLE%></a>
                 <a href="/users/<%=username%>/history/Tournament/<%=queryResults[4][i].T_ID%>"
                     style="margin-top: 10px; float:right" class="btn btn-danger">
                     <i class="fas fa-trash-alt" style="color: rgb(226,222, 222);"></i> Delete
@@ -23,7 +23,7 @@
         <hr style="background-color:#E51552">
         <%for(var i=0;i < queryResults[1].length;i++){%>
         <div class="card-body competitionExamCard">
-            <h5 class="card-title"><%=queryResults[1][i].TITLE%>
+            <h5 class="card-title"><a href="/competitions/details/<%=queryResults[1][i].C_ID%>" style="color: black;"><%=queryResults[1][i].TITLE%></a>
                 <a href="/users/<%=username%>/history/Competition/<%=queryResults[1][i].C_ID%>"
                     style="margin-top: 10px; float:right" class="btn btn-danger">
                     <i class="fas fa-trash-alt" style="color: rgb(226, 222, 222);"></i> Delete
@@ -39,7 +39,7 @@
         <hr style="background-color:#E51552">
         <%for(var i=0;i < queryResults[0].length;i++){%>
         <div class="card-body competitionExamCard">
-            <h5 class="card-title"><%=queryResults[0][i].TITLE%>
+            <h5 class="card-title"><a href="/competitions/details/<%=queryResults[0][i].E_ID%>" style="color: black;"><%=queryResults[0][i].TITLE%></a>
                 <a href="/users/<%=username%>/history/Exam/<%=queryResults[0][i].E_ID%>"
                     style="margin-top: 10px; float:right" class="btn btn-danger">
                     <i class="fas fa-trash-alt" style="color: rgb(226,222, 222);"></i> Delete

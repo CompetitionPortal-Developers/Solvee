@@ -401,25 +401,35 @@ router.get('/questions/:e_id/:Code', (req, res) => {
             } else {
                 DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE e_id=${req.params.e_id}`, (err, questions) => {
                     if (err) return console.error(err);
-                    DBconnection.query(`SELECT s_time FROM dbproject.solve WHERE userID=${req.user.ID} AND examID=${exam.E_ID};`, (err, rows) => {
-                        if (err) return console.error(err);
-                        if (rows.length) {
-                            req.flash('error', 'You already solved this exam.');
-                            return res.redirect(redirectLink);
-                        }
-                        let currentDate = new Date();
-                        currentDate = dateFormat.DBformat(currentDate);
-                        const query = `INSERT INTO dbproject.solve (userID, examID,s_time) VALUES (${req.user.ID}, ${exam.E_ID},'${currentDate}');`;
-                        DBconnection.query(query, (err, results, fields) => {
+                    if(questions.length!=0){
+                        DBconnection.query(`SELECT s_time FROM dbproject.solve WHERE userID=${req.user.ID} AND examID=${exam.E_ID};`, (err, rows) => {
                             if (err) return console.error(err);
-                            res.render("exam-questions", {
-                                title: exam.TITLE,
-                                exam,
-                                questions,
-                                errors
+                            if (rows.length) {
+                                req.flash('error', 'You already solved this exam.');
+                                return res.redirect(redirectLink);
+                            }
+                            let currentDate = new Date();
+                            currentDate = dateFormat.DBformat(currentDate);
+                            const query = `INSERT INTO dbproject.solve (userID, examID,s_time) VALUES (${req.user.ID}, ${exam.E_ID},'${currentDate}');`;
+                            DBconnection.query(query, (err, results, fields) => {
+                                if (err) return console.error(err);
+                                res.render("exam-questions", {
+                                    title: exam.TITLE,
+                                    exam,
+                                    questions,
+                                    errors
+                                });
                             });
                         });
-                    });
+                    }else{
+                        const delEmptyExam="delete from dbproject.exam where E_ID="+exam.E_ID+" ;";
+                        DBconnection.query(delEmptyExam,(err)=>{
+                            if(err){return console.log(err);}
+                            req.flash('error', "Sorry Exam Was Removed By The Website");
+                            res.redirect("/exams");
+                        })
+                    }
+                    
                 });
             }
         });

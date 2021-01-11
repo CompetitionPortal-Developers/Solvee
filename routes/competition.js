@@ -218,27 +218,36 @@ router.get('/questions/:c_id', (req, res) => {
                             minusCostQuery = "update dbproject.user set spirits=" + rest + " where ID=" + req.user.ID + " ;";
                             DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE c_id=${req.params.c_id}`, (err, questions) => {
                                 if (err) return console.error(err);
-                                DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
-                                    if (err) return console.error(err);
-                                    if (rows.length) {
-                                        req.flash('error', 'You already participated in this competition.');
-                                        return res.redirect(`/competitions/reviews/${competition.C_ID}`);
-                                    }
-                                    DBconnection.query(minusCostQuery, (err) => {
-                                        if (err) { return console.log(err); }
-                                        const query = `INSERT INTO dbproject.participate (userID, competitionID) VALUES (${req.user.ID}, ${competition.C_ID});`;
-                                        DBconnection.query(query, (err, results, fields) => {
-                                            if (err) return console.error(err);
-                                            res.render("competition-questions", {
-                                                title: competition.TITLE,
-                                                competition,
-                                                questions,
-                                                errors
+                                if(questions.length!=0){
+                                    DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
+                                        if (err) return console.error(err);
+                                        if (rows.length) {
+                                            req.flash('error', 'You already participated in this competition.');
+                                            return res.redirect(`/competitions/reviews/${competition.C_ID}`);
+                                        }
+                                        DBconnection.query(minusCostQuery, (err) => {
+                                            if (err) { return console.log(err); }
+                                            const query = `INSERT INTO dbproject.participate (userID, competitionID) VALUES (${req.user.ID}, ${competition.C_ID});`;
+                                            DBconnection.query(query, (err, results, fields) => {
+                                                if (err) return console.error(err);
+                                                res.render("competition-questions", {
+                                                    title: competition.TITLE,
+                                                    competition,
+                                                    questions,
+                                                    errors
+                                                });
                                             });
-                                        });
+                                        })
+    
+                                    });
+                                }else{
+                                    const queryDeleteEmpty="delete from dbproject.competition where C_ID="+competition.C_ID+" ;";
+                                    DBconnection.query(queryDeleteEmpty,(err)=>{
+                                        if(err){return console.log(err);}
+                                        req.flash('error', "Sorry Competition Was Removed By The Website");
+                                        res.redirect("/competitions");
                                     })
-
-                                });
+                                }
                             });
                         } else {
                             req.flash('error', "you don't have enough spirits to participate in that competition");

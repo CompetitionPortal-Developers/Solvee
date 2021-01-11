@@ -33,15 +33,19 @@ function giveSpirits(List, index, spiritsDistribution) {
 
 router.get("/", (req, res) => {
     let errors = [];
+    const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
     const query = "select * from dbproject.tournament ;";
-    DBconnection.query(query, (err, Tournaments) => {
+    DBconnection.query(deleteEmptyCompetitions,(err)=>{
         if (err) { return console.log(err); }
-        res.render("tournaments", {
-            title: "Tournaments",
-            errors,
-            Tournaments
+        DBconnection.query(query, (err, Tournaments) => {
+            if (err) { return console.log(err); }
+            res.render("tournaments", {
+                title: "Tournaments",
+                errors,
+                Tournaments
+            });
         });
-    });
+    })
 });
 
 router.post('/search', [
@@ -190,30 +194,33 @@ router.get("/competitions/:T_ID/:T_TITLE", (req, res) => {
 router.get("/createTournament", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
+        const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
         let checkComp = [];
         const queryGetComp = "select * from dbproject.competition where U_ID=" + req.user.ID + " ;";
-
-        DBconnection.query(queryGetComp, (err, userCompetitions) => {
+        DBconnection.query(deleteEmptyCompetitions,(err)=>{
             if (err) { return console.log(err); }
-            let count = 0;
-            for (var i = 0; i < userCompetitions.length; i++) {
-                if (userCompetitions[i].STARTDATE > Date.now()) {
-                    checkComp.push(1);
-                    count++;
-                } else {
-                    checkComp.push(0);
+            DBconnection.query(queryGetComp, (err, userCompetitions) => {
+                if (err) { return console.log(err); }
+                let count = 0;
+                for (var i = 0; i < userCompetitions.length; i++) {
+                    if (userCompetitions[i].STARTDATE > Date.now()) {
+                        checkComp.push(1);
+                        count++;
+                    } else {
+                        checkComp.push(0);
+                    }
                 }
-            }
-            if (count == 0 || count == 1) {
-                req.flash("error", "You Must Have At least 2 Upcoming Created Competitons To Create A Tournament");
-                res.redirect("/competitions/CreateCompetition");
-            }
-            res.render("create-tournament", ({
-                title: "Tournament Creation",
-                errors,
-                userCompetitions,
-                checkComp
-            }))
+                if (count == 0 || count == 1) {
+                    req.flash("error", "You Must Have At least 2 Upcoming Created Competitons To Create A Tournament");
+                    res.redirect("/competitions/CreateCompetition");
+                }
+                res.render("create-tournament", ({
+                    title: "Tournament Creation",
+                    errors,
+                    userCompetitions,
+                    checkComp
+                }))
+            })
         })
     } else {
         req.flash("error", "Please log in first");
