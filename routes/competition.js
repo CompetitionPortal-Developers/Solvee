@@ -34,7 +34,7 @@ function giveSpirits(List, index, spiritsDistribution) {
 router.get('/', (req, res) => {
     const errors = [];
     let deleteQueries = [];
-    const deleteEmpty = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is not null);"
+    const deleteEmpty = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);"
     DBconnection.query(deleteEmpty, (err, toBeDeleted) => {
         if (err) return console.error(err);
         for (var i = 0; i < toBeDeleted.length; i++) {
@@ -127,7 +127,7 @@ router.get('/details/:c_id', (req, res) => {
     const errors = [];
     if (req.isAuthenticated()) {
         let alreadyParticpant = false;
-        const CreatorQuery = "select U_ID from dbproject.competition where C_ID=" + req.params.c_id + " ;";
+        const CreatorQuery = "select U_ID from dbproject.competition where C_ID=" + req.params.c_id + " and U_ID="+req.user.ID+" ;";
         const alreadyParticipated = "select userID from dbproject.participate where competitionID=" + req.params.c_id + " and userID=" + req.user.ID + " ;";
         DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
             if (err) return console.error(err);
@@ -137,7 +137,7 @@ router.get('/details/:c_id', (req, res) => {
                 DBconnection.query(alreadyParticipated, (err, Participant) => {
                     if (err) return console.error(err);
                     const competition = rows[0];
-                    if (competition.STARTDATE > Date.now() || competition.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
+                    if (competition.STARTDATE > Date.now()  || competition.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
                         alreadyParticpant = true;
                     }
                     competition.STARTDATE = dateFormat.format(competition.STARTDATE);
@@ -341,20 +341,28 @@ router.post('/reviews/:c_id', [
 ], (req, res) => {
     if (req.isAuthenticated()) {
         let errors = validationResult(req).errors;
-        const { rate, reaction, description } = req.body;
+        let { rate, reaction, description } = req.body;
         if (errors.length) {
             errors.forEach(err => req.flash('error', err.msg));
             return res.redirect('back');
         }
+        description = description.toString().replace(/'/g, "\\'");      //to not make query error
         const validateQuery = "select * from dbproject.participate where userID=" + req.user.ID + " and competitionID=" + req.params.c_id + " ;";
         const query = "insert into dbproject.review (U_ID,C_ID,comment,rating,react) "
             + "values(" + req.user.ID + "," + req.params.c_id + ",'" + description + "'," + rate + ",'" + reaction + "');";
+        const getAvgRate="select avg(rating) as avgRating from dbproject.review where C_ID="+req.params.c_id+" ;";
         DBconnection.query(validateQuery, (err, result) => {
             if (result.length > 0) {
                 DBconnection.query(query, (err, results) => {
                     if (err) { return console.log(err); }
-                    req.flash("success", "Your Review Is Submited Successfully");
-                    res.redirect("/competitions/reviews/" + req.params.c_id + "");
+                    DBconnection.query(getAvgRate,(err,totalRating)=>{
+                            const updateRatingQuery="update dbproject.competition set rating="+totalRating[0].avgRating+" where C_ID="+req.params.c_id+" ;";
+                            DBconnection.query(updateRatingQuery,(err)=>{
+                                if (err) { return console.log(err); }
+                                req.flash("success", "Your Review Is Submited Successfully");
+                                res.redirect("/competitions/reviews/" + req.params.c_id + "");
+                            })
+                    })
                 })
             } else {
                 req.flash("error", "You Aren't A Participant To Leave A Review");

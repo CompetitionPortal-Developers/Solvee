@@ -1,7 +1,8 @@
-<%- include("partials/Header.ejs")%> <%-messages("partials/Messages.ejs", locals)%>
+<%- include("partials/Header.ejs")%> 
 <!--To publish the errors on screen for user if any were found-->
 
 <div class="container">
+  <%-messages("partials/Messages.ejs", locals)%>
   <form action="/competitions/<%=user.Username%>/CreateCompetition" method="post">
     <div class="card center">
       <section class="Basic-Info-Section ">

@@ -6,7 +6,7 @@ const dateFormat = require("../config/date-formatting");
 router.get('/', (req, res) => {
     const errors = [];
     let deleteQueries = [];
-    const deleteEmpty = "select E_ID from dbproject.exam where E_ID not in (select E_ID from dbproject.questions where c_id is not null);"
+    const deleteEmpty = "select E_ID from dbproject.exam where E_ID not in (select E_ID from dbproject.questions where c_id is null);"
     DBconnection.query(deleteEmpty, (err, toBeDeleted) => {
         if (err) return console.error(err);
         for (var i = 0; i < toBeDeleted.length; i++) {
@@ -220,6 +220,7 @@ router.post('/:username/CreateExam/:Qnum/:Etitle', (req, res) => {
                 req.flash("error", "Please Fill In All Fields & Try Again");
                 return res.redirect(redirectLink);
             }
+            items[i] = items[i].toString().replace(/'/g, "\\'");      //to not make query error
         }
         const counter = 4;
         let j = 0;
@@ -300,15 +301,23 @@ router.post("/details/:E_ID", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const { code } = req.body;
+        console.log(code);
+        if(code=="" || code==undefined){
+            req.flash("error", "Please Enter The Code Of Exam To Be Able To Enter");
+            res.redirect("/exams");
+        }
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + ";";
         DBconnection.query(query, (err, exam) => {
-            if (err) { return console.log(err); }
+            if (err) { 
+                console.log("Here");
+                return console.log(err); 
+            }
             else {
-                if (exam[0].CODE == code) {
-                    res.redirect("/exams/details/" + req.params.E_ID + "/" + code);
-                } else {
+                if (exam[0].CODE != code) {
                     req.flash("error", "Incorrect Code , Can't Access The Exam");
                     res.redirect("/exams");
+                } else {
+                    res.redirect("/exams/details/" + req.params.E_ID + "/" + code);
                 }
             }
         })
@@ -322,7 +331,7 @@ router.get("/details/:E_ID/:Code", (req, res) => {
     let errors = [];
     let alreadyparticpate = false;
     if (req.isAuthenticated()) {
-        const CreatorQuery = "select U_ID from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
+        const CreatorQuery = "select U_ID from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID="+req.user.ID+" ;";
         const alreadyParticipated = "select userID from dbproject.solve where examID=" + req.params.E_ID + " and userID=" + req.user.ID + " ;";
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + " ;";
         DBconnection.query(query, (err, exam) => {
@@ -333,8 +342,8 @@ router.get("/details/:E_ID/:Code", (req, res) => {
                     if (err) { return console.log(err); }
                     DBconnection.query(alreadyParticipated, (err, Participant) => {
                         if (err) { return console.log(err); }
-                        if (exam.STARTDATE > Date.now() || exam.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
-                            alreadyParticpant = true;
+                        if (exam.STARTDATE > Date.now()  || Creator.length != 0 || Participant.length != 0) {
+                            alreadyparticpate = true;
                         }
                         if (exam[0].CODE == req.params.Code) {
                             const queryUser = "select * from dbproject.user where ID=" + exam[0].U_ID + ";";
@@ -351,7 +360,7 @@ router.get("/details/:E_ID/:Code", (req, res) => {
                                         exam,
                                         host,
                                         examCode,
-                                        alreadyParticpant
+                                        alreadyparticpate
                                     })
                                 }
                             })

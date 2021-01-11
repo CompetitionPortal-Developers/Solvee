@@ -74,7 +74,7 @@ router.post("/register", [
     if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
         errors.unshift({ msg: "Please Fill In All Fields" });
     }
-    let limitYear = new Date(Data.now()).getFullYear - 8;
+    let limitYear = new Date(Date.now()).getFullYear - 8;
     const yearOfBirth = birthdate.toString().slice(0, 4);
     if (yearOfBirth >= limitYear) {
         errors.unshift({ msg: "You Must Be Older Than 8 Years To Register" });
