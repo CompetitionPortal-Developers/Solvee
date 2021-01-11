@@ -302,23 +302,35 @@ router.post("/details/:E_ID", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const { code } = req.body;
+        const creatorQuery="select * from dbproject.exam where E_ID=" + req.params.E_ID + " and U_ID="+req.user.ID+" ;";
         console.log(code);
-        if(code=="" || code==undefined){
-            req.flash("error", "Please Enter The Code Of Exam To Be Able To Enter");
-            res.redirect("/exams");
-        }
+        const getCode="select CODE from dbproject.exam where E_ID="+req.params.E_ID+" ;";
         const query = "select * from dbproject.exam where E_ID=" + req.params.E_ID + ";";
-        DBconnection.query(query, (err, exam) => {
-            if (err) { 
-                console.log("Here");
-                return console.log(err); 
-            }
-            else {
-                if (exam[0].CODE != code) {
-                    req.flash("error", "Incorrect Code , Can't Access The Exam");
+        DBconnection.query(creatorQuery,(err,Creator)=>{
+            if (err) { return console.log(err); }
+            else if(Creator.length!=0){
+                DBconnection.query(getCode,(err,theCode)=>{
+                    if(err){return console.log(err);}
+                    res.redirect("/exams/details/" + req.params.E_ID + "/" + theCode[0].CODE);
+                })
+            }else{
+                if(code=="" || code==undefined){
+                    req.flash("error", "Please Enter The Code Of Exam To Be Able To Enter");
                     res.redirect("/exams");
-                } else {
-                    res.redirect("/exams/details/" + req.params.E_ID + "/" + code);
+                }else{
+                    DBconnection.query(query, (err, exam) => {
+                        if (err) { 
+                            return console.log(err); 
+                        }
+                        else {
+                            if (exam[0].CODE != code) {
+                                req.flash("error", "Incorrect Code , Can't Access The Exam");
+                                res.redirect("/exams");
+                            } else {
+                                res.redirect("/exams/details/" + req.params.E_ID + "/" + code);
+                            }
+                        }
+                    })
                 }
             }
         })
