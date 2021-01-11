@@ -8,7 +8,7 @@
             <h1><i class="fas fa-trophy" style="color:#E51552 ;"></i> <%= Tournament[0].TITLE %></h1>
         </div>
 
-        <ul class="competiton-breadcrumb">
+        <ul class="tournament-breadcrumb">
             <li><a href="/tournaments/details/<%= Tournament[0].T_ID %>" class="active">Details</a></li>
             <li><a href="/tournaments/leaderboard/<%= Tournament[0].T_ID %>/<%= Tournament[0].TITLE %>" class="not-active-tournament">Leaderboard</a></li>
             <li><a href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>" class="not-active-tournament">Competitions</a></li>

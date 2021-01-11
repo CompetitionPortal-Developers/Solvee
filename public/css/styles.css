@@ -533,12 +533,37 @@ ul {
   float: right;
 }
 
-.not-active-tournament {
-  color: black;
+ul.tournament-breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  width: fit-content;
+  border-radius: 3px;
+  background-color: #e0e0e0;
 }
 
-.not-active-tournament:hover {
+ul.tournament-breadcrumb li {
+  display: inline;
+  font-size: 18px;
+}
+
+ul.tournament-breadcrumb li+li:before {
+  padding: 8px;
+  content: "|\00a0";
+}
+
+ul.tournament-breadcrumb li a {
+  text-decoration: none;
+  color: black;
+  transition: all 0.3s;
+}
+
+ul.tournament-breadcrumb li a.active {
   color: #E51552;
+}
+
+ul.tournament-breadcrumb li a:hover {
+  color: #E51552;
+  text-decoration: none;
 }
 
 .tournamentDisplayStyle {
@@ -546,4 +571,26 @@ ul {
 }
 .checkbox:checked:before{
   background-color:green;
+}
+
+.profileDecoration{
+  background-color: black;
+  color: white;
+}
+.profileDecoration:hover{
+  background-color: rgb(37, 31, 31);
+}
+.profileDecoration:active{
+  background-color: white;
+  color: black;
+}
+.accordion-button:not(.collapsed) {
+  color: black;
+  background-color: white;
+}
+.accordion-button:focus {
+  z-index: 3;
+  border-color: black;
+  outline: 0;
+  box-shadow: none;
 }
