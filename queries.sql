@@ -82,6 +82,7 @@ create table award (
     userID int references user(ID) on delete set null ,
     competitionID int references competition(C_ID) on delete cascade,
     a_type varchar(50) not null,
+    in_T bit default 0,
     primary key(a_type,competitionID)
 );
 
@@ -137,7 +138,8 @@ create table tournament(
     TITLE VARCHAR(50) NOT NULL UNIQUE,
     FEES int,
     DESCP VARCHAR(500),
-    U_ID int not null references user(U_ID) on delete cascade
+    U_ID int not null references user(U_ID) on delete cascade,
+    activated boolean default 0
 );
 
 create table T_contains_Cs(
