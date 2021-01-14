@@ -4,46 +4,47 @@
     <%-messages("partials/Messages.ejs", locals)%>
     <!--To publish the errors on screen for user if any were found-->
     <div class="card center">
+        <%if(TournamentisActive[0].activated || alreadyParticipated){%>
         <div class="competitionExamHeader">
             <h1><i class="fas fa-trophy" style="color:#E51552 ;"></i> <%= Tournament[0].TITLE %></h1>
         </div>
 
         <ul class="tournament-breadcrumb">
             <li><a href="/tournaments/details/<%= Tournament[0].T_ID %>" class="active">Details</a></li>
-            <li><a href="/tournaments/leaderboard/<%= Tournament[0].T_ID %>/<%= Tournament[0].TITLE %>"
-                    class="not-active-tournament">Leaderboard</a></li>
-            <li><a href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>"
-                    class="not-active-tournament">Competitions</a></li>
+            <li><a href="/tournaments/leaderboard/<%= Tournament[0].T_ID %>/<%= Tournament[0].TITLE %>" class="not-active-tournament">Leaderboard</a></li>
+            <li><a href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>" class="not-active-tournament">Competitions</a></li>
         </ul>
 
         <hr style="margin: 0; background-color:#E51552">
         <div class="card-body competitionExamCard">
-            <a href="/users/<%= Tournament[0].Username %>/" style="color: black;">
-                <p class="text-muted mb-0"><b>Host:</b> <%= Tournament[0].firstName %> <%= Tournament[0].lastName %></p>
-            </a>
+            <p class="text-muted mb-0"><b>Host:</b> <%= Tournament[0].firstName %> <%= Tournament[0].lastName %></p>
             <p class="text-muted"><b>Description:</b><br><%= Tournament[0].DESCP %></p>
             <%for(var i=0;i<compDate.length;i++){%>
-            <span class="text-muted">
-                <b>Round<%=i+1%> Competition : <%=compDate[i].TITLE%> </b>
-                <small style="float: right;">
-                    <i style="color:black" class="far fa-calendar-alt"></i> <b>Starts: </b>
-                    <%= compDate[i].STARTDATE %> &nbsp;&nbsp; <i style="color:#E51552" class="far fa-calendar-alt"></i>
-                    <b>Ends: </b> <%= compDate[i].ENDDATE %>
-                </small>
-            </span>
-            <br>
+                <span class="text-muted">
+                    <b>Round<%=i+1%> Competition : <%=compDate[i].TITLE%> </b>
+                    <small style="float: right;">
+                        <i style="color:black" class="far fa-calendar-alt"></i> <b>Starts: </b>
+                    <%= compDate[i].STARTDATE %> &nbsp;&nbsp; <i style="color:#E51552" class="far fa-calendar-alt"></i> <b>Ends: </b> <%= compDate[i].ENDDATE %>
+                    </small>
+                </span>
+                <br>
             <%}%>
             <hr>
             <span>
-                <span style="font-weight: bold;">Fees: <%= Tournament[0].FEES %> </span><i class="fas fa-coins"
-                style="color: black;"></i>
+                <span style="font-weight: bold;">Fees: <%= Tournament[0].FEES %> </span><i class="fas fa-coins" style="color: black;"></i>
             </span>
             <br>
             <%if(!alreadyParticipated){%>
             <a href="/tournaments/join/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>" style="margin-top: 10px;"
-                class="btn btn-outline-danger">Join Tournament</a>
+                class="btn btn-outline-danger" >Join Tournament</a>
+            <%}%>
+            <%if(!Tournament[0].activated){%>
+            <a  href="/tournaments/competitions/<%= Tournament[0].T_ID %>/<%=Tournament[0].TITLE%>"><small style="color: rgb(192, 40, 40); float: right;">Not Activated! <i class="fas fa-frown"></i></small></a>
             <%}%>
         </div>
+        <%}else{%>
+            <small style="text-align: center; padding: 3%;" class="text-muted">Tournament Isn't Activated Yet <i class="fas fa-frown"></i></small>
+        <%}%>
     </div>
 
 </div>

@@ -3,32 +3,37 @@ const { body, validationResult } = require('express-validator');
 const { DBconnection } = require("../config/database");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { route } = require('./competition');
+const { format } = require('../config/date-formatting');
 const dateFormatting = require('../config/date-formatting');
 
-router.get('/login', (req, res) => {
-    if (!req.isAuthenticated()) {
-        const errors = [];
-        res.render("login", {
-            title: "Log In",
-            errors
+router.get('/user', (req, res) => {
+    const errors = [];
+    DBconnection.query('SELECT * FROM dbproject.user', (err, rows) => {
+        if (err) return console.error(err);
+        //console.log(rows[0].ID);
+        res.render("user-profile", {
+            title: "User",
+            errors,
+            rows
         });
-    } else {
-        req.flash('error', 'You are already login :)');
-        res.redirect('/');
-    }
+    });
+});
+
+router.get('/login', (req, res) => {
+    const errors = [];
+    res.render("login", {
+        title: "Log In",
+        errors
+    });
 });
 
 router.post('/login', (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        passport.authenticate('local', {
-            successRedirect: "/",
-            failureRedirect: "/users/login",
-            failureFlash: true
-        })(req, res, next);
-    } else {
-        req.flash('error', 'You are already login :)');
-        res.redirect('/');
-    }
+    passport.authenticate('local', {
+        successRedirect: "/",
+        failureRedirect: "/users/login",
+        failureFlash: true
+    })(req, res, next);
 });
 
 router.get("/logout", (req, res) => {
@@ -38,16 +43,11 @@ router.get("/logout", (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-    if (!req.isAuthenticated()) {
-        const errors = [];
-        res.render("register", {
-            title: "Register",
-            errors
-        });
-    } else {
-        req.flash('error', 'You are already login :)');
-        res.redirect('/');
-    }
+    const errors = [];
+    res.render("register", {
+        title: "Register",
+        errors
+    });
 });
 
 router.post("/register", [
@@ -67,118 +67,113 @@ router.post("/register", [
     body('birthdate', 'Birth Date must be selected').notEmpty(),
     body('gender', 'Gender must be selected').notEmpty(),
 ], (req, res) => {
-    if (!req.isAuthenticated()) {
-        //console.log(req.body);
-        let errors = validationResult(req).errors;
-        let { firstname, lastname, username, email, password, gender, birthdate } = req.body;
-        firstname = firstname.toString().replace(/'/g, "\\'");
-        lastname = lastname.toString().replace(/'/g, "\\'");
-        username = username.toString().replace(/'/g, "\\'");
-        email = email.toString().replace(/'/g, "\\'");
-        password = password.toString().replace(/'/g, "\\'");
-        gender = gender.toString().replace(/'/g, "\\'");
+    //console.log(req.body);
+    let errors = validationResult(req).errors;
+    let { firstname, lastname, username, email, password, gender, birthdate } = req.body;
+    firstname = firstname.toString().replace(/'/g, "\\'");
+    lastname = lastname.toString().replace(/'/g, "\\'");
+    username = username.toString().replace(/'/g, "\\'");
+    email = email.toString().replace(/'/g, "\\'");
+    password = password.toString().replace(/'/g, "\\'");
+    gender = gender.toString().replace(/'/g, "\\'");
 
-        if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
-            errors.unshift({ msg: "Please Fill In All Fields" });
-        }
-        const yearOfBirth = birthdate.toString().slice(0, 4);
-        if (yearOfBirth >= new Date(Date.now()).getFullYear() - 8) {
-            errors.unshift({ msg: "You Must Be Older Than 8 Years Old To Register" });
-        }
-        const lastUsernameLength = username.length;
-        username = username.toString().replace(/ /g, "");
-        if (username.length < lastUsernameLength) {
-            errors.unshift({ msg: "Username Can't Contain Spaces" });
-        }
+    if (username === "" || email === "" || password === "" || lastname === "" || firstname === "") {
+        errors.unshift({ msg: "Please Fill In All Fields" });
+    }
+    const yearOfBirth = birthdate.toString().slice(0, 4);
+    if (yearOfBirth >= 2013) {
+        errors.unshift({ msg: "You Must Be Born On 2013's or Older To Register" });
+    }
+    const lastUsernameLength=username.length;
+    username = username.toString().replace(/ /g, "");
+    if(username.length<lastUsernameLength){
+        errors.unshift({ msg: "Username Can't Contain Spaces" });
+    }
 
-        if (errors.length)
-            return res.render("register", {
-                title: "Register",
-                errors,
-                email,
-                username,
-                firstname,
-                lastname,
-                gender,
-                birthdate
-            });
-        bcrypt.genSalt(10, (err, salt) => {
+    if (errors.length)
+        return res.render("register", {
+            title: "Register",
+            errors,
+            email,
+            username,
+            firstname,
+            lastname,
+            gender,
+            birthdate
+        });
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) return console.error(err);
+        bcrypt.hash(password, salt, (err, hash) => {
             if (err) return console.error(err);
-            bcrypt.hash(password, salt, (err, hash) => {
-                if (err) return console.error(err);
-                password = hash;
-                let query = "";
-                //checking if username already exists
-                query = "select * from dbproject.user where email='" + email + "' ;";
-                DBconnection.query(query, (err, rows) => {
-                    if (err) { console.log(err); }
-                    else {
-                        if (rows.length > 0) {
-                            req.flash("error", "The E-mail You Entered Is Already Taken , Please Try Again");
-                            return res.render("register", {
-                                title: "Register",
-                                errors,
-                                email,
-                                username,
-                                firstname,
-                                lastname,
-                                gender,
-                                birthdate
-                            });
-                        } else {
-                            //checking if username already exists
-                            query = "select * from dbproject.user where username='" + username + "' ;";
-                            DBconnection.query(query, (err, rows) => {
-                                if (err) { console.log(err); }
-                                else {
-                                    if (rows.length > 0) {
-                                        req.flash("error", "The Username You Entered Is Already Taken , Please Try Again");
-                                        return res.render("register", {
-                                            title: "Register",
-                                            errors,
-                                            email,
-                                            username,
-                                            firstname,
-                                            lastname,
-                                            gender,
-                                            birthdate
-                                        });
-                                    } else {
-                                        query = 'Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
-                                            + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
-                                            + lastname + '","' + birthdate + '");';
-                                        //Finally Inserting user
-                                        DBconnection.query(query, (err, results, fields) => {
-                                            if (err) return console.error(err);
-                                            const getID = "select ID from dbproject.user where username='" + username + "';";
-                                            DBconnection.query(getID, (err, result) => {
-                                                if (err) { console.log(err); }
-                                                else {
-                                                    const insertTodoList = "insert into dbproject.todolist (U_ID,tasks) "
-                                                        + "values(" + result[0].ID + ",'" + firstname + "`s To Do List');";
-                                                    DBconnection.query(insertTodoList, (err) => {
-                                                        if (err) {
-                                                            console.log(err);
-                                                        }
-                                                    })
-                                                    req.flash("success", "You registered successfully. Please Log In");
-                                                    res.redirect("/users/login");
-                                                }
-                                            })
+            password = hash;
+            let query = "";
+            //checking if username already exists
+            query = "select * from dbproject.user where email='" + email + "' ;";
+            DBconnection.query(query, (err, rows) => {
+                if (err) { console.log(err); }
+                else {
+                    if (rows.length > 0) {
+                        req.flash("error", "The E-mail You Entered Is Already Taken , Please Try Again");
+                        return res.render("register", {
+                            title: "Register",
+                            errors,
+                            email,
+                            username,
+                            firstname,
+                            lastname,
+                            gender,
+                            birthdate
+                        });
+                    } else {
+                        //checking if username already exists
+                        query = "select * from dbproject.user where username='" + username + "' ;";
+                        DBconnection.query(query, (err, rows) => {
+                            if (err) { console.log(err); }
+                            else {
+                                if (rows.length > 0) {
+                                    req.flash("error", "The Username You Entered Is Already Taken , Please Try Again");
+                                    return res.render("register", {
+                                        title: "Register",
+                                        errors,
+                                        email,
+                                        username,
+                                        firstname,
+                                        lastname,
+                                        gender,
+                                        birthdate
+                                    });
+                                } else {
+                                    query = 'Insert into dbproject.user (Username,email,pass,gender,firstname,lastname,BirthDate) '
+                                        + 'values("' + username + '","' + email + '","' + hash + '","' + gender + '","' + firstname + '","'
+                                        + lastname + '","' + birthdate + '");';
+                                    //Finally Inserting user
+                                    DBconnection.query(query, (err, results, fields) => {
+                                        if (err) return console.error(err);
+                                        const getID = "select ID from dbproject.user where username='" + username + "';";
+                                        DBconnection.query(getID, (err, result) => {
+                                            if (err) { console.log(err); }
+                                            else {
+                                                const insertTodoList = "insert into dbproject.todolist (U_ID,tasks) "
+                                                    + "values(" + result[0].ID + ",'" + firstname + "`s To Do List');";
+                                                DBconnection.query(insertTodoList, (err) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                    }
+                                                })
+                                                req.flash("success", "You registered successfully. Please Log In");
+                                                res.redirect("/users/login");
+                                            }
+                                        })
 
-                                        });
-                                    }
+                                    });
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
-                });
+                }
             });
         });
-    } else {
-        req.flash('error', 'You are already login :)');
-        res.redirect('/');
-    }
+    });
 });
 
 router.get('/:username', (req, res) => {
@@ -215,21 +210,21 @@ router.get('/:username', (req, res) => {
 
 router.get('/:username/edit-profile', (req, res) => {
     if (req.isAuthenticated()) {
-        const query = "select * from dbproject.user where Username='" + req.params.username + "' and ID=" + req.user.ID + " ;";
+        const query = "select * from dbproject.user where Username='" + req.params.username + "' and ID="+req.user.ID+" ;";
         DBconnection.query(query, (err, profileInfo) => {
             if (err) return console.error(err);
-            if (profileInfo.length != 0) {
+            if (profileInfo.length!=0) {
                 const date = new Date(req.user.BirthDate.toString());
                 const birthDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
                 res.render("edit-profile", {
                     title: "Edit Profile",
                     birthDate
                 });
-            } else {
+            }else{
                 req.flash('error', "You can't access this page.");
                 return res.redirect(`/users/${req.user.Username}`);
             }
-
+            
         });
     }
     else {
@@ -249,7 +244,7 @@ router.post('/:username/edit-profile', (req, res) => {
     bio = bio.toString().replace(/'/g, "\\'");
     if (req.isAuthenticated()) {
         let query;
-        let usernameChanged = false;
+        let usernameChanged=false;
         //console.log(req.body);
         if (firstName !== "") {
             if (firstName.length < 50) {
@@ -285,18 +280,18 @@ router.post('/:username/edit-profile', (req, res) => {
         }
         if (username !== "") {
             if (username.length < 50) {
-                const pastLength = username.length;
+                const pastLength=username.length;
                 username = username.toString().replace(/ /g, "");
-                if (username.length < pastLength) {
+                if(username.length<pastLength){
                     req.flash("error", "Username Can't Include Spaces");
-                } else {
+                }else{
                     query = "update dbproject.user set Username='" + username + "' where ID=" + req.user.ID + " ;";
                     DBconnection.query(query, (err, results) => {
                         if (err) {
                             console.log(err);
                             req.flash("error", "The Username Is Already Taken");
-                        } else {
-                            usernameChanged = true;
+                        }else{
+                            usernameChanged=true;
                         }
                         //console.log(results);
                     });
@@ -408,10 +403,10 @@ router.post('/:username/edit-profile', (req, res) => {
             }
         }
         req.flash("success", "Your Profile Is Updated");
-        const getUsername = "select username from dbproject.user where ID=" + req.user.ID + " ;";
-        DBconnection.query(getUsername, (err, getUser) => {
-            if (err) { return console.log(err); }
-            res.redirect("/users/" + getUser[0].username + "");
+        const getUsername="select username from dbproject.user where ID="+req.user.ID+" ;";
+        DBconnection.query(getUsername,(err,getUser)=>{
+            if(err){return console.log(err);}
+            res.redirect("/users/"+getUser[0].username+"");
         })
     }
     else {
@@ -424,28 +419,24 @@ router.get("/:username/todolist", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const query = "select * from dbproject.todolist as t,dbproject.user as u "
-            + " where t.U_ID=" + req.user.ID + " and u.ID=t.U_ID and u.Username='" + req.params.username + "' "
-            + " order by t.deadline;";
-        DBconnection.query(query, (err, rows) => {
-            if (err) { return console.log(err); }
-            else {
-                if (rows.length != 0) {
-                    rows.forEach(row => {
-                        if (row.deadline)
-                            row.deadline = dateFormatting.format(new Date(row.deadline));
-                    })
-                    res.render("todo-list", {
-                        title: "To Do List",
-                        username: req.params.username,
-                        errors,
-                        rows
-                    });
-                } else {
-                    req.flash("error", "You Aren't Allowed To Access Other's To Do List");
-                    res.redirect("/");
-                }
-            }
-        })
+                    +" where t.U_ID=" + req.user.ID + " and u.ID=t.U_ID and u.Username='"+req.params.username+"' "
+                    +" order by t.deadline;";
+                        DBconnection.query(query, (err, rows) => {
+                            if (err) { return console.log(err); }
+                            else {
+                                if(rows.length!=0){
+                                    res.render("todo-list", {
+                                        title: "To Do List",
+                                        username: req.params.username,
+                                        errors,
+                                        rows
+                                    });
+                                }else{
+                                    req.flash("error", "You Aren't Allowed To Access Other's To Do List");
+                                    res.redirect("/");
+                                }
+                            }
+                        })
     } else {
         req.flash("error", "Please Login First");
         res.redirect("/users/login");
@@ -463,7 +454,7 @@ router.post("/:username/todolist/add", (req, res) => {
             req.flash("error", "Please Fill In Task Content & Try Again");
             return res.redirect(redirectUrl);
         }
-        var Task = todoContent.toString().replace(/'/g, "\\'");
+        var Task =todoContent.toString().replace(/'/g, "\\'");
         if (todoDate == "") {
             query = "insert into dbproject.todolist (U_ID,tasks) "
                 + "values(" + req.user.ID + ",'" + Task + "')";
@@ -491,7 +482,7 @@ router.post("/:username/todolist/delete/:taskid", (req, res) => {
         DBconnection.query(privacyquery, (err, results) => {
             if (err) { console.log(err); }
             else {
-                if (results.length != 0) {
+                if(results.length!=0){
                     if (results[0].ID == req.user.ID) {
                         DBconnection.query(query, (err, rows) => {
                             if (err) { console.log(err); }
@@ -516,7 +507,7 @@ router.get("/:username/history", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
         const username = req.params.username;
-        const checkPrivacy = "select * from dbproject.user where ID=" + req.user.ID + " and Username='" + username + "' ;";
+        const checkPrivacy="select * from dbproject.user where ID="+req.user.ID+" and Username='"+username+"' ;";
         const examQuery = "select * from dbproject.exam where U_ID=" + req.user.ID + " ;";
         const CompetitionQuery = 'SELECT * FROM dbproject.competition'
             + ' where U_ID=' + req.user.ID + ' AND  C_ID not in (select t.C_ID from dbproject.t_contains_cs as t) '
@@ -554,11 +545,11 @@ router.get("/:username/history", (req, res) => {
             }
         }
         let queryResults = [];
-        DBconnection.query(checkPrivacy, (err, Privacy) => {
-            if (err) { return console.log(err); }
-            if (Privacy.length != 0) {
+        DBconnection.query(checkPrivacy,(err,Privacy)=>{
+            if(err){return console.log(err);}
+            if(Privacy.length!=0){
                 ExecuteQuery(0, queries, queryResults);
-            } else {
+            }else{
                 req.flash("error", "You aren't allowed to access this page");
                 res.redirect("/");
             }
@@ -597,6 +588,6 @@ router.get("/:username/history/:type/:ID", (req, res) => {
         }
     })
 
-});
+})
 
 module.exports = router;

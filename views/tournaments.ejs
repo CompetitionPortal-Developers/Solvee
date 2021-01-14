@@ -41,14 +41,25 @@
             <h1 class="card-title text-center text-muted">There are no tournaments</h1>
         </div>
         <% } else { %>
-        <% Tournaments.forEach(Tournament => { %>
-        <div class="card-body competitionExamCard ">
-            <h2 class="card-title"><%= Tournament.TITLE %></h2>
-            <br>
-            <a href="/tournaments/details/<%= Tournament.T_ID %>" style="margin-top: 10px;"
-                class="btn btn-outline-danger ">More Details</a>
-        </div>
-        <% })} %>
+            <div class="row" >
+        <% for(var i=0;i<Tournaments.length;i++){ %>
+            <div class="col-lg-4 col-md-4 col-sm-12" style="padding: 2%;">
+            <div class="card-body competitionExamCard " style="text-align: center;">
+                <img class="card-img-left" src="/images/trophy1.jpg" alt="user image" />
+                <!-- <i class="fas fa-trophy fa-5x" style="color:black ;"></i>  -->
+                <div class="card-body">
+                  <h5 class="card-title"><%= Tournaments[i].TITLE %></h5>
+                  <p>Prizes Up To <i class="fas fa-coins"></i> <%= Tournaments[i].FEES %> </p>
+                  <a href="/tournaments/details/<%= Tournaments[i].T_ID %>" style="margin-top: 10px;"
+                    class="btn btn-outline-danger ">More Details</a>
+                </div>
+              </div>
+            </div>
+              
+
+        <% }%>
+    </div>
+    <%} %>
     </div>
 
 </div>

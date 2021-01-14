@@ -594,3 +594,9 @@ ul.tournament-breadcrumb li a:hover {
   outline: 0;
   box-shadow: none;
 }
+.removeComp{
+  color: rgb(192, 40, 40);
+}
+.removeComp:hover{
+  color: red;
+}

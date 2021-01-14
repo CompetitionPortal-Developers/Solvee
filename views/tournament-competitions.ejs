@@ -1,9 +1,10 @@
 <%- include("partials/Header.ejs")%>
-
-<div class="container">
+<div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
     <!--To publish the errors on screen for user if any were found-->
-    <div class="card center">
+    <div class="card center" >
+        
+        <%if(compNumber[0].activated){%>
         <div class="competitionExamHeader">
             <h1><i class="fas fa-trophy" style="color:#E51552 ;"></i> <%= T_TITLE %></h1>
         </div>
@@ -15,7 +16,11 @@
         </ul>
 
         <hr style="margin: 0; background-color:#E51552">
-        <small style="text-align: center; padding: 3%;" class="text-muted">Join All Competitions In Thier Start Time To Collect More Score & Increase Your Chance At Winning</small>
+        <%if(Creator.length !=0){%>
+            <small style="text-align: center; padding: 3%;" class="text-muted">Here Is All The Competitions You Have Added To Your Tournament</small>
+        <%}else{%>
+            <small style="text-align: center; padding: 3%;" class="text-muted">Join All Competitions In Thier Start Time To Collect More Score & Increase Your Chance At Winning</small>
+        <%}%>
         <br>
         <%for(var i=0;i<Tournament.length;i++){%>
             <div class="card-body competitionExamCard">
@@ -43,15 +48,108 @@
                 
                 <%if(Tournament[i].active){%>
                     <a href="/competitions/details/<%= Tournament[i].C_ID %>" style="margin-top: 10px;"
-                        class="btn btn-outline-Custom">Start Now</a>
+                        class="btn btn-outline-danger">Start Now</a>
                 <%}%>
             </div>
         <%}%>
-        <div class="card-body competitionExamCard">
-            
+    <%}else if(Creator.length !=0){%><!--that mean that he is the creator-->
+        <div class="competitionExamHeader">
+            <h1><i class="fas fa-trophy" style="color:#E51552 ;"></i> <%= T_TITLE %></h1>
         </div>
+
+        <ul class="tournament-breadcrumb">
+            <li><a class="not-active-tournament" href="/tournaments/details/<%= T_ID %>" >Details</a></li>
+            <li><a class="not-active-tournament" href="/tournaments/leaderboard/<%= T_ID %>/<%= T_TITLE %>">Leaderboard</a></li>
+            <li><a class="active" style="pointer-events: none;" href="/tournaments/competitions/<%= T_ID %>/<%= T_TITLE %>">Competitions</a></li>
+        </ul>
+
+        <hr style="margin: 0; background-color:#E51552">
+        <p style="text-align: center; padding: 1% 3% 0 3%; line-height: 2;" class="text-muted">Add From 2-5 Competitions , Then Press Activate Button To Activate Your Tournament
+            <br><small style="color: rgb(192, 40, 40);">In case not following above statement tournament won't be visible to other users</small>
+        </p>
+        <%if(Tournament.length!=0){%>
+
+            <div class="card-body competitionExamCard">
+            <h5>Added Competitions :</h5>
+            <%for(var i=0;i<Tournament.length;i++){%>
+               <a class="removeComp" href="/tournaments/remove/<%=Tournament[i].T_ID%>/<%=Tournament[i].C_ID%>">
+                <i class="fas fa-minus-circle " ></i> <%=Tournament[i].TITLE%>
+                </a>
+                <br>
+            <%}%>
+            </div>
+            <br>
+            <hr style="margin: 0; background-color:#E51552">
+        <%}%>
+
+        <%for(var i=0;i<selectCompetitions.length;i++){%>
+            <div class="card-body competitionExamCard">
+                <h2>
+                    <%if(selectCompetitions[i].CATEGORY=="Programming"){%>
+                        <i class="fas fa-laptop-code" style="color: #E51552;"></i>
+                    <%}else if(selectCompetitions[i].CATEGORY=="Physics"){%>
+                        <i class="fas fa-bolt" style="color: #E51552;"></i>
+                    <%}else if(selectCompetitions[i].CATEGORY=="Mechanics"){%>
+                        <i class="fas fa-cogs" style="color: #E51552;"></i>
+                    <%}else if(selectCompetitions[i].CATEGORY=="Mathematics"){%>
+                        <i class="fas fa-sort-numeric-up-alt" style="color: #E51552;"></i>
+                    <%}else{%>
+                        <i class="fas fa-trophy" style="color: #E51552;"></i>
+                    <%}%>
+                     <%= selectCompetitions[i].TITLE %></h2>
+                <span class="text-muted"><i style="color:black" class="far fa-list-alt"></i> <b>Category: </b>
+                    <%= selectCompetitions[i].CATEGORY %>
+                    &nbsp;</span>
+                <br>
+                <span class="text-muted"><i style="color:#28A745" class="far fa-calendar-alt"></i> <b>Start Date: </b>
+                    <%= selectCompetitions[i].STARTDATE %> <br><i style="color:#E51552" class="far fa-calendar-alt"></i> <b>End Date:</b> <%= selectCompetitions[i].ENDDATE %>
+                </span>
+                <hr>
+                
+                <form action="/tournaments/add/competition/<%= T_ID %>/<%= selectCompetitions[i].C_ID %>" method="post">
+                <button class="btn btn-outline-success" >Add Competition</button>
+            </form>
+
+        </div>
+            
+            
+
+        <%}%>
+
+            <button class="btn btn-success btn-lg" style="margin-top: 5%; float: right;" data-target="#activate" data-toggle="modal" id="review">
+                Activate
+            </button>
+
+        <div class="modal fade" id="activate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <form action="/tournaments/activate/<%= T_ID %>" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-exclamation-triangle" style="color:#E51552 ;"></i> Warning</h5>
+                    <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex row">
+                    <p style="line-height: 1.5;">
+                        Are You Sure You Want To Activate Your Tournament ?
+                        <br><small style="color: rgb(192, 40, 40);">you won't be able to add/remove competitions anymore</small>
+                    </p>
+                    
+                    <button type="submit" class="btn btn-success" style="float: right; margin-bottom: 3%;">Activate</button>
+                    <button type="button" class="btn btn-danger " style="float: right;" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+            </div>
+            </div>
+            </div>
+    <%}else{%>
+        <small style="text-align: center; padding: 3%;" class="text-muted">Tournament Isn't Activated Yet <i class="fas fa-frown"></i></small>
+    <%}%>
+    
     </div>
 
 </div>
+
 
 <%-include("partials/Footer.ejs")%>

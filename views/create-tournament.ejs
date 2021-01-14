@@ -4,6 +4,9 @@
 <div class="container">
     <form action="/tournaments/createTournament" method="post">
     <div class="card center">
+      <h1 style="text-align: center; padding: 2%; font-weight: bold;">Create Tournament</h1>
+      <hr style="color: #E51552;">
+      <br>
         <section class="Basic-Info-Section ">
             <div class="row">
                 <div class="col-md-6 col-sm-12">
@@ -21,23 +24,7 @@
                 <textarea type="text" minlength="10" maxlength="500" class="form-control" name="description" required></textarea>
               </div>
             <br>
-            <hr style="color: #150999;">
 
-            <div class="col-12">
-                <label class="editProfileLabels form-label">Select The Competitions Included In Your Tournament :</label>
-                <div class="row">
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card-body competitionExamCard" style="min-height: 50vh; padding: 10%;">
-                            <%for(var i=0;i<userCompetitions.length;i++){%>
-                                <%if(checkComp[i]){%>
-                                    <input type="checkbox" value="<%=userCompetitions[i].C_ID%>" name="comp<%=userCompetitions[i].C_ID%>" id="">
-                                    <small><%=userCompetitions[i].TITLE%></small><br>
-                                <%}%>
-                            <%}%>
-                        </div>
-                    </div>
-                </div>
-              </div>
       
             <div class="saveDiscard">
               <a href="/tournaments" class="buttonProfile btn btn-danger">Discard</a>

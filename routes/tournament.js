@@ -2,14 +2,29 @@ const router = require("express").Router();
 const { body, validationResult } = require('express-validator');
 const schedule = require("node-schedule");
 const { DBconnection } = require("../config/database");
+const { DBformat } = require("../config/date-formatting");
 const dateFormat = require("../config/date-formatting");
+
+function GiveRewards(List, index, Award, comp_ID) {
+    if (index >= List.length || index == 3) {
+        return
+    } else {
+        const giveAward = "update dbproject.award set userID=" + List[index].ID + " where a_type='" + Award + "' and competitionID=" + comp_ID + " ;";
+        DBconnection.query(giveAward, (err) => {
+            if (err) { return console.log(err); }
+            if (index == 0) { Award = 'Silver'; }
+            if (index == 1) { Award = 'Bronze'; }
+            GiveRewards(List, index + 1, Award, comp_ID);
+        })
+    }
+}
 
 function giveSpirits(List, index, spiritsDistribution) {
     if (index >= List.length || index === 5)
         return;
-    DBconnection.query(`SELECT SPIRITS FROM DBPROJECT.USER WHERE Username=${List[index].Username};`, (err, [{ SPIRITS }]) => {
-        console.log(`User ${List[index].Username} has ${SPIRITS} spirits`);
-        const updateSpirits = `UPDATE DBPROJECT.USER SET SPIRITS=${SPIRITS + spiritsDistribution[List.length][index]} WHERE Username=${List[index].Username};`;
+    DBconnection.query(`SELECT SPIRITS FROM DBPROJECT.USER WHERE ID=${List[index].ID};`, (err, [{ SPIRITS }]) => {
+        console.log(`User ${List[index].ID} has ${SPIRITS} spirits`);
+        const updateSpirits = `UPDATE DBPROJECT.USER SET SPIRITS=${SPIRITS + spiritsDistribution[List.length][index]} WHERE ID=${List[index].ID};`;
         DBconnection.query(updateSpirits, err => {
             if (err) return console.error(err);
             giveSpirits(List, index + 1, spiritsDistribution);
@@ -21,7 +36,7 @@ router.get("/", (req, res) => {
     let errors = [];
     const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
     const query = "select * from dbproject.tournament ;";
-    DBconnection.query(deleteEmptyCompetitions, (err) => {
+    DBconnection.query(deleteEmptyCompetitions,(err)=>{
         if (err) { return console.log(err); }
         DBconnection.query(query, (err, Tournaments) => {
             if (err) { return console.log(err); }
@@ -74,6 +89,7 @@ router.get("/details/:T_ID", (req, res) => {
     let errors = [];
     let alreadyParticipated = false;
     if (req.isAuthenticated()) {
+        const activeORnot="select activated from dbproject.tournament where T_ID="+req.params.T_ID+";";
         const queryCreator = "select U_ID from dbproject.tournament where U_ID=" + req.user.ID + " and T_ID=" + req.params.T_ID + ";";
         const confirmQuery = "select userID from dbproject.participates_in_t where tournamentID=" + req.params.T_ID + " and userID=" + req.user.ID + " ;";
         const query = "select * from dbproject.tournament as t,dbproject.user as u "
@@ -106,16 +122,25 @@ router.get("/details/:T_ID", (req, res) => {
                             //if the curr user is the creator of the tournament
                             //////////////------------------------------  maxEndDate[0].ENDDATE  ------------------------------//////////////
                             if (err) { return console.log(err); }
-                            if (Result.length != 0 || Creator.length != 0 || maxEndDate[0].ENDDATE < Date.now()) {
-                                alreadyParticipated = true;//don't show the join tournament button
-                            }
-                            res.render("tournament-details", {
-                                title: "Tournament Details",
-                                errors,
-                                Tournament,
-                                compDate,
-                                alreadyParticipated
-                            });
+                            DBconnection.query(activeORnot,(err,TournamentisActive)=>{
+                                if (err) { return console.log(err); }
+                                if(maxEndDate.length!=0){
+                                    if(maxEndDate[0].ENDDATE < Date.now()){
+                                        alreadyParticipated = true;//don't show the join tournament button
+                                    }
+                                }
+                                if (Result.length != 0 || Creator.length != 0 ) {
+                                    alreadyParticipated = true;//don't show the join tournament button
+                                }
+                                res.render("tournament-details", {
+                                    title: "Tournament Details",
+                                    errors,
+                                    Tournament,
+                                    compDate,
+                                    alreadyParticipated,
+                                    TournamentisActive
+                                });
+                            })
                         })
                     })
                 })
@@ -131,17 +156,24 @@ router.get("/competitions/:T_ID/:T_TITLE", (req, res) => {
     let errors = [];
     let alreadyParticipated = false;
     if (req.isAuthenticated()) {
-        const queryCreator = "select U_ID from dbproject.tournament where U_ID=" + req.user.ID + " ;";
+        const activeORnot="select activated from dbproject.tournament where T_ID="+req.params.T_ID+";";
+        const queryCreator = "select U_ID from dbproject.tournament where U_ID=" + req.user.ID + " and T_ID="+req.params.T_ID+" ;";
         const confirmQuery = "select userID from dbproject.participates_in_t where tournamentID=" + req.params.T_ID + " and userID=" + req.user.ID + ";";
         const T_TITLE = req.params.T_TITLE;
         const T_ID = req.params.T_ID;
+        let today=new Date();
+        today=dateFormat.DBformat(today);
         const query = "select * from dbproject.T_contains_Cs as t,dbproject.competition as c "
-            + "where t.T_ID=" + req.params.T_ID + " and t.C_ID=c.C_ID;";
+            + "where t.T_ID=" + req.params.T_ID + " and t.C_ID=c.C_ID "
+            +"order by c.C_ID ;";
+        const SelectFromCompetitions="select * from dbproject.competition as c "
+                                    +"where c.U_ID="+req.user.ID+" and c.C_ID not in ("
+                                    +"select cs.C_ID from dbproject.T_contains_Cs as cs"
+                                    +") and c.STARTDATE > '"+today+"';";
         DBconnection.query(query, (err, Tournament) => {
             if (err) { return console.log(err); }
-
             for (var i = 0; i < Tournament.length; i++) {
-                if (Tournament[i].STARTDATE < Date.now()) {
+                if (Tournament[i].STARTDATE < Date.now() ) {
                     if (Tournament[i].ENDDATE > Date.now()) {
                         Tournament[i].active = 1;
                     }
@@ -149,19 +181,33 @@ router.get("/competitions/:T_ID/:T_TITLE", (req, res) => {
                 Tournament[i].STARTDATE = dateFormat.format(Tournament[i].STARTDATE);
                 Tournament[i].ENDDATE = dateFormat.format(Tournament[i].ENDDATE);
             }
+            //console.log(Tournament);
             DBconnection.query(confirmQuery, (err, Result) => {
                 if (err) { return console.log(err); }
                 DBconnection.query(queryCreator, (err, Creator) => {
                     if (err) { return console.log(err); }
                     if (Result.length != 0 || Creator.length != 0) {
-                        res.render("tournament-competitions", {
-                            title: "Tournament Details",
-                            errors,
-                            Tournament,
-                            T_TITLE,
-                            T_ID,
-                            alreadyParticipated
-                        });
+                        DBconnection.query(activeORnot,(err,compNumber)=>{
+                            if(err){return console.log(err);}
+                            DBconnection.query(SelectFromCompetitions,(err,selectCompetitions)=>{
+                                if(err){return console.log(err);}
+                                for(var i=0;i<selectCompetitions.length;i++){
+                                    selectCompetitions[i].STARTDATE = dateFormat.format(selectCompetitions[i].STARTDATE);
+                                    selectCompetitions[i].ENDDATE = dateFormat.format(selectCompetitions[i].ENDDATE);
+                                }
+                                res.render("tournament-competitions", {
+                                    title: "Tournament Details",
+                                    errors,
+                                    Tournament,
+                                    T_TITLE,
+                                    T_ID,
+                                    alreadyParticipated,
+                                    compNumber,
+                                    Creator,
+                                    selectCompetitions
+                                });
+                            })
+                        })
                     } else {
                         req.flash("error", "You aren't allowed to view this page as you aren't a participant in the tournament");
                         res.redirect('back');
@@ -180,33 +226,28 @@ router.get("/competitions/:T_ID/:T_TITLE", (req, res) => {
 router.get("/createTournament", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
-        const deleteEmptyCompetitions = "select C_ID from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
-        let checkComp = [];
-        const queryGetComp = "select * from dbproject.competition as c "
-            + " where c.U_ID=" + req.user.ID + " and c.C_ID not in (select t.C_ID from dbproject.t_contains_cs as t );";
-        DBconnection.query(deleteEmptyCompetitions, (err) => {
-            if (err) { return console.log(err); }
-            DBconnection.query(queryGetComp, (err, userCompetitions) => {
-                if (err) { return console.log(err); }
-                let count = 0;
-                for (var i = 0; i < userCompetitions.length; i++) {
-                    if (userCompetitions[i].STARTDATE > Date.now()) {
-                        checkComp.push(1);
-                        count++;
-                    } else {
-                        checkComp.push(0);
-                    }
-                }
-                if (count == 0 || count == 1) {
-                    req.flash("error", "You Must Have At least 2 Upcoming Created Competitons To Create A Tournament");
+        let today=new Date();
+        today=dateFormat.DBformat(today);
+        const deleteEmptyCompetitions = "delete from dbproject.competition where C_ID not in (select C_ID from dbproject.questions where e_id is null);";
+        const selectUserCompetition="select count(c.C_ID) as totalComp from dbproject.competition as c "
+                                    +"where c.U_ID="+req.user.ID+" and c.C_ID not in ("
+                                    +"select cs.C_ID from dbproject.t_contains_cs as cs ) "
+                                    +" and c.STARTDATE > '"+today+"' ;";
+        DBconnection.query(deleteEmptyCompetitions,(err)=>{
+            if (err) { return console.log(err);}
+            DBconnection.query(selectUserCompetition,(err,theCompNumber)=>{
+                if (err) { return console.log(err);}
+                console.log(theCompNumber);
+                if(theCompNumber[0].totalComp>=2){
+                    res.render("create-tournament", ({
+                        title: "Tournament Creation",
+                        errors
+                    }));
+                }else{
+                    req.flash("error", "Your Must Have At Least 2-5 Active Competitions To Create A Tournament");
+                    req.flash("success", "Your Are Redirected To Create Competitions Page");
                     res.redirect("/competitions/CreateCompetition");
                 }
-                res.render("create-tournament", ({
-                    title: "Tournament Creation",
-                    errors,
-                    userCompetitions,
-                    checkComp
-                }))
             })
         })
     } else {
@@ -218,11 +259,9 @@ router.get("/createTournament", (req, res) => {
 router.post("/createTournament", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
-        const compNumber = "select max(T_ID) as IDtournament from dbproject.tournament;";
 
-        let objBody = req.body;
-        console.log(objBody);
-        let { tournamentTitle, description, fees } = objBody;
+        let {tournamentTitle,description,fees}=req.body;
+
         if (tournamentTitle == "" || tournamentTitle.length > 50 || tournamentTitle.length < 2) {
             req.flash("error", "Tournament Title Must Be Between 2-50 Characters");
             res.redirect("/tournaments/createTournament");
@@ -231,112 +270,28 @@ router.post("/createTournament", (req, res) => {
             req.flash("error", "Tournament Description Must Be Between 10-500 Characters");
             res.redirect("/tournaments/createTournament");
         }
-        if (fees.toString().length == "" || fees > 10000 || fees < 3000) {
-            req.flash("error", "Tournament Fees Must Be Between 3000-10000 Spirits");
+        if (fees.toString().length == "" || fees > 10000 || fees < 3000 ) {
+            req.flash("error", "Tournament Fees Must Be Between 0-50 Coins");
             res.redirect("/tournaments/createTournament");
         }
-
-        if (Object.values(objBody).length < 5 || Object.values(objBody).length > 8) {
-            res.send("you can' but less than 2 or more than 5 comp per tournament");
-        }
-        delete objBody.tournamentTitle;
-        delete objBody.description;
-        delete objBody.fees;
+        
         tournamentTitle = tournamentTitle.toString().replace(/'/g, "\\'");
         description = description.toString().replace(/'/g, "\\'");
         const query = "insert into dbproject.tournament (TITLE,FEES,DESCP,U_ID) values('" + tournamentTitle + "'," + fees + ",'" + description + "'," + req.user.ID + ");";
-
-        let selectedComp = [];
-        const competitions = Object.values(objBody);
-        let j = 0;
-        if (competitions.length < 2 && competitions.length > 5) {
-            console.log("herelol");
-            req.flash("error", "Tournament Must Include 2-5 Competitions, Please Select Competitions Within Limit");
-            res.redirect("/tournaments/createTournament");
-        } else {
-            DBconnection.query(query, (err) => {
-                if (err) {
-                    req.flash("error", "Please Change Tournament Title & Try Again");
-                    res.redirect('back');
-                } else {
-                    DBconnection.query(compNumber, (err, result) => {
-                        const T_ID = result[0].IDtournament;
-                        console.log(T_ID);
-                        let updateFees = "update dbproject.competition set cost=0 where C_ID in (select b.c_ID from dbproject.t_contains_cs as b where b.T_ID=" + T_ID + ");";
-                        let queryy = "insert into dbproject.t_contains_cs values";
-                        for (var i = 0; i < competitions.length; i++) {
-                            if (j != 0) {
-                                queryy += ",";
-                            }
-                            j++;
-                            let insert = "(" + T_ID + "," + competitions[i] + ",0)";
-                            console.log(insert);
-                            queryy += insert
-                        }
-                        queryy += ";"
-                        console.log("to be executed");
-                        console.log(queryy);
-                        if (j < 2 || j > 5) {
-                            console.log("here1");
-                            req.flash("error", "Tournament Must Include 2-5 Competitions, Please Select Competitions Within Limit");
-                            res.redirect("/tournaments/createTournament");
-                        }
-                        DBconnection.query(queryy, (err) => {
-                            if (err) { return console.log(err); }
-                            DBconnection.query(updateFees, (err) => {
-                                if (err) {
-                                    console.log("here3");
-                                    return console.log(err);
-                                }
-                                console.log("here4");
-                                const queryENDDate = "select c.STARTDATE,c.ENDDATE,c.TITLE "
-                                    + "from competition as c,t_contains_cs as t "
-                                    + "where c.C_ID=t.C_ID and t.T_ID=" + T_ID + " "
-                                    + "order by c.ENDDATE desc;"
-                                DBconnection.query(queryENDDate, (err, maxEndDate) => {
-                                    if (err) return console.error(err);
-                                    console.log(maxEndDate[0].ENDDATE);
-                                    schedule.scheduleJob(maxEndDate[0].ENDDATE, function () {
-                                        console.log(`\n\n\n\n\n\n\n\nTournament ${tournamentTitle} is finished.`);
-                                        console.log(T_ID);
-
-                                        const joinQuery = "select sum(l.score) as total,l.Username "
-                                            + "from ( "
-                                            + "select ll.score,u.Username "
-                                            + "from leaderboard as ll,t_contains_cs as t,user as u,participates_in_t as p "
-                                            + "where ll.C_ID=t.C_ID and ll.U_ID=u.ID and t.T_ID=" + T_ID + " and u.ID=p.userID and p.tournamentID=" + T_ID + " "
-                                            + ") as l "
-                                            + "group by l.Username "
-                                            + "order by l.score desc ;";
-
-                                        DBconnection.query(joinQuery, (err, List) => {
-                                            if (err) {
-                                                return console.log(err);
-                                            } else {
-                                                console.log(List);
-                                                const totalSpirits = List.length * fees;
-                                                const spiritsDistribution = [
-                                                    [0],
-                                                    [totalSpirits],
-                                                    [Math.floor(totalSpirits * 0.6), Math.floor(totalSpirits * 0.4)],
-                                                    [Math.floor(totalSpirits * 0.5), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2)],
-                                                    [Math.floor(totalSpirits * 0.4), Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.1)],
-                                                    [Math.floor(totalSpirits * 0.3), Math.floor(totalSpirits * 0.25), Math.floor(totalSpirits * 0.2), Math.floor(totalSpirits * 0.15), Math.floor(totalSpirits * 0.1)],
-                                                ]
-                                                console.log(spiritsDistribution);
-                                                giveSpirits(List, 0, spiritsDistribution);
-                                            }
-                                        });
-                                    });
-                                    req.flash("success", "Your Tournament Is Created Successfully");
-                                    res.redirect("/tournaments/");
-                                });
-                            });
-                        });
-                    });
-                }
-            });
-        }
+        DBconnection.query(query,(err)=>{
+            if(err){
+                console.log(err);
+                req.flash("error", "Tournament Title Is Invalid Please Change It & Try Again");
+                res.redirect('back');
+            }else{
+                const getTournament="select * from dbproject.tournament where TITLE='"+tournamentTitle+"' ;";
+                DBconnection.query(getTournament,(err,Tournament)=>{
+                    if(err){return console.log(err);}
+                    req.flash("success","Tournament is created successfully");
+                    res.redirect("/tournaments/competitions/"+Tournament[0].T_ID+"/"+tournamentTitle+"");
+                })
+            }
+        })
     } else {
         req.flash("error", "Please log in first");
         res.redirect("/users/login");
@@ -353,31 +308,36 @@ router.get("/join/:T_ID/:T_TITLE", (req, res) => {
         const queryInsert = "insert into dbproject.participates_in_t (userID,tournamentID) values(" + req.user.ID + "," + req.params.T_ID + ");";
         DBconnection.query(checkMoney, (err, userMoney) => {
             if (err) { return console.log(err); }
-            DBconnection.query(getFees, (err, competitionFees) => {
-                if (err) { return console.log(err); }
-                DBconnection.query(getTournamentFees, (err, tournamentFees) => {
+            if(userMoney.length!=0){
+                DBconnection.query(getFees, (err, competitionFees) => {
                     if (err) { return console.log(err); }
-                    const totalFees = competitionFees[0].total + tournamentFees[0].FEES
-                    if (totalFees > userMoney[0].spirits) {
-                        req.flash("error", "You Must Have At Least " + tournamentFees[0].FEES + " To Join Tournament");
-                        res.redirect("back");
-                    } else {
-                        const newBalance = userMoney[0].spirits - totalFees;
-                        const payQuery = "update dbproject.user set spirits=" + newBalance + " where ID=" + req.user.ID + " ;";
-                        console.log(payQuery);
-                        DBconnection.query(payQuery, (err) => {
-                            if (err) { return console.log(err); }
-                            console.log(queryInsert);
-                            DBconnection.query(queryInsert, (err) => {
-
+                    DBconnection.query(getTournamentFees, (err, tournamentFees) => {
+                        if (err) { return console.log(err); }
+                        const totalFees = competitionFees[0].total + tournamentFees[0].FEES
+                        if (totalFees > userMoney[0].spirits) {
+                            req.flash("error", "You Must Have At Least " + totalFees + " Coins To Join Tournament");
+                            res.redirect("back");
+                        } else {
+                            const newBalance = userMoney[0].spirits - totalFees;
+                            const payQuery = "update dbproject.user set spirits=" + newBalance + " where ID=" + req.user.ID + " ;";
+                            console.log(payQuery);
+                            DBconnection.query(payQuery, (err) => {
                                 if (err) { return console.log(err); }
-                                req.flash("success", "You Have Joined Tournament Successfully");
-                                res.redirect("/tournaments/competitions/" + req.params.T_ID + "/" + req.params.T_TITLE);
+                                console.log(queryInsert);
+                                DBconnection.query(queryInsert, (err) => {
+
+                                    if (err) { return console.log(err); }
+                                    req.flash("success", "You Have Joined Tournament Successfully");
+                                    res.redirect("/tournaments/competitions/" + req.params.T_ID + "/" + req.params.T_TITLE);
+                                })
                             })
-                        })
-                    }
+                        }
+                    })
                 })
-            })
+            }else{
+                req.flash("error", "Tournament Isn't Activated Yet To Join It");
+                res.redirect('back');
+            }
         })
     } else {
         req.flash("error", "Please log in first");
@@ -388,6 +348,7 @@ router.get("/join/:T_ID/:T_TITLE", (req, res) => {
 router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
     let errors = [];
     if (req.isAuthenticated()) {
+        const activeORnot="select activated from dbproject.tournament where T_ID="+req.params.T_ID+" ;";
         const T_ID = req.params.T_ID;
         const T_TITLE = req.params.T_TITLE;
         const joinQuery = "select sum(l.score) as total,l.Username "
@@ -398,39 +359,116 @@ router.get("/leaderboard/:T_ID/:T_TITLE", (req, res) => {
             + ") as l "
             + "group by l.Username "
             + "order by l.score desc ;";
-        DBconnection.query(joinQuery, (err, Top5) => {//Getting the total score of the participants
-            console.log(Top5);
+        DBconnection.query(activeORnot,(err,active)=>{
             if (err) { return console.log(err); }
-            let queryLB = "select u.Username,l.grade,l.duration,l.score,l.C_ID,date(c.STARTDATE) as stDate,c.TITLE "
-                + "from dbproject.leaderboard as l,dbproject.user as u,dbproject.competition as c,dbproject.t_contains_cs as t "
-                + "where l.C_ID=c.C_ID and t.C_ID=c.C_ID and t.T_ID=" + T_ID + " and u.ID=l.U_ID "
-                + "order by l.C_ID asc;";
-            DBconnection.query(queryLB, (err, Result) => {
-                if (err) { return console.log(err); }
-                let lastStandingQuery = "select count(X.C_ID) as cc "
-                    + "from (select date(c.STARTDATE) as st,c.C_ID "
-                    + "from competition as c,leaderboard as l,t_contains_cs as t "
-                    + "where c.C_ID=t.C_ID and l.C_ID=c.C_ID and t.T_ID=" + T_ID + " "
-                    + "order by st "
-                    + ") as X "
-                    + "group by X.C_ID "
-                    + "order by X.st ;";
-                const numberOfCompetitions = "select count(C_ID) as numCompetitions from dbproject.t_contains_cs where T_ID=" + T_ID + " ;";
-                DBconnection.query(lastStandingQuery, (err, competitionCount) => {
+            if(active[0].activated){
+                DBconnection.query(joinQuery, (err, Top5) => {//Getting the total score of the participants
+                    //console.log(Top5);
                     if (err) { return console.log(err); }
-                    res.render("tournament-leaderboard", {
-                        title: "Tournament LeaderBoard",
-                        errors,
-                        Result,
-                        competitionCount,
-                        T_ID,
-                        T_TITLE,
-                        Top5
-                    });
+                    let queryLB = "select u.Username,l.grade,l.duration,l.score,l.C_ID,date(c.STARTDATE) as stDate,c.TITLE "
+                        + "from dbproject.leaderboard as l,dbproject.user as u,dbproject.competition as c,dbproject.t_contains_cs as t,dbproject.participates_in_t as pt "
+                        + "where l.C_ID=c.C_ID and t.C_ID=c.C_ID and t.T_ID=" + T_ID + " and u.ID=l.U_ID and pt.userID=u.ID and t.T_ID=pt.tournamentID "
+                        + "order by l.C_ID asc;";
+                    DBconnection.query(queryLB, (err, Result) => {
+                        if (err) { return console.log(err); }
+                        let lastStandingQuery = "select count(X.C_ID) as cc "
+                            + "from (select date(c.STARTDATE) as st,c.C_ID "
+                            + "from competition as c,leaderboard as l,t_contains_cs as t "
+                            + "where c.C_ID=t.C_ID and l.C_ID=c.C_ID and t.T_ID=" + T_ID + " "
+                            + "order by st "
+                            + ") as X "
+                            + "group by X.C_ID "
+                            + "order by X.st ;";
+                        const numberOfCompetitions="select count(C_ID) as numCompetitions from dbproject.t_contains_cs where T_ID="+T_ID+" ;";
+                        DBconnection.query(lastStandingQuery, (err, competitionCount) => {
+                            if (err) { return console.log(err); }
+                                res.render("tournament-leaderboard", {
+                                    title: "Tournament LeaderBoard",
+                                    errors,
+                                    Result,
+                                    competitionCount,
+                                    T_ID,
+                                    T_TITLE,
+                                    Top5
+                            });
+                        })
+                    })
                 })
-            })
+            }else{
+                req.flash("error", "Tournament Isn't Activated Yet To Join It");
+                res.redirect('back');
+            }
         })
     } else {
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
+})
+
+router.post("/add/competition/:T_ID/:C_ID",(req,res)=>{
+    let errors=[];
+    if(req.isAuthenticated()){
+        const notExceed5="select * from dbproject.t_contains_cs where T_ID="+req.params.T_ID+" ;";
+        const insertComp="insert into dbproject.t_contains_cs values("+req.params.T_ID+","+req.params.C_ID+",0) ;";
+        const competitionFeesZero="update dbproject.competition set cost=0 where C_ID="+req.params.C_ID+" ;";
+        DBconnection.query(notExceed5,(err,exceedResult)=>{
+            if (err) { return console.log(err); }
+            if(exceedResult.length>=5){
+                req.flash("error", "Sorry You Can't Add More Than 5 Competitions To Your Tournament");
+                res.redirect('back');
+            }else{
+                DBconnection.query(competitionFeesZero,(err)=>{
+                    if(err){return console.log(err);}
+                    else{
+                        DBconnection.query(insertComp,(err)=>{
+                            if (err) { return console.log(err); }
+                            req.flash("success", "Competition Was Added Successfully To Your Tournament");
+                            res.redirect('back');
+                        })
+                    }
+                })
+            }
+        })
+    }else {
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
+})
+
+router.post("/activate/:T_ID",(req,res)=>{
+    let errors=[];
+    if(req.isAuthenticated()){
+        const withinLimit="select * from dbproject.t_contains_cs where T_ID="+req.params.T_ID+" ;";
+        const activateNow="update dbproject.tournament set activated=1 where T_ID="+req.params.T_ID+" ;";
+        DBconnection.query(withinLimit,(err,inLimit)=>{
+            if(err){return console.log(err);}
+            if(inLimit.length>=2 && inLimit.length<=5){
+                DBconnection.query(activateNow,(err)=>{
+                    if(err){return console.log(err);}
+                    req.flash("success", "Your Tournament Was Activated Successfully");
+                    res.redirect("/tournaments/details/"+req.params.T_ID+"");
+                })
+            }else{
+                req.flash("error", "Your Tournament Must Have Between 2-5 Added Competitions To Be Activated");
+                res.redirect("back");
+            }
+        })
+    }else {
+        req.flash("error", "Please log in first");
+        res.redirect("/users/login");
+    }
+})
+
+router.get("/remove/:T_ID/:C_ID",(req,res)=>{
+    let errors=[];
+    if(req.isAuthenticated()){
+        const removeCompetitions="delete from dbproject.t_contains_cs where T_ID="+req.params.T_ID+" and C_ID="+req.params.C_ID+" ;";
+        DBconnection.query(removeCompetitions,(err)=>{
+            if(err){return console.log(err);}
+            req.flash("success", "Competition Was Removed From Tournament Successfully");
+            res.redirect("back");
+        })
+    }else {
         req.flash("error", "Please log in first");
         res.redirect("/users/login");
     }

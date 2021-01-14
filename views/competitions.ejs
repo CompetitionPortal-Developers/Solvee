@@ -2,6 +2,7 @@
 
 <div class="container" style="min-height: 100vh;">
     <%-messages("partials/Messages.ejs", locals)%>
+    <%-messages("partials/Messages.ejs", locals)%>
     <% if (typeof errors !== 'undefined') { %>
     <% errors.forEach(error => { %>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

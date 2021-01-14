@@ -40,12 +40,8 @@
           <div class="accordion-body">
             <ul>
               <li class="aboutProfile"><i class="fas fa-baby"></i> Born on <%=birthDate%> </li>
-              <% if (profileInfo[0].education) { %>
               <li class="aboutProfile"><i class="fas fa-university"></i> Studied At <%=profileInfo[0].education%> </li>
-              <%}%>
-                <% if (profileInfo[0].job) { %>
               <li class="aboutProfile"><i class="fas fa-suitcase"></i> Works As <%=profileInfo[0].job%> </li>
-              <%}%>
               <%if(profileInfo[0].gender=="M"){%>
               <li class="aboutProfile"><i class="fas fa-male"></i> Male</li>
               <%}else{%>

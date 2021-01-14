@@ -127,7 +127,8 @@ router.get('/details/:c_id', (req, res) => {
     const errors = [];
     if (req.isAuthenticated()) {
         let alreadyParticpant = false;
-        const CreatorQuery = "select U_ID from dbproject.competition where C_ID=" + req.params.c_id + " and U_ID=" + req.user.ID + " ;";
+        const getTournament="select T_ID from dbproject.t_contains_cs where C_ID="+req.params.c_id+" ;";
+        const CreatorQuery = "select U_ID from dbproject.competition where C_ID=" + req.params.c_id + " and U_ID="+req.user.ID+" ;";
         const alreadyParticipated = "select userID from dbproject.participate where competitionID=" + req.params.c_id + " and userID=" + req.user.ID + " ;";
         DBconnection.query(`SELECT * FROM dbproject.competition WHERE C_ID=${req.params.c_id}`, (err, rows) => {
             if (err) return console.error(err);
@@ -137,19 +138,24 @@ router.get('/details/:c_id', (req, res) => {
                 DBconnection.query(alreadyParticipated, (err, Participant) => {
                     if (err) return console.error(err);
                     const competition = rows[0];
-                    if (competition.STARTDATE > Date.now() || competition.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
+                    if (competition.STARTDATE > Date.now()  || competition.ENDDATE < Date.now() || Creator.length != 0 || Participant.length != 0) {
                         alreadyParticpant = true;
                     }
                     competition.STARTDATE = dateFormat.format(competition.STARTDATE);
                     competition.ENDDATE = dateFormat.format(competition.ENDDATE);
-                    DBconnection.query(`SELECT * FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
-                        res.render("competition-details", {
-                            title: competition.TITLE,
-                            competition,
-                            host: user,
-                            errors,
-                            alreadyParticpant
-                        });
+                    DBconnection.query(`SELECT firstName, lastName FROM dbproject.user WHERE ID=${competition.U_ID}`, (err, [user]) => {
+                        if(err){return console.log(err);}
+                        DBconnection.query(getTournament,(err,tournamentOrnot)=>{
+                            if(err){return console.log(err);}
+                            res.render("competition-details", {
+                                title: competition.TITLE,
+                                competition,
+                                host: user,
+                                errors,
+                                alreadyParticpant,
+                                tournamentOrnot
+                            });
+                        })
                     });
                 })
             })
@@ -218,7 +224,7 @@ router.get('/questions/:c_id', (req, res) => {
                             minusCostQuery = "update dbproject.user set spirits=" + rest + " where ID=" + req.user.ID + " ;";
                             DBconnection.query(`SELECT * FROM dbproject.QUESTIONS WHERE c_id=${req.params.c_id}`, (err, questions) => {
                                 if (err) return console.error(err);
-                                if (questions.length != 0) {
+                                if(questions.length!=0){
                                     DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, rows) => {
                                         if (err) return console.error(err);
                                         if (rows.length) {
@@ -238,12 +244,12 @@ router.get('/questions/:c_id', (req, res) => {
                                                 });
                                             });
                                         })
-
+    
                                     });
-                                } else {
-                                    const queryDeleteEmpty = "delete from dbproject.competition where C_ID=" + competition.C_ID + " ;";
-                                    DBconnection.query(queryDeleteEmpty, (err) => {
-                                        if (err) { return console.log(err); }
+                                }else{
+                                    const queryDeleteEmpty="delete from dbproject.competition where C_ID="+competition.C_ID+" ;";
+                                    DBconnection.query(queryDeleteEmpty,(err)=>{
+                                        if(err){return console.log(err);}
                                         req.flash('error', "Sorry Competition Was Removed By The Website");
                                         res.redirect("/competitions");
                                     })
@@ -291,7 +297,7 @@ router.post('/questions/:c_id', (req, res) => {
                     DBconnection.query(`SELECT s_time FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID};`, (err, [{ s_time }]) => {
                         if (err) return console.error(err);
                         const duration = Math.abs(Date.now() - s_time) / (1000 * 60);
-                        let score = Math.round(((10 * grade / duration) + Number.EPSILON) * 100) / 100;
+                        let score = Math.round(((grade / duration) + Number.EPSILON) * 100) / 100;
                         score = 2 * questions.length * ((1 / (1 + Math.exp(-1 * score))) - 0.5);
                         const insertToLB = `INSERT INTO dbproject.leaderboard VALUES (${req.user.ID}, ${competition.C_ID}, ${grade}, ${duration}, ${score});`;
                         DBconnection.query(insertToLB, err => {
@@ -317,35 +323,25 @@ router.get('/reviews/:c_id', (req, res) => {
             if (err) return console.error(err);
             if (!competition.length) return res.sendStatus(404);
             competition = competition[0];
-            DBconnection.query(`SELECT * FROM dbproject.participate WHERE userID=${req.user.ID} AND competitionID=${competition.C_ID}`, (err, user) => {
+            DBconnection.query(`SELECT * FROM dbproject.review, dbproject.user WHERE U_ID=ID AND C_ID=${req.params.c_id} ORDER BY dateSubmit DESC`, (err, reviews) => {
                 if (err) return console.error(err);
-                let canReview = false;
-                if (user.length) canReview = true;
-                DBconnection.query(`SELECT * FROM dbproject.review WHERE U_ID=${req.user.ID};`, (err, userReview) => {
-                    if (err) return console.error(err);
-                    if (userReview.length) canReview = false;
-                    DBconnection.query(`SELECT * FROM dbproject.review, dbproject.user WHERE U_ID=ID AND C_ID=${req.params.c_id} ORDER BY dateSubmit DESC`, (err, reviews) => {
-                        if (err) return console.error(err);
-                        const reactions = {
-                            Like: ['thumbs-up', '#1649b8'],
-                            Love: ['heart', '#E51552'],
-                            Angry: ['angry', '#ffa500'],
-                            Sad: ['frown', '#eeff00']
-                        }
-                        reviews.forEach(review => {
-                            review.dateSubmit = dateFormat.format(review.dateSubmit);
-                            review.react = reactions[review.react];
-                        });
-                        res.render("competition-reviews", {
-                            title: competition.TITLE,
-                            competition,
-                            reviews,
-                            canReview,
-                            errors
-                        });
-                    });
+                const reactions = {
+                    Like: ['thumbs-up', '#1649b8'],
+                    Love: ['heart', '#E51552'],
+                    Angry: ['angry', '#ffa500'],
+                    Sad: ['frown', '#eeff00']
+                }
+                for (var i = 0; i < reviews.length; i++) {
+                    reviews[i].dateSubmit = dateFormat.format(reviews[i].dateSubmit);
+                }
+                reviews.forEach(review => review.react = reactions[review.react]);
+                res.render("competition-reviews", {
+                    title: competition.TITLE,
+                    competition,
+                    reviews,
+                    errors
                 });
-            })
+            });
         });
     } else {
         req.flash("error", "Please Login First");
@@ -369,18 +365,18 @@ router.post('/reviews/:c_id', [
         const validateQuery = "select * from dbproject.participate where userID=" + req.user.ID + " and competitionID=" + req.params.c_id + " ;";
         const query = "insert into dbproject.review (U_ID,C_ID,comment,rating,react) "
             + "values(" + req.user.ID + "," + req.params.c_id + ",'" + description + "'," + rate + ",'" + reaction + "');";
-        const getAvgRate = "select avg(rating) as avgRating from dbproject.review where C_ID=" + req.params.c_id + " ;";
+        const getAvgRate="select avg(rating) as avgRating from dbproject.review where C_ID="+req.params.c_id+" ;";
         DBconnection.query(validateQuery, (err, result) => {
             if (result.length > 0) {
                 DBconnection.query(query, (err, results) => {
                     if (err) { return console.log(err); }
-                    DBconnection.query(getAvgRate, (err, totalRating) => {
-                        const updateRatingQuery = "update dbproject.competition set rating=" + totalRating[0].avgRating + " where C_ID=" + req.params.c_id + " ;";
-                        DBconnection.query(updateRatingQuery, (err) => {
-                            if (err) { return console.log(err); }
-                            req.flash("success", "Your Review Is Submited Successfully");
-                            res.redirect("/competitions/reviews/" + req.params.c_id + "");
-                        })
+                    DBconnection.query(getAvgRate,(err,totalRating)=>{
+                            const updateRatingQuery="update dbproject.competition set rating="+totalRating[0].avgRating+" where C_ID="+req.params.c_id+" ;";
+                            DBconnection.query(updateRatingQuery,(err)=>{
+                                if (err) { return console.log(err); }
+                                req.flash("success", "Your Review Is Submited Successfully");
+                                res.redirect("/competitions/reviews/" + req.params.c_id + "");
+                            })
                     })
                 })
             } else {
