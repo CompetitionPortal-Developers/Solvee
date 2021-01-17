@@ -1,6 +1,6 @@
 <div align="center">
   
-<img src="screenshots\Screenshot (1978).png" alt="Website image">
+<img src="screenshots\Screenshot (1980).png" alt="Website image">
 
 </div>
 
