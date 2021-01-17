@@ -1,6 +1,6 @@
 <div align="center">
   
-![image](screenshots\Screenshot (1978).png)
+<img src="screenshots\Screenshot (1978).png" alt="Website image">
 
 </div>
 
