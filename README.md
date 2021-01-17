@@ -12,7 +12,7 @@
 </div>
 
 ---
-### 🧐 About
+### 🧐 About:
 #
 **Solvee** is a web-hosted examination and
 competition portal, where users can register in order to host & create
@@ -28,9 +28,9 @@ concerned with grades, and unlike competitions they allow users to
 check for their mistakes.
 
 ---
-### ⛏️ Built Using
+### ⛏️ Built Using:
 #
--HTML
--CSS
--JavaScript
--SQL server
+- HTML
+- CSS
+- JavaScript
+- SQL server
