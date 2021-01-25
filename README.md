@@ -34,6 +34,7 @@ check for their mistakes.
 - CSS
 - JavaScript
 - SQL server
+- Node.js
 
 ---
 
