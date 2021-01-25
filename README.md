@@ -33,7 +33,7 @@ check for their mistakes.
 - HTML
 - CSS
 - JavaScript
-- SQL server
+- MySQL
 - Node.js
 
 ---
