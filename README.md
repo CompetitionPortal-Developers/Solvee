@@ -47,12 +47,16 @@ check for their mistakes.
   <div align='center'>  <h2> Tournaments </h2> <img src="screenshots/GIFs/Tournaments.gif" alt="Exam" >
  </div>
  
-   <div align='center'>  <h2> Support </h2> <img src="screenshots/GIFs/Donations.gif" alt="Exam" >
+   <div align='center'>  <h2> Support </h2> <img src="screenshots/GIFs/Donate.gif" alt="Exam" >
  </div>
  
-    <div align='center'>  <h2> Profile </h2> <img src="screenshots/Image 24.png" alt="Exam" >
- </div>
+ <div align='center'>  <h2> Profile </h2> <img src="screenshots/Image23.png" alt="Exam" > </div>
+ 
+ <div align='center'>  <h2> To-do-list </h2> <img src="screenshots/Image24.png" alt="Exam" ></div>
 
+ <div align='center'>  <h2> And finally, Responsiveness </h2> <img src="screenshots/GIFs/Responsiveness.gif" alt="Exam" ></div>
+
+<h1 align='center'> Thank You. </h1>
 
 
 #
