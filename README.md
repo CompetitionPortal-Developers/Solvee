@@ -1,12 +1,8 @@
-<div align="center">
-  
-<img src="screenshots\Screenshot (1980).png" alt="Website image">
 
-</div>
 
 <div align="center">
   
-# 🏆 Solvee
+  # <h1>🏆 Solvee </h1>
 **Solvee** is a competition and examination website which lets users either host or participate in custom competitions and exams.
 
 </div>
@@ -38,6 +34,26 @@ check for their mistakes.
 
 ---
 
-### 📷 Screenshots:
+### 📷 Snippets:
+<div align='center'>  <h2> Homepage </h2> <img src="screenshots/GIFs/Homepage.gif" alt="Homepage" >
+ </div>
+ 
+ <div align='center'>  <h2> Exams </h2> <img src="screenshots/GIFs/Exam.gif" alt="Exam" >
+ </div>
+ 
+  <div align='center'>  <h2> Competitions </h2> <img src="screenshots/GIFs/Competitions.gif" alt="Exam" >
+ </div>
+ 
+  <div align='center'>  <h2> Tournaments </h2> <img src="screenshots/GIFs/Tournaments.gif" alt="Exam" >
+ </div>
+ 
+   <div align='center'>  <h2> Support </h2> <img src="screenshots/GIFs/Donations.gif" alt="Exam" >
+ </div>
+ 
+    <div align='center'>  <h2> Profile </h2> <img src="screenshots/Image 24.png" alt="Exam" >
+ </div>
+
+
+
 #
 
