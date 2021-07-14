@@ -8,6 +8,17 @@
 </div>
 
 ---
+### 😉 To Run:
+<p>
+  ✔️ Clone the repository by pressing the <b>green button.</b> <br>
+  ✔️ Once in the folder, type <b>CMD</b> in the address bar. <br>
+  ✔️ Now type <b>node app.js</b> and enter. <br>
+  ✔️ Open the browser, and navigate to <b>http://localhost:3000</b> <br>
+  </p>
+
+
+
+
 ### 🧐 About:
 #
 **Solvee** is a web-hosted examination and
