@@ -2,7 +2,8 @@
 
 <div align="center">
   
-  # <h1>🏆 Solvee </h1>
+  # <img src="GG.png" alt=""  height="100">
+
 **Solvee** is a competition and examination website which lets users either host or participate in custom competitions and exams.
 
 </div>
