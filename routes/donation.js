@@ -74,12 +74,12 @@ router.post('/', [
             errors
         });
 
-    const query = `INSERT INTO dbproject.donation (amount, paymentMethod, fullName, country, d_address, zipcode, email) 
+    const query = `INSERT INTO donation (amount, paymentMethod, fullName, country, d_address, zipcode, email) 
     VALUES (${donation_amount}, '${payment_method}', '${fullname}', '${country}', '${address}', ${zipCode !== '' ? zipCode : null}, '${email !== '' ? email : null}' );`;
     DBconnection.query(query, err => {
         if (err) return console.error(err);
         if (email !== '') {
-            DBconnection.query(`SELECT spirits FROM dbproject.user WHERE email='${email}';`, (err, rows) => {
+            DBconnection.query(`SELECT spirits FROM user WHERE email='${email}';`, (err, rows) => {
                 if (err) return console.error(err);
                 if (!rows.length) {
                     req.flash('success', `Thank you for your kind donation and support ${fullname} ❤`);
@@ -87,7 +87,7 @@ router.post('/', [
                     return res.redirect('back');
                 }
                 const spirits = rows[0].spirits + 1000 * donation_amount;
-                DBconnection.query(`UPDATE dbproject.user SET spirits=${spirits} WHERE email='${email}';`, err => {
+                DBconnection.query(`UPDATE user SET spirits=${spirits} WHERE email='${email}';`, err => {
                     if (err) return console.error(err);
                     req.flash('success', `Thank you for your kind donation and support ${fullname} ❤`);
                     req.flash('success', `Your sprirts have been updated! You now have ${spirits} spirits`);
